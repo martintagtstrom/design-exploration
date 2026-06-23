@@ -1340,7 +1340,7 @@ var headerRight=h("div",{style:{display:"flex",alignItems:"center",gap:8}},
 (markedDone?h(DoneBadge,null):null),h(PrimaryButton,{onClick:function(){openModal("fullvat");},style:{height:40,boxSizing:"border-box",padding:"0 16px"}},h(PlayCircleIcon,{color:T.colorSurfacePrimary,size:18}),h("span",null,"Full VAT review")),
 h("button",{onClick:function(){},style:{display:"inline-flex",alignItems:"center",gap:8,height:40,boxSizing:"border-box",padding:"0 16px",border:"1px solid #DBDBDB",borderRadius:8,background:T.colorSurfacePrimary,cursor:"pointer",fontSize:14,fontWeight:500,color:T.colorTextPrimary,fontFamily:"inherit"}},h("span",null,"Supplier rules")),
 h("button",{onClick:function(){},style:{display:"inline-flex",alignItems:"center",justifyContent:"center",height:40,width:40,boxSizing:"border-box",padding:0,border:"1px solid #DBDBDB",borderRadius:8,background:T.colorSurfacePrimary,cursor:"pointer",color:T.colorTextPrimary}},h(DownloadIc,null)));
-var actionCards=h("div",{style:{display:"flex",flexDirection:"column",gap:16,marginTop:24}},ACTION_CARDS.map(function(c,i){
+var actionCards=h("div",{style:{display:"flex",flexDirection:"column",gap:16,marginTop:24}},h("p",{style:{fontSize:18,fontWeight:500,color:"#2A2A2A",letterSpacing:"0.18px",lineHeight:"26px",margin:0}},"Workflows"),ACTION_CARDS.map(function(c,i){
 return h("div",{key:i,style:{display:"flex",alignItems:"center",justifyContent:"space-between",gap:24,padding:"20px 24px",background:T.colorSurfacePrimary,border:"1px solid #DBDBDB",borderRadius:16}},
 h("div",{style:{display:"flex",flexDirection:"column",gap:4,flex:1,minWidth:0}},
 h("span",{style:{fontSize:16,fontWeight:500,color:T.colorTextPrimary}},c.title),
@@ -1367,8 +1367,7 @@ expanded?h(ChevronUpIc,null):ChevronDownIc());}
 if(isCollapsed){return h("div",{key:sug.id,style:{border:"1px solid #ECECEC",borderRadius:12,background:"#FFFFFF",padding:"20px 24px",marginBottom:16}},headerRow(false));}
 return h("div",{key:sug.id,style:{display:"flex",flexDirection:"column",gap:24,border:"1px solid #ECECEC",borderRadius:12,background:"#FFFFFF",padding:"24px",marginBottom:16}},
 headerRow(true),
-h("div",null,severityBadge(sugSeverity(sug))),
-h("div",{style:{fontSize:16,fontWeight:400,color:"#2A2A2A",lineHeight:"26px"}},sug.text),
+h("div",{style:{display:"flex",flexDirection:"column",gap:12}},h("div",null,severityBadge(sugSeverity(sug))),h("div",{style:{fontSize:16,fontWeight:400,color:"#2A2A2A",lineHeight:"26px"}},sug.text)),
 detailTable(sug,inPanel),
 done?null:h("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}},
 h("div",{style:{display:"flex",alignItems:"center",gap:12}},
