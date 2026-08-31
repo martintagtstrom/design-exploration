@@ -2100,9 +2100,8 @@ reclaimAmount:"£940.75",reclaimDelta:null,linesReviewed:"24,988",findings:"16",
 months:[{label:"September 2025",done:true},{label:"August 2025",done:true},{label:"July 2025",done:true}]}];
 return h("div",{style:{display:"flex",flexDirection:"column",gap:16,maxWidth:910,width:"100%"}},
 quarterCard(CURRENT),
-h("div",{style:{borderTop:"1px solid #E9E9EB",margin:"8px 0"}}),
-h("div",{style:{fontSize:16,fontWeight:500,color:T.colorTextPrimary}},"Completed reviews"),
-OLDER.map(function(o){return quarterCard(o);}));
+h(Accordion,{title:"Completed reviews",defaultExpanded:false},
+h("div",{style:{display:"flex",flexDirection:"column",gap:16}},OLDER.map(function(o){return quarterCard(o);}))));
 }
 function historicPanel(){var rows=[{q:"Q1 2026",range:"1 Jan – 31 Mar 2026",status:"Completed",by:"Laura Bennett"},{q:"Q4 2025",range:"1 Oct – 31 Dec 2025",status:"Completed",by:"Laura Bennett"},{q:"Q3 2025",range:"1 Jul – 30 Sep 2025",status:"Completed",by:"Owen Fairhurst"}];
 return h(React.Fragment,null,
