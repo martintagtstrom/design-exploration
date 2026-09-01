@@ -1582,7 +1582,7 @@ var SUGGESTIONS=[
 {id:"s25",cat:"supplier",type:"vat",action:"vat",contact:"Northern Rail",tags:[{label:"Flagged",variant:"warning"}],text:"Rail travel is zero-rated, and 39 of the last 41 Northern Rail receipts on 6250 – Travel & subsistence (95%) are coded 0% (Zero rated). This one is coded No VAT. Neither code carries VAT, but £86.50 of net may sit in the wrong box on the VAT return – re-code to 0% (Zero rated).",account:"6250 – Travel & subsistence",amount:"£86.50",net:"£86.50",vatAmount:"£0.00",vat:"No VAT",date:"18 Jun 26",ref:"NR-88214",history:[{ref:"NR-86550",date:"14 May 26",desc:"Leeds – Manchester return",net:"£74.20",vatAmount:"£0.00",vat:"0% (Zero rated)",account:"6250 – Travel & subsistence"},{ref:"NR-85118",date:"23 Apr 26",desc:"Skipton – Leeds return",net:"£38.60",vatAmount:"£0.00",vat:"0% (Zero rated)",account:"6250 – Travel & subsistence"},{ref:"NR-83994",date:"19 Mar 26",desc:"Leeds – York return",net:"£41.80",vatAmount:"£0.00",vat:"0% (Zero rated)",account:"6250 – Travel & subsistence"}],lineLabel:"Northern Rail – Leeds to Manchester, trade show (Jun)",codedVat:"No VAT",recodeVat:"0% (Zero rated)",journal:{ref:"448",date:"18 Jun 26",lines:[{a:"6250 – Travel & subsistence",d:"£86.50",c:""},{a:"2100 – Trade creditors",d:"",c:"£86.50"}]}},
 {id:"s26",cat:"vat",type:"vat",action:"vat",contact:"Dalefoot Ingredients Ltd",tags:[{label:"Critical VAT",variant:"error"}],text:"Food for human consumption is zero-rated, and this ingredients invoice carries no VAT. The £744.00 total was coded at 20%, reclaiming £124.00 that was never charged. Re-code to Zero Rated Expenses so the full cost lands in 5000 – Purchases.",account:"5000 – Purchases – raw materials",amount:"£744.00",net:"£620.00",vatAmount:"£124.00",vat:"20% (VAT on Expenses)",date:"21 May 26",ref:"DFI-40881",history:[{ref:"DFI-40122",date:"23 Apr 26",desc:"Oats & seed blend – 400kg",net:"£610.00",vatAmount:"£0.00",vat:"Zero Rated Expenses",account:"5000 – Purchases – raw materials"},{ref:"DFI-39544",date:"26 Mar 26",desc:"Dried fruit – 220kg",net:"£398.00",vatAmount:"£0.00",vat:"Zero Rated Expenses",account:"5000 – Purchases – raw materials"}],lineLabel:"Dalefoot Ingredients – oats, dried fruit & seed blend",codedVat:"20% (VAT on Expenses)",recodeVat:"Zero Rated Expenses",journal:{ref:"442",date:"21 May 26",lines:[{a:"5000 – Purchases – raw materials",d:"£620.00",c:""},{a:"1201 – VAT receivable",d:"£124.00",c:""},{a:"2100 – Trade creditors",d:"",c:"£744.00"}]},hasInvoice:true,invoice:{from:"DALEFOOT INGREDIENTS LTD",tag:"Food Ingredients · Zero-rated",rightAddr:["Dalefoot Ingredients Ltd","Skipton Road, Keighley","VAT GB 118 4420 77"],fromBlock:["Dalefoot Ingredients Ltd","Skipton Road","Keighley BD21 3AA","United Kingdom"],no:"DFI-40881",date:"21 May 2026",due:"20 June 2026",lines:[["Rolled oats, dried fruit & seed blend","Bulk ingredients – 480kg","480","Zero Rated Expenses","£744.00","£744.00"]],subtotal:"£744.00",vatLabel:"VAT (0% – zero rated):",vat:"£0.00",total:"£744.00",terms:"Food for human consumption is zero-rated for VAT. No VAT has been charged on this invoice."}}
 ];
-if(lateClaims===true)SUGGESTIONS=SUGGESTIONS.concat(LATE_CLAIM_SUGGESTIONS);
+if(lateClaims===true)SUGGESTIONS=LATE_CLAIM_SUGGESTIONS.concat(SUGGESTIONS);
 var FILTER_TYPE={full:"vat",misc:"misc",vat:"return"};
 /* One severity filter, two readers: the Account transactions table and the VAT-return box
    breakdowns. It starts on Critical VAT + Flagged, so Expected lines stay hidden until the
@@ -2688,15 +2688,27 @@ h("div",{style:{fontSize:16,fontWeight:500,color:"#2A2A2A",lineHeight:"26px"}},"
 h("div",{style:{display:"flex",flexDirection:"column",gap:16}},
 h("div",{onClick:function(){setFilingDate(new Date(PROTOTYPE_TODAY.y,PROTOTYPE_TODAY.m,PROTOTYPE_TODAY.d));setCalMonth(PROTOTYPE_TODAY.m);setCalYear(PROTOTYPE_TODAY.y);setLateClaims(true);setLateClaimsStage("date");},style:{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px",borderRadius:8,background:"#E3E3E3",cursor:"pointer",fontSize:16,fontWeight:600,color:"#2A2A2A",lineHeight:"26px"}},"Yes - Include late claims (requires filing date of last VAT report)",h("span",{style:{color:T.colorTextThird,fontSize:14,flexShrink:0,marginLeft:12}},"↵")),
 h("div",{onClick:function(){setLateClaims(false);setStarted(true);},style:{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px",borderRadius:8,background:"#FBFBFB",cursor:"pointer",fontSize:16,fontWeight:400,color:"#2A2A2A",lineHeight:"26px"}},"No - Skip late claims for now")));}
+/* Illustrative-only preview of "where to find it" – a small static mock of the
+   Completed reviews list with the submitted date called out. Deliberately NOT
+   wired to real period/filing data: Mimo can't read the actual HMRC submission
+   timestamp out of Xero, so this can only point the user at where to look, not
+   claim to already know the answer. */
+function prevPeriodPreview(){return h("div",{style:{width:240,flexShrink:0,borderRadius:10,background:"#F5F5F5",border:"1px solid #ECECEC",padding:10,boxShadow:"0px 4px 10px rgba(0,0,0,0.06)",display:"flex",flexDirection:"column",gap:6}},
+h("span",{style:{fontSize:10,fontWeight:600,color:"#9A9A9A",textTransform:"uppercase",letterSpacing:"0.3px"}},"Completed"),
+h("div",{style:{border:"1px solid #ECECEC",borderRadius:8,background:"#FFFFFF",padding:"8px 10px",display:"flex",flexDirection:"column",gap:4}},
+h("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",gap:6}},
+h("span",{style:{fontSize:10,fontWeight:600,color:"#2A2A2A"}},"01 Apr 2026 - 30 Jun 2026"),
+h("span",{style:{fontSize:8,fontWeight:600,color:T.colorTextSecondary,background:"#F0F0F0",padding:"1px 5px",borderRadius:4,flexShrink:0}},"Filed")),
+h("div",{style:{fontSize:9,color:T.colorTextSecondary,display:"flex",alignItems:"center",gap:3,flexWrap:"wrap",lineHeight:"14px"}},
+"Submitted ",
+h("span",{style:{display:"inline-flex",padding:"0 3px",border:"1.5px solid #D5493A",borderRadius:4,color:"#2A2A2A",fontWeight:600}},"07 Aug 2026"),
+" by Laura Bennett")));}
 function dateCard(){var cells=calGrid(calYear,calMonth);var selY=filingDate?filingDate.getFullYear():null,selM=filingDate?filingDate.getMonth():null,selD=filingDate?filingDate.getDate():null;var prevPeriod=COMPLETED_PERIODS[0];var navBtnStyle={border:"none",background:"transparent",cursor:"pointer",color:T.colorTextSecondary,fontSize:16,padding:"4px 8px",fontFamily:"inherit"};
 return h("div",{style:{border:"1px solid #ECECEC",borderRadius:16,background:"#FFFFFF",padding:"24px",boxShadow:"0px 12px 12px rgba(0,0,0,0.04)",display:"flex",flexDirection:"column",gap:16}},
 h("div",{style:{fontSize:16,fontWeight:500,color:"#2A2A2A",lineHeight:"26px"}},"When did you submit the previous VAT report for "+(prevPeriod?prevPeriod.periodLabel:"the previous period")+" to HMRC?"),
-h("div",{style:{fontSize:14,color:T.colorTextSecondary,lineHeight:"22px"}},"The submission date is stated on the HMRC receipt as well as in the Xero VAT Returns."),
-prevPeriod?h("div",{style:{border:"1px solid #ECECEC",borderRadius:8,padding:"12px 14px",background:"#FAFAFA",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}},
-h("div",{style:{display:"flex",flexDirection:"column",gap:2}},
-h("span",{style:{fontSize:13,fontWeight:500,color:"#2A2A2A"}},prevPeriod.periodLabel),
-h("span",{style:{fontSize:12,color:T.colorTextSecondary}},"Submitted "+prevPeriod.lastRunWhen+" by "+prevPeriod.lastRunBy)),
-h("span",{style:{fontSize:11,fontWeight:500,color:T.colorSuccess,background:T.colorSuccessBg,padding:"2px 8px",borderRadius:6,flexShrink:0}},"Filed")):null,
+h("div",{style:{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:16}},
+h("div",{style:{fontSize:14,color:T.colorTextSecondary,lineHeight:"22px",flex:1,minWidth:0}},"The submission date is stated on the HMRC receipt as well as in the ",h("span",{style:{color:T.colorBrandPrimary,textDecoration:"underline"}},"Xero VAT Returns"),"."),
+prevPeriodPreview()),
 h("div",{style:{border:"1px solid #ECECEC",borderRadius:12,padding:20,background:"#FBFBFB"}},
 h("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}},
 h("div",{style:{display:"flex",gap:2}},h("button",{onClick:function(){setCalYear(calYear-1);},style:navBtnStyle},"«"),h("button",{onClick:function(){if(calMonth===0){setCalMonth(11);setCalYear(calYear-1);}else{setCalMonth(calMonth-1);}},style:navBtnStyle},"‹")),
