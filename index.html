@@ -1438,8 +1438,8 @@ return React.createElement("div",{ref:ref,style:{height:height,overflow:"hidden"
    One suggestion card (matches the Figma late-claim card) plus its matching Account
    transactions row, linked by sid/id "s27" like every other finding. */
 var LATE_CLAIM_ACCOUNT="6020 – Light, heat & power";
-var LATE_CLAIM_SUGGESTIONS=[{id:"s27",cat:"vat",type:"vat",action:"acknowledge",lateClaim:true,severityOverride:"flagged",contact:"EDF Energy Customers",tags:[{label:"Late claim",variant:"info"}],text:"Looks like this claim from 14 Mar 2026 wasn't on your last VAT return (filed 2 Apr 2026). The claim is included in this VAT report.",lcDesc:"EDF Energy Customers",date:"14 Mar 26",net:"£2,564.40",vatAmount:"£512.88",amount:"£3,077.28",vat:"20% (VAT on Expenses)",account:LATE_CLAIM_ACCOUNT,ref:"EDF-20326"}];
-var LATE_CLAIM_TX_ROWS=[{sid:"s27",state:"unresolved",severity:"flagged",date:"14 Mar 26",desc:"EDF Energy Customers",ref:"EDF-20326",amount:"£3,077.28",vat:"20% (VAT on Expenses)"}];
+var LATE_CLAIM_SUGGESTIONS=[{id:"s27",cat:"vat",type:"vat",action:"acknowledge",lateClaim:true,combined:true,contact:"EDF Energy Customers",tags:[{label:"Flagged",variant:"warning"}],text:"Looks like this claim from 14 Mar 2026 wasn't on your last VAT return (filed 2 Apr 2026). The claim is included in this VAT report.",lcDesc:"EDF Energy Customers",date:"14 Mar 26",net:"£2,564.40",vatAmount:"£512.88",amount:"£3,077.28",vat:"20% (VAT on Expenses)",account:LATE_CLAIM_ACCOUNT,ref:"EDF-20326"}];
+var LATE_CLAIM_TX_ROWS=[{sid:"s27",state:"unresolved",severity:"flagged",date:"14 Mar 26",desc:"EDF Energy Customers",ref:"EDF-20326",amount:"£3,077.28",vat:"20% (VAT on Expenses)",lateClaim:true}];
 function VATMiscodingsPage({ctx}){
 var h=React.createElement;
 var _tab=useState("suggestions");var activeTab=_tab[0];var setActiveTab=_tab[1];
@@ -1582,7 +1582,10 @@ var SUGGESTIONS=[
 {id:"s25",cat:"supplier",type:"vat",action:"vat",contact:"Northern Rail",tags:[{label:"Flagged",variant:"warning"}],text:"Rail travel is zero-rated, and 39 of the last 41 Northern Rail receipts on 6250 – Travel & subsistence (95%) are coded 0% (Zero rated). This one is coded No VAT. Neither code carries VAT, but £86.50 of net may sit in the wrong box on the VAT return – re-code to 0% (Zero rated).",account:"6250 – Travel & subsistence",amount:"£86.50",net:"£86.50",vatAmount:"£0.00",vat:"No VAT",date:"18 Jun 26",ref:"NR-88214",history:[{ref:"NR-86550",date:"14 May 26",desc:"Leeds – Manchester return",net:"£74.20",vatAmount:"£0.00",vat:"0% (Zero rated)",account:"6250 – Travel & subsistence"},{ref:"NR-85118",date:"23 Apr 26",desc:"Skipton – Leeds return",net:"£38.60",vatAmount:"£0.00",vat:"0% (Zero rated)",account:"6250 – Travel & subsistence"},{ref:"NR-83994",date:"19 Mar 26",desc:"Leeds – York return",net:"£41.80",vatAmount:"£0.00",vat:"0% (Zero rated)",account:"6250 – Travel & subsistence"}],lineLabel:"Northern Rail – Leeds to Manchester, trade show (Jun)",codedVat:"No VAT",recodeVat:"0% (Zero rated)",journal:{ref:"448",date:"18 Jun 26",lines:[{a:"6250 – Travel & subsistence",d:"£86.50",c:""},{a:"2100 – Trade creditors",d:"",c:"£86.50"}]}},
 {id:"s26",cat:"vat",type:"vat",action:"vat",contact:"Dalefoot Ingredients Ltd",tags:[{label:"Critical VAT",variant:"error"}],text:"Food for human consumption is zero-rated, and this ingredients invoice carries no VAT. The £744.00 total was coded at 20%, reclaiming £124.00 that was never charged. Re-code to Zero Rated Expenses so the full cost lands in 5000 – Purchases.",account:"5000 – Purchases – raw materials",amount:"£744.00",net:"£620.00",vatAmount:"£124.00",vat:"20% (VAT on Expenses)",date:"21 May 26",ref:"DFI-40881",history:[{ref:"DFI-40122",date:"23 Apr 26",desc:"Oats & seed blend – 400kg",net:"£610.00",vatAmount:"£0.00",vat:"Zero Rated Expenses",account:"5000 – Purchases – raw materials"},{ref:"DFI-39544",date:"26 Mar 26",desc:"Dried fruit – 220kg",net:"£398.00",vatAmount:"£0.00",vat:"Zero Rated Expenses",account:"5000 – Purchases – raw materials"}],lineLabel:"Dalefoot Ingredients – oats, dried fruit & seed blend",codedVat:"20% (VAT on Expenses)",recodeVat:"Zero Rated Expenses",journal:{ref:"442",date:"21 May 26",lines:[{a:"5000 – Purchases – raw materials",d:"£620.00",c:""},{a:"1201 – VAT receivable",d:"£124.00",c:""},{a:"2100 – Trade creditors",d:"",c:"£744.00"}]},hasInvoice:true,invoice:{from:"DALEFOOT INGREDIENTS LTD",tag:"Food Ingredients · Zero-rated",rightAddr:["Dalefoot Ingredients Ltd","Skipton Road, Keighley","VAT GB 118 4420 77"],fromBlock:["Dalefoot Ingredients Ltd","Skipton Road","Keighley BD21 3AA","United Kingdom"],no:"DFI-40881",date:"21 May 2026",due:"20 June 2026",lines:[["Rolled oats, dried fruit & seed blend","Bulk ingredients – 480kg","480","Zero Rated Expenses","£744.00","£744.00"]],subtotal:"£744.00",vatLabel:"VAT (0% – zero rated):",vat:"£0.00",total:"£744.00",terms:"Food for human consumption is zero-rated for VAT. No VAT has been charged on this invoice."}}
 ];
-if(lateClaims===true)SUGGESTIONS=LATE_CLAIM_SUGGESTIONS.concat(SUGGESTIONS);
+/* a late claim only earns a suggestion card when it's also flagged for another reason
+   (combined:true) – a late claim with nothing else wrong just shows in the Account
+   transactions list, tagged, without a card to review here */
+if(lateClaims===true)SUGGESTIONS=LATE_CLAIM_SUGGESTIONS.filter(function(x){return x.combined!==false;}).concat(SUGGESTIONS);
 var FILTER_TYPE={full:"vat",misc:"misc",vat:"return"};
 /* One severity filter, two readers: the Account transactions table and the VAT-return box
    breakdowns. It starts on Critical VAT + Flagged, so Expected lines stay hidden until the
@@ -2246,7 +2249,7 @@ return h("div",{key:sug.id,style:{display:"flex",flexDirection:"column",border:"
 headerRow(!isCollapsed),
 h(AnimatedCollapse,{expanded:!isCollapsed},
 h("div",{style:{display:"flex",flexDirection:"column",gap:24,paddingTop:24}},
-h("div",{style:{display:"flex",flexDirection:"column",gap:12}},h("div",{style:{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}},sug.lateClaim?tagBadge(sug.tags[0]):h(React.Fragment,null,severityBadge(sugSeverity(sug)),statePill(catName(sug.cat),"#F0F0F0","#7C7C7C"))),h("div",{style:{fontSize:16,fontWeight:400,color:"#2A2A2A",lineHeight:"26px"}},sug.text)),
+h("div",{style:{display:"flex",flexDirection:"column",gap:12}},h("div",{style:{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}},severityBadge(sugSeverity(sug)),statePill(catName(sug.cat),"#F0F0F0","#7C7C7C"),sug.lateClaim?statePill("Late claim","#F0F0F0","#7C7C7C"):null),h("div",{style:{fontSize:16,fontWeight:400,color:"#2A2A2A",lineHeight:"26px"}},sug.text)),
 detailTable(sug,inPanel),
 rs?h("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}},
 h("button",{onClick:function(){setReview(sug);},style:{height:40,boxSizing:"border-box",padding:"0 16px",border:"1px solid #DBDBDB",borderRadius:8,background:"#FFFFFF",cursor:"pointer",fontSize:14,fontWeight:500,color:"#2A2A2A",fontFamily:"inherit",whiteSpace:"nowrap"}},inPanel?"Review":"Review suggestion"),
@@ -2320,7 +2323,7 @@ var TX_SEV_PILL=["critical","flagged","expected"];
 var TX_GROUPBY_OPTS=[{v:"account",label:"Account"},{v:"rate",label:"Tax rate"},{v:"return",label:"VAT return tax"}];
 var TX_PER_PAGE=100;
 var TX_CAT_OPTS=[{v:"incomplete",label:"Incomplete records"},{v:"duplicates",label:"Duplicates"},{v:"amounts",label:"Amounts don't match"},{v:"vat",label:"VAT treatment"},{v:"supplier",label:"Supplier pattern"},{v:"other",label:"Other"}];
-var TX_MODE_OPTS=[{v:"all",label:"All"},{v:"largest",label:"Largest in/out"}];
+var TX_MODE_OPTS=[{v:"all",label:"All"},{v:"largest",label:"Largest in/out"},{v:"lateclaims",label:"Late claims"}];
 function fdChevron(open,dis){return h("span",{style:{display:"inline-flex",alignItems:"center",transition:"transform 0.15s ease",transform:open?"rotate(180deg)":"none"}},ChevronDownIc(dis?T.colorTextDisabled:null));}
 function fdChipMuted(t){return h("span",{style:{display:"inline-flex",alignItems:"center",padding:"2px 8px",borderRadius:6,background:T.colorBorderLight,color:T.colorTextDisabled,fontSize:14,fontWeight:500,lineHeight:"22px",whiteSpace:"nowrap"}},t);}
 function fdCount(n){return h("span",{style:{marginLeft:"auto",paddingLeft:24,fontSize:14,color:"#A5A5A5",lineHeight:"22px",flexShrink:0}},n);}
@@ -2356,7 +2359,9 @@ function txCountAcct(a){return txAllRows().filter(function(o){return o.account==
 function txRowCat(r){var sg=txRowSug(r);return sg?sg.cat:null;}
 function txCountCat(c){return txAllRows().filter(function(o){return txRowCat(o.r)===c;}).length;}
 function txFilteredRows(){var list=txAllRows().filter(function(o){
-if(selSev.indexOf(o.r.severity)<0)return false;
+/* Late claims mode surfaces every late claim regardless of severity – the severity
+   filter is bypassed (and shown disabled) while it's selected */
+if(txMode!=="lateclaims"&&selSev.indexOf(o.r.severity)<0)return false;
 if(selStatus.indexOf(txRowState(o.r))<0)return false;
 if(selAcct&&selAcct.indexOf(o.account)<0)return false;
 /* narrowing the category filter keeps findings of those categories only – reviewed lines
@@ -2367,6 +2372,7 @@ return true;});
 if(txMode==="largest"){function top(f){return list.filter(f).slice().sort(function(a,b){return txAmt(b.r.amount)-txAmt(a.r.amount);}).slice(0,5);}
 var keep=top(txIsIncome).concat(top(function(o){return !txIsIncome(o);}));
 list=list.filter(function(o){return keep.indexOf(o)>=0;});}
+if(txMode==="lateclaims")list=list.filter(function(o){return !!o.r.lateClaim;});
 return list;}
 function txVisibleGroups(list){
 /* Largest in/out replaces the grouping with the two directions, biggest first */
@@ -2383,14 +2389,15 @@ function txStatusFilter(){var all=selStatus.length===TX_STATUS_OPTS.length;
 return fdPill("status","Status",all?"All":(selStatus.length?TX_STATUS_OPTS.filter(function(st){return selStatus.indexOf(st)>=0;}).map(function(st){return stateBadge(st);}):"None"),
 TX_STATUS_OPTS.map(function(st){var sel=selStatus.indexOf(st)>=0;return fdRow(st,fdCheck(sel),stateBadge(st),txCountStatus(st),function(){fdMulti(selStatus,setSelStatus,st);});}));}
 function txSevFilter(){var all=selSev.length===TX_SEV_OPTS.length;
-return fdPill("severity","Severity",all?"All":(selSev.length?TX_SEV_PILL.filter(function(sv){return selSev.indexOf(sv)>=0;}).map(function(sv){return severityBadge(sv);}):"None"),
-TX_SEV_OPTS.map(function(sv){var sel=selSev.indexOf(sv)>=0;return fdRow(sv,fdCheck(sel),severityBadge(sv),txCountSev(sv),function(){fdMulti(selSev,setSelSev,sv);});}));}
+return fdPill("severity","Severity",txMode==="lateclaims"?"All":(all?"All":(selSev.length?TX_SEV_PILL.filter(function(sv){return selSev.indexOf(sv)>=0;}).map(function(sv){return severityBadge(sv);}):"None")),
+TX_SEV_OPTS.map(function(sv){var sel=selSev.indexOf(sv)>=0;return fdRow(sv,fdCheck(sel),severityBadge(sv),txCountSev(sv),function(){fdMulti(selSev,setSelSev,sv);});}),false,txMode==="lateclaims");}
 function txAcctFilter(){var accs=txAccounts();var all=!selAcct||selAcct.length===accs.length;
 return fdPill("accounts","Accounts",all?"All":(selAcct.length?selAcct.length+" selected":"None"),
 accs.map(function(a){var sel=!selAcct||selAcct.indexOf(a)>=0;return fdRow(a,fdCheck(sel),h("span",{style:{fontSize:14,color:T.colorTextPrimary,lineHeight:"22px"}},a),txCountAcct(a),function(){var cur=selAcct||accs.slice();setTxPage(0);setSelAcct(cur.indexOf(a)>=0?cur.filter(function(x){return x!==a;}):cur.concat([a]));});}),true);}
+function txCountLateClaims(){return txAllRows().filter(function(o){return !!o.r.lateClaim;}).length;}
 function txModeFilter(){var cur=TX_MODE_OPTS.filter(function(o){return o.v===txMode;})[0];
 return fdPill("mode","Transactions",cur.label,
-TX_MODE_OPTS.map(function(o){return fdRow(o.v,fdRadio(txMode===o.v),h("span",{style:{fontSize:14,color:T.colorTextPrimary,lineHeight:"22px"}},o.label),o.v==="all"?txAllRows().length:null,function(){setTxMode(o.v);setTxPage(0);setFdOpen(null);});}));}
+TX_MODE_OPTS.map(function(o){return fdRow(o.v,fdRadio(txMode===o.v),h("span",{style:{fontSize:14,color:T.colorTextPrimary,lineHeight:"22px"}},o.label),o.v==="all"?txAllRows().length:o.v==="lateclaims"?txCountLateClaims():null,function(){setTxMode(o.v);setTxPage(0);setFdOpen(null);});}));}
 function txGroupFilter(){var cur=TX_GROUPBY_OPTS.filter(function(o){return o.v===txGroupBy;})[0];
 return fdPill("groupby","Group by",cur.label,
 TX_GROUPBY_OPTS.map(function(o){return fdRow(o.v,fdRadio(txGroupBy===o.v),h("span",{style:{fontSize:14,color:T.colorTextPrimary,lineHeight:"22px"}},o.label),null,function(){setTxGroupBy(o.v);setTxPage(0);setFdOpen(null);});}),false,txMode==="largest");}
@@ -2797,7 +2804,7 @@ h("span",{style:{fontSize:16,color:"#7C7C7C",whiteSpace:"nowrap"}},(pos+1)+" / "
 pageBtn(-1,hasPrev),pageBtn(1,hasNext),
 h("button",{onClick:function(){closeReview();},style:{width:32,height:32,borderRadius:"50%",border:"none",background:"#F5F5F5",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:"#2A2A2A",padding:0,marginLeft:4}},h(CloseIc,null)))),
 h("div",{style:{flex:"1 0 auto",padding:"24px 32px 64px",display:"flex",flexDirection:"column",gap:24}},
-h("div",{style:{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}},tagBadge(sug.tags[0]),statePill(catName(sug.cat),"#F0F0F0","#7C7C7C")),
+h("div",{style:{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}},tagBadge(sug.tags[0]),statePill(catName(sug.cat),"#F0F0F0","#7C7C7C"),sug.lateClaim?statePill("Late claim","#F0F0F0","#7C7C7C"):null),
 sug.text?h("div",{style:{background:"#F1F8F0",border:"1px solid #D0EFC8",borderRadius:12,padding:"24px",display:"flex",flexDirection:"column",gap:16,alignItems:"flex-start"}},
 h("div",{style:{fontSize:16,fontWeight:600,color:"#2A2A2A",lineHeight:"24px"}},"Suggestion"),
 h("div",{style:{fontSize:16,color:"#2A2A2A",lineHeight:"26px"}},sug.text),
