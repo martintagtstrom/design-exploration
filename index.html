@@ -1470,6 +1470,10 @@ var _land=useState(true);var showLanding=_land[0];var setShowLanding=_land[1];
 var _hist=useState(false);var historicOpen=_hist[0];var setHistoricOpen=_hist[1];
 var _pmenu=useState(null);var periodMenuOpen=_pmenu[0];var setPeriodMenuOpen=_pmenu[1];
 var _pmenuPos=useState({top:0,left:0});var periodMenuPos=_pmenuPos[0];var setPeriodMenuPos=_pmenuPos[1];
+/* First-time use: the current-period card starts in a simplified "Not started" state.
+   Once the workflow has been launched from it (Run review clicked), it flips permanently
+   to the normal rich in-progress card for the rest of the session. */
+var _pstarted=useState(false);var periodStarted=_pstarted[0];var setPeriodStarted=_pstarted[1];
 useEffect(function(){if(!cmtOpen)return;
 function inAny(sel,t){var ns=document.querySelectorAll(sel);for(var i=0;i<ns.length;i++){if(ns[i].contains(t))return true;}return false;}
 function onDown(e){if(inAny("[data-cmt-pop='"+cmtOpen+"']",e.target))return;if(inAny("[data-cmt-btn='"+cmtOpen+"']",e.target))return;setCmtOpen(null);}
@@ -2098,6 +2102,21 @@ var monthsBlock=showMonths?h("div",{style:{borderTop:"1px solid #E9E9EB",backgro
 data.months.map(function(m,i){return monthRow(data.key+"-m"+i,m.label,m.done,i===0);})):null;
 return h("div",{key:data.key,style:{border:"1px solid #E9E9EB",borderRadius:16,background:T.colorSurfacePrimary,overflow:"hidden"}},
 headerRow,statsRow,divider,buttonsRow,monthsBlock);}
+/* First-time-use state for the current period: no run yet, so none of the stats/last-run/
+   Open review/VAT report/kebab UI applies – just the period, a "Not started" pill, and a
+   single action that launches the workflow straight into the late-claims question. */
+function notStartedCard(data,showMonths){
+var monthsBlock=showMonths?h("div",{style:{borderTop:"1px solid #E9E9EB",background:"#FAFAFA"}},
+data.months.map(function(m,i){return monthRow(data.key+"-m"+i,m.label,m.done,i===0);})):null;
+return h("div",{key:data.key,style:{border:"1px solid #E9E9EB",borderRadius:16,background:T.colorSurfacePrimary,overflow:"hidden"}},
+h("div",{style:{padding:24,display:"flex",flexDirection:"column",gap:16}},
+h("div",{style:{display:"flex",flexDirection:"column",gap:4}},
+h("div",{style:{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:16}},
+h("span",{style:{fontSize:20,lineHeight:"28px",fontWeight:500,color:T.colorTextPrimary,letterSpacing:"0.2px"}},"VAT period: "+data.periodLabel),
+StatusPill("Not started","neutral")),
+h("p",{style:{margin:0,fontSize:14,color:T.colorTextSecondary,lineHeight:"22px"}},"Run workflow to review, resolve, and finalise this VAT Review.")),
+h(PrimaryButton,{onClick:function(){setPeriodStarted(true);runFullWorkflow(data.periodLabel);},style:{height:40,padding:"0 16px",alignSelf:"flex-start"}},h(PlayCircleIcon,{color:T.colorSurfacePrimary,size:18}),h("span",null,"Run review"))),
+monthsBlock);}
 function completedReviewCard(data,onAction){
 var monthMenuItems=data.months.map(function(m){return {label:m.label,run:function(){openResultsAI();if(onAction)onAction();}};});
 return h("div",{key:data.key,style:{border:"1px solid #E9E9EB",borderRadius:16,background:T.colorSurfacePrimary,padding:24,display:"flex",alignItems:"center",justifyContent:"space-between",gap:16}},
@@ -2174,7 +2193,7 @@ var HISTORIC_RUNS=[
 {key:"h-q4-2018",periodLabel:"Oct 18 – Dec 18",lastRunBy:"Owen Fairhurst",lastRunWhen:"4 Jan 19, 9.05am",lateClaims:false}];
 function periodsLanding(){
 return h("div",{style:{display:"flex",flexDirection:"column",gap:16,maxWidth:910,width:"100%"}},
-quarterCard(CURRENT_PERIOD),
+periodStarted?quarterCard(CURRENT_PERIOD):notStartedCard(CURRENT_PERIOD,true),
 h("div",{style:{borderTop:"1px solid #ECECEC",marginTop:24}}),
 h("span",{style:{fontSize:16,fontWeight:500,color:T.colorTextPrimary,marginTop:32}},"Completed reviews"),
 COMPLETED_PERIODS.map(function(o){return completedReviewCard(o);}));
