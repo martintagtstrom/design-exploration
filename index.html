@@ -2239,8 +2239,8 @@ danger
 ?h("button",{onClick:function(){setConfirmAsk(null);c.run();},style:{height:40,padding:"0 16px",border:"none",borderRadius:8,background:T.colorError,color:"#FFFFFF",fontSize:14,fontWeight:500,cursor:"pointer",fontFamily:"inherit"}},c.label)
 :h(PrimaryButton,{onClick:function(){setConfirmAsk(null);c.run();},style:{height:40,padding:"0 16px"}},c.label))));}
 /* ── Landing page ── */
-function onboardingCard(){return h("div",{style:{border:"1px solid #E9E9EB",borderRadius:16,background:T.colorSurfacePrimary,padding:24,display:"flex",flexDirection:"column",gap:12,position:"relative"}},
-h("button",{onClick:function(){setOnbDismissed(true);},title:"Dismiss",style:{position:"absolute",top:16,right:16,width:28,height:28,borderRadius:"50%",border:"none",background:"transparent",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:T.colorTextPrimary},onMouseEnter:function(e){e.currentTarget.style.background="#F5F5F5";},onMouseLeave:function(e){e.currentTarget.style.background="transparent";}},h(CloseIc,null)),
+function onboardingCard(){return h("div",{style:{border:"1px solid #E9E9EB",borderRadius:16,background:"#FAFAFA",padding:24,display:"flex",flexDirection:"column",gap:12,position:"relative"}},
+h("button",{onClick:function(){setOnbDismissed(true);},title:"Dismiss",style:{position:"absolute",top:16,right:16,width:28,height:28,borderRadius:"50%",border:"none",background:"transparent",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:T.colorTextPrimary},onMouseEnter:function(e){e.currentTarget.style.background="#EFEFEF";},onMouseLeave:function(e){e.currentTarget.style.background="transparent";}},h(CloseIc,null)),
 h("span",{style:{alignSelf:"flex-start",display:"inline-flex",alignItems:"center",padding:"3px 8px",borderRadius:6,background:T.colorSuccessBg,color:T.colorBrandPrimary,fontSize:12,fontWeight:600}},"Get started"),
 h("div",{style:{display:"flex",flexDirection:"column",gap:4}},
 h("span",{style:{fontSize:20,lineHeight:"28px",fontWeight:500,color:T.colorTextPrimary,letterSpacing:"0.2px"}},"Mimo VAT Review"),
