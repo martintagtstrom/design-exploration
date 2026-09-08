@@ -1473,13 +1473,12 @@ var _draft=useState({});var draft=_draft[0];var setDraft=_draft[1];function togg
 var _toast=useState(null);var toast=_toast[0];var setToast=_toast[1];
 /* ── VAT review periods landing (sketch-driven redesign) ── */
 var _land=useState(true);var showLanding=_land[0];var setShowLanding=_land[1];
-var _hist=useState(false);var historicOpen=_hist[0];var setHistoricOpen=_hist[1];
 var _pmenu=useState(null);var periodMenuOpen=_pmenu[0];var setPeriodMenuOpen=_pmenu[1];
 var _pmenuPos=useState({top:0,left:0});var periodMenuPos=_pmenuPos[0];var setPeriodMenuPos=_pmenuPos[1];
 /* First-time use: the current-period card starts in a simplified "Not started" state.
    Once the workflow has been launched from it (Run review clicked), it flips permanently
    to the normal rich in-progress card for the rest of the session. */
-var _pstarted=useState(false);var periodStarted=_pstarted[0];var setPeriodStarted=_pstarted[1];/* Jan–Mar 26: overdue until the user marks it completed, at which point it drops into Completed reviews */var _q1done=useState(false);var q1Done=_q1done[0];var setQ1Done=_q1done[1];var _otip=useState(false);var overdueTipOpen=_otip[0];var setOverdueTipOpen=_otip[1];/* which chat lines have finished writing – each step of the flow waits for the line before it */var _typed=useState({});var typed=_typed[0];var setTyped=_typed[1];
+var _pstarted=useState(false);var periodStarted=_pstarted[0];var setPeriodStarted=_pstarted[1];/* landing state: the next period's partial run, the filing period's outcome, custom-date runs, monthly runs made this session, which period results are now behind, the Completed reviews list, the onboarding card and the confirm step */var _upart=useState(false);var upcomingPartial=_upart[0];var setUpcomingPartial=_upart[1];var _fout=useState(null);var filingOutcome=_fout[0];var setFilingOutcome=_fout[1];var _cruns=useState([]);var customRuns=_cruns[0];var setCustomRuns=_cruns[1];var _mruns=useState({});var monthRuns=_mruns[0];var setMonthRuns=_mruns[1];var _stale=useState({});var staleResults=_stale[0];var setStaleResults=_stale[1];var _comp=useState(completedSeed);var completed=_comp[0];var setCompleted=_comp[1];var _onb=useState(false);var onbDismissed=_onb[0];var setOnbDismissed=_onb[1];var _cfm=useState(null);var confirmAsk=_cfm[0];var setConfirmAsk=_cfm[1];var _cflow=useState(false);var customFlow=_cflow[0];var setCustomFlow=_cflow[1];var _lrl=useState(null);var lastLate=_lrl[0];var setLastLate=_lrl[1];/* which chat lines have finished writing – each step of the flow waits for the line before it */var _typed=useState({});var typed=_typed[0];var setTyped=_typed[1];
 useEffect(function(){if(!lateClaimsLoading)return;var timer=setTimeout(function(){setLateClaimsStage("date");setLateClaimsLoading(false);},1200);return function(){clearTimeout(timer);};},[lateClaimsLoading]);
 /* Hold the "Initiating workflow…" beat until the intro has finished writing, so the two don't
    run in parallel and swallow each other. */
@@ -1489,7 +1488,8 @@ function inAny(sel,t){var ns=document.querySelectorAll(sel);for(var i=0;i<ns.len
 function onDown(e){if(inAny("[data-cmt-pop='"+cmtOpen+"']",e.target))return;if(inAny("[data-cmt-btn='"+cmtOpen+"']",e.target))return;setCmtOpen(null);}
 document.addEventListener("mousedown",onDown);
 return function(){document.removeEventListener("mousedown",onDown);};},[cmtOpen]);
-useEffect(function(){if(toast){var id=setTimeout(function(){setToast(null);},2600);return function(){clearTimeout(id);};}},[toast]);useEffect(function(){if(!started||!typed.conf)return;var STEPS=wfSteps();var timers=[];setStepStatuses([]);setStepSubtexts([]);setVisibleSteps(0);function reveal(i){setVisibleSteps(i+1);setStepStatuses(function(prev){var nx=prev.slice();nx[i]="active";return nx;});timers.push(setTimeout(function(){setStepStatuses(function(prev){var nx=prev.slice();nx[i]="done";return nx;});setStepSubtexts(function(prev){var nx=prev.slice();nx[i]=STEPS[i].subtext||"";return nx;});if(i+1<STEPS.length){reveal(i+1);}else{setStepsDone(true);}},STEPS[i].duration));}reveal(0);return function(){timers.forEach(clearTimeout);};},[started,rerunCount,typed.conf]);useEffect(function(){if(stepsDone){var t1=setTimeout(function(){setHandoff(true);},650);var t2=setTimeout(function(){setStage("results");setHandoff(false);setAiMode(true);},900);return function(){clearTimeout(t1);clearTimeout(t2);};}},[stepsDone]);useEffect(function(){function chk(){if(typeof window!=="undefined"&&window.__vmOpenFullVat){window.__vmOpenFullVat=false;openResults();}}chk();if(typeof window!=="undefined"){window.addEventListener("hashchange",chk);window.addEventListener("vm-open-fullvat",chk);}return function(){if(typeof window!=="undefined"){window.removeEventListener("hashchange",chk);window.removeEventListener("vm-open-fullvat",chk);}};},[]);
+useEffect(function(){if(toast){var id=setTimeout(function(){setToast(null);},2600);return function(){clearTimeout(id);};}},[toast]);useEffect(function(){if(!started||!typed.conf)return;var STEPS=wfSteps();var timers=[];setStepStatuses([]);setStepSubtexts([]);setVisibleSteps(0);function reveal(i){setVisibleSteps(i+1);setStepStatuses(function(prev){var nx=prev.slice();nx[i]="active";return nx;});timers.push(setTimeout(function(){setStepStatuses(function(prev){var nx=prev.slice();nx[i]="done";return nx;});setStepSubtexts(function(prev){var nx=prev.slice();nx[i]=STEPS[i].subtext||"";return nx;});if(i+1<STEPS.length){reveal(i+1);}else{setStepsDone(true);}},STEPS[i].duration));}reveal(0);return function(){timers.forEach(clearTimeout);};},[started,rerunCount,typed.conf]);useEffect(function(){if(stepsDone)setLastLate(lateClaims===true);},[stepsDone]);
+useEffect(function(){if(stepsDone&&customFlow){setCustomFlow(false);setCustomRuns(function(prev){return prev.concat([Object.assign({},CURRENT_PERIOD,{key:"c-"+Date.now(),kind:"custom",periodLabel:"01 Jan 25 – 31 Dec 25",status:"in_progress",runBy:"Laura Bennett",runWhen:"30 Jul 26, 1.34pm",lateClaims:lateClaims===true,months:null,findingsResolved:12,findingsTotal:17})]);});}},[stepsDone]);useEffect(function(){if(stepsDone){var t1=setTimeout(function(){setHandoff(true);},650);var t2=setTimeout(function(){setStage("results");setHandoff(false);setAiMode(true);},900);return function(){clearTimeout(t1);clearTimeout(t2);};}},[stepsDone]);useEffect(function(){function chk(){if(typeof window!=="undefined"&&window.__vmOpenFullVat){window.__vmOpenFullVat=false;openResults();}}chk();if(typeof window!=="undefined"){window.addEventListener("hashchange",chk);window.addEventListener("vm-open-fullvat",chk);}return function(){if(typeof window!=="undefined"){window.removeEventListener("hashchange",chk);window.removeEventListener("vm-open-fullvat",chk);}};},[]);
 // ── icons ──
 function TableIc(){return h("svg",{width:16,height:16,viewBox:"0 0 20 20",fill:"none",style:{flexShrink:0}},h("rect",{x:"3.25",y:"4.25",width:"13.5",height:"11.5",rx:"2",stroke:"currentColor",strokeWidth:"1.25"}),h("path",{d:"M3.25 8.25H16.75M8 8.25V15.75",stroke:"currentColor",strokeWidth:"1.25"}));}
 function DocSearchIc(){return h("svg",{width:18,height:18,viewBox:"0 0 20 20",fill:"none",style:{flexShrink:0}},
@@ -2059,8 +2059,8 @@ function openResults(){setOMenuOpen(false);setModal("fullvat");setStage("results
 function resolveSug(id,how,msg){var nx=Object.assign({},resolved);nx[id]=how;setResolved(nx);setCollapsed(function(prev){var c=Object.assign({},prev);c[id]=true;return c;});/* drawer stays open: the status badge updates in place */}
 function reopenSug(id){setResolved(function(prev){var n=Object.assign({},prev);delete n[id];return n;});setCollapsed(function(prev){var c=Object.assign({},prev);c[id]=false;return c;});}
 // ── overview pieces ──
-function oMenuItems(periodLabel){return [
-{label:"Mark as done",run:function(){setMarkedDone(true);setToast("VAT review marked as done");}},
+function oMenuItems(periodLabel,period){return [
+{label:"Mark as done",run:function(){setMarkedDone(true);setToast((period?periodTitle(period):"VAT review")+" marked as done");if(period&&period.key===CURRENT_PERIOD.key)markPeriodDone(period);}},
 {label:"Download report",run:function(){setToast("Report downloaded");}},
 {label:"Audit log",run:function(){setAuditOpen(true);}},
 {label:"Re-run VAT review",run:function(){setRerunPeriod(periodLabel);setRerunOpen(true);}}];}
@@ -2068,23 +2068,15 @@ function oMenuItem(it,i){return h("button",{key:i,onClick:function(){setOMenuOpe
 var headerRight=h("div",{style:{display:"flex",alignItems:"center",gap:8,marginTop:2}},
 (markedDone?h(DoneBadge,null):null),h(PrimaryButton,{onClick:function(){openResults();},style:{height:40,boxSizing:"border-box",padding:"0 16px"}},h(PlayCircleIcon,{color:T.colorSurfacePrimary,size:18}),h("span",null,"VAT review")),
 h("div",{style:{position:"relative"}},h("button",{onClick:function(){setOMenuOpen(!oMenuOpen);},style:{display:"inline-flex",alignItems:"center",justifyContent:"center",height:40,width:40,boxSizing:"border-box",padding:0,border:"1px solid #DBDBDB",borderRadius:8,background:T.colorSurfacePrimary,cursor:"pointer",color:T.colorTextPrimary}},h("svg",{width:18,height:18,viewBox:"0 0 18 18",fill:"none"},h("circle",{cx:9,cy:3.5,r:1.5,fill:"currentColor"}),h("circle",{cx:9,cy:9,r:1.5,fill:"currentColor"}),h("circle",{cx:9,cy:14.5,r:1.5,fill:"currentColor"}))),/* click anywhere outside to dismiss */
-oMenuOpen?h("div",{onClick:function(e){e.stopPropagation();setOMenuOpen(false);},style:{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:29}}):null,oMenuOpen?h("div",{style:{position:"absolute",top:46,right:0,minWidth:216,background:"#FFFFFF",border:"1px solid #ECECEC",borderRadius:10,boxShadow:"0 6px 20px rgba(0,0,0,0.10)",padding:"6px",zIndex:30,display:"flex",flexDirection:"column",gap:2}},oMenuItems(CURRENT_PERIOD.periodLabel).map(function(it,k){return oMenuItem(it,k);})):null));
+oMenuOpen?h("div",{onClick:function(e){e.stopPropagation();setOMenuOpen(false);},style:{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:29}}):null,oMenuOpen?h("div",{style:{position:"absolute",top:46,right:0,minWidth:216,background:"#FFFFFF",border:"1px solid #ECECEC",borderRadius:10,boxShadow:"0 6px 20px rgba(0,0,0,0.10)",padding:"6px",zIndex:30,display:"flex",flexDirection:"column",gap:2}},oMenuItems(CURRENT_PERIOD.periodLabel,null).map(function(it,k){return oMenuItem(it,k);})):null));
 /* ── Periods landing (sketch redesign): VAT review grouped by period, with a
    per-period "Open review"/"Run" action, before drilling into the existing
    Suggestions/VAT report/Account transactions tabs below. ── */
 function ClockIcon({color=T.colorTextPrimary,size=16}){return h("svg",{width:size,height:size,viewBox:"0 0 20 20",fill:"none"},h("circle",{cx:10,cy:10,r:7.5,stroke:color,strokeWidth:"1.25"}),h("path",{d:"M10 6.25V10L12.5 11.875",stroke:color,strokeWidth:"1.25",strokeLinecap:"round",strokeLinejoin:"round"}));}
-function StatusPill(label,tone){var M={info:{bg:"#F0F5FC",fg:"#4C71DF",radius:6,border:"none"},neutral:{bg:"#FAFAFA",bd:"#F5F5F5",fg:"#545453"},success:{bg:"#F1F8F0",fg:"#05A105",radius:6,border:"none"},error:{bg:T.colorErrorBg,fg:T.colorError,radius:6,border:"none"}};var c=M[tone]||M.neutral;return h("span",{style:{display:"inline-flex",alignItems:"center",padding:"3px 8px",borderRadius:c.radius||4,background:c.bg,border:c.border||"1px solid "+c.bd,color:c.fg,fontSize:12,fontWeight:600,whiteSpace:"nowrap"}},label);}
+function StatusPill(label,tone){var M={info:{bg:"#F0F5FC",fg:"#4C71DF",radius:6,border:"none"},neutral:{bg:"#FAFAFA",bd:"#F5F5F5",fg:"#545453"},success:{bg:"#F1F8F0",fg:"#05A105",radius:6,border:"none"},error:{bg:T.colorErrorBg,fg:T.colorError,radius:6,border:"none"},warning:{bg:T.colorWarningBg,fg:T.colorWarning,radius:6,border:"none"}};var c=M[tone]||M.neutral;return h("span",{style:{display:"inline-flex",alignItems:"center",padding:"3px 8px",borderRadius:c.radius||4,background:c.bg,border:c.border||"1px solid "+c.bd,color:c.fg,fontSize:12,fontWeight:600,whiteSpace:"nowrap"}},label);}
 /* Overdue badge with a hover card. Unlike Tooltip this one holds an action, so the panel is a
    child of the hovered wrapper and sits flush against the badge (padding, not a gap) – the
    pointer can travel into it without crossing a dead zone and closing it. */
-function markQ1Completed(){setOverdueTipOpen(false);setQ1Done(true);setToast("Jan 26 – Mar 26 marked as completed");}
-function overduePill(){
-return h("span",{onMouseEnter:function(){setOverdueTipOpen(true);},onMouseLeave:function(){setOverdueTipOpen(false);},style:{position:"relative",display:"inline-flex",flexShrink:0}},
-h("span",{style:{cursor:"help",display:"inline-flex"}},StatusPill("Overdue","error")),
-overdueTipOpen?h("div",{style:{position:"absolute",top:"100%",right:0,paddingTop:8,zIndex:40}},
-h("div",{style:{width:300,boxSizing:"border-box",background:T.colorSurfacePrimary,border:"1px solid #ECECEC",borderRadius:10,boxShadow:"0 8px 24px rgba(0,0,0,0.10)",padding:16,display:"flex",flexDirection:"column",gap:12,textAlign:"left"}},
-h("span",{style:{fontSize:14,lineHeight:"22px",color:T.colorTextPrimary,fontWeight:400}},"The filing deadline for this period has passed. Every month has been reviewed, so the period can be closed off."),
-h(PrimaryButton,{onClick:markQ1Completed,style:{height:36,padding:"0 12px",alignSelf:"flex-start"}},"Mark as completed"))):null);}
 function periodStat(text,tone){return h("span",{style:{fontSize:14,color:tone==="error"?"#C8543A":T.colorTextSecondary,fontWeight:tone==="error"?600:400}},text);}
 function InfoIcon(){return h("svg",{width:16,height:16,viewBox:"0 0 16 16",fill:"none",style:{flexShrink:0,cursor:"help"}},h("circle",{cx:"8",cy:"8",r:"7.25",stroke:"currentColor",strokeWidth:"1.5"}),h("circle",{cx:"8",cy:"5",r:"0.75",fill:"currentColor"}),h("path",{d:"M8 6.5V11",stroke:"currentColor",strokeWidth:"1.5",strokeLinecap:"round"}));}
 /* Shared Exposure hint – the three figures in the overview table, defined once so the
@@ -2098,160 +2090,181 @@ function statCol(label,value,badge,badgeTooltip,labelTooltip){var labelEl=labelT
 function openResultsAI(){openResults();setAiMode(true);}
 function openVATReport(){openResults();setMtab("vat_report");}
 var landingHeaderRight=h("div",{style:{display:"flex",alignItems:"center",gap:8}},
-h(SecondaryButton,{onClick:function(){openModal("fullvat");},style:{height:40}},h(PlayCircleIcon,{color:T.colorTextPrimary,size:16}),h("span",null,"Custom dates")),
-h(SecondaryButton,{onClick:function(){setHistoricOpen(true);},style:{height:40}},h(ClockIcon,{color:T.colorTextPrimary,size:16}),h("span",null,"Historic runs")));
-function periodKebab(key,extraItems,size,periodLabel){if(size===undefined)size=40;if(periodLabel===undefined)periodLabel=CURRENT_PERIOD.periodLabel;var open=periodMenuOpen===key;var baseItems=oMenuItems(periodLabel);var items=(extraItems&&extraItems.length)?extraItems.concat(baseItems):baseItems;var divIdx=(extraItems&&extraItems.length)?extraItems.length:-1;return h("div",{style:{position:"relative",flexShrink:0}},
+h(SecondaryButton,{onClick:function(){openModal("fullvat");},style:{height:40}},h(PlayCircleIcon,{color:T.colorTextPrimary,size:16}),h("span",null,"Custom dates")));
+function periodKebab(key,extraItems,size,period,onlyItems){if(size===undefined)size=40;var periodLabel=(period&&period.periodLabel)||CURRENT_PERIOD.periodLabel;var open=periodMenuOpen===key;var baseItems=onlyItems?[]:oMenuItems(periodLabel,period);var items=(extraItems&&extraItems.length)?extraItems.concat(baseItems):baseItems;var divIdx=(extraItems&&extraItems.length&&baseItems.length)?extraItems.length:-1;return h("div",{style:{position:"relative",flexShrink:0}},
 h("button",{onClick:function(e){if(open){setPeriodMenuOpen(null);return;}var rect=e.currentTarget.getBoundingClientRect();setPeriodMenuPos({top:rect.bottom+6,left:rect.right-216});setPeriodMenuOpen(key);},style:{display:"inline-flex",alignItems:"center",justifyContent:"center",height:size,width:size,boxSizing:"border-box",padding:0,border:"1px solid #E9E9EB",borderRadius:8,background:T.colorSurfacePrimary,cursor:"pointer",color:T.colorTextPrimary}},h("svg",{width:18,height:18,viewBox:"0 0 18 18",fill:"none"},h("circle",{cx:9,cy:3.5,r:1.5,fill:"currentColor"}),h("circle",{cx:9,cy:9,r:1.5,fill:"currentColor"}),h("circle",{cx:9,cy:14.5,r:1.5,fill:"currentColor"}))),
 open?h("div",{onClick:function(e){e.stopPropagation();setPeriodMenuOpen(null);},style:{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:29}}):null,
 open?h("div",{style:{position:"fixed",top:periodMenuPos.top,left:periodMenuPos.left,minWidth:216,background:"#FFFFFF",border:"1px solid #ECECEC",borderRadius:10,boxShadow:"0 6px 20px rgba(0,0,0,0.10)",padding:"6px",zIndex:30,display:"flex",flexDirection:"column",gap:2}},items.map(function(it,k){return h(React.Fragment,{key:k},k===divIdx?h("div",{style:{height:1,background:"#ECECEC",margin:"4px 6px"}}):null,h("button",{onClick:function(){setPeriodMenuOpen(null);it.run();},onMouseEnter:function(e){e.currentTarget.style.background="#F5F5F5";},onMouseLeave:function(e){e.currentTarget.style.background="transparent";},style:{display:"flex",alignItems:"center",width:"100%",padding:"9px 12px",border:"none",background:"transparent",cursor:"pointer",fontSize:14,fontWeight:500,color:"#2A2A2A",fontFamily:"inherit",borderRadius:6,textAlign:"left",whiteSpace:"nowrap"}},it.label));})):null);}
-function monthRow(key,label,done,isFirst){return h("div",{key:key,style:{borderTop:isFirst?"none":"1px solid #E9E9EB",padding:"18px 20px",display:"flex",alignItems:"center",justifyContent:"space-between"}},
-h("span",{style:{fontSize:16,fontWeight:500,color:T.colorTextPrimary}},label),
-h("div",{style:{display:"flex",alignItems:"center",gap:10}},
-done?StatusPill("Done","success"):null,
-h(SecondaryButton,{onClick:function(){done?openResultsAI():runFullWorkflow(label);}},done?null:h(PlayCircleIcon,{color:T.colorTextPrimary,size:16}),h("span",null,done?"Open review":"Run review"))));}
-function quarterCard(data,onAction,showMonths){
-if(showMonths===undefined)showMonths=true;
-var headerRow=h("div",{style:{padding:"24px 24px 0",display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:16}},
-h("div",{style:{display:"flex",flexDirection:"column",gap:4}},
-h("span",{style:{fontSize:20,lineHeight:"28px",fontWeight:500,color:T.colorTextPrimary,letterSpacing:"0.2px"}},"VAT period: "+data.periodLabel),
-h("span",{style:{fontSize:14,color:T.colorTextSecondary}},"Last run: "+data.lastRunBy+" • "+data.lastRunWhen+" • Late claims "+(data.lateClaims?"included":"not included"))),
-data.statusTone==="error"?overduePill():StatusPill(data.statusLabel,data.statusTone));
-/* Overdue periods get a nudge under the figures – every month is reviewed, so the likely intent
-   is that the period is finished. Same action as the badge's hover card. */
-var noticeRow=data.statusTone==="error"?h("div",{style:{padding:"20px 24px 0"}},
+/* ── Period cards ────────────────────────────────────────────────────────────
+   One data shape covers every period on this page. `kind` is "filing" (a VAT
+   quarter, which carries month rows) or "custom" (a custom-date run: no months,
+   and deletable). `status` drives the pill and which actions the card offers,
+   and each month is not_run | findings | done | unavailable. */
+function periodPill(status){var M={not_started:["Not started","neutral"],in_progress:["In progress","info"],upcoming:["Upcoming","neutral"],done:["Done","success"],skipped:["Skipped","warning"]};var c=M[status]||M.not_started;return StatusPill(c[0],c[1]);}
+function periodTitle(p){return (p.kind==="custom"?"Custom dates: ":"VAT period: ")+p.periodLabel;}
+function findingsLabel(p){return p.findingsResolved+" / "+p.findingsTotal+" resolved";}
+function runMeta(p){return (p.partial?"Partial review: ":"Last run: ")+p.runBy+" • "+p.runWhen+" • Late claims "+(p.lateClaims?"included":"not included");}
+function TrashIc(){return h("svg",{width:18,height:18,viewBox:"0 0 20 20",fill:"none",style:{flexShrink:0}},h("path",{d:"M3.75 5.5h12.5M8.125 5.5V4.25a.75.75 0 0 1 .75-.75h2.25a.75.75 0 0 1 .75.75V5.5M5.5 5.5l.6 9.5a1.5 1.5 0 0 0 1.5 1.4h4.8a1.5 1.5 0 0 0 1.5-1.4l.6-9.5M8.5 8.5v5M11.5 8.5v5",stroke:T.colorError,strokeWidth:"1.25",strokeLinecap:"round",strokeLinejoin:"round"}));}
+function deleteBtn(p,size){if(size===undefined)size=40;
+return h("button",{key:"del",onClick:function(){askDeleteRun(p);},title:"Delete run",style:{display:"inline-flex",alignItems:"center",justifyContent:"center",height:size,width:size,boxSizing:"border-box",padding:0,border:"1px solid "+T.colorErrorBorder,borderRadius:8,background:T.colorErrorBg,cursor:"pointer"},onMouseEnter:function(e){e.currentTarget.style.filter="brightness(0.97)";},onMouseLeave:function(e){e.currentTarget.style.filter="none";}},h(TrashIc,null));}
+/* Month rows: a month is either not run (offer a monthly review), run with findings,
+   run and signed off, or not reachable yet because the month has not closed. */
+function monthRow(key,m,isFirst,onRun){
+var right;
+if(m.state==="unavailable"){right=h("span",{style:{fontSize:14,color:T.colorTextSecondary}},"Available from "+m.availableFrom+".");}
+else if(m.state==="not_run"){right=h(SecondaryButton,{onClick:onRun},h(PlayCircleIcon,{color:T.colorTextPrimary,size:16}),h("span",null,"Monthly review"));}
+else{right=h("div",{style:{display:"flex",alignItems:"center",gap:10}},
+m.state==="findings"?h("span",{style:{display:"inline-flex",alignItems:"center",padding:"3px 8px",borderRadius:6,background:T.colorErrorBg,color:T.colorError,fontSize:12,fontWeight:600,whiteSpace:"nowrap"}},m.findings+" findings"):StatusPill("Done","success"),
+h(SecondaryButton,{onClick:function(){openResultsAI();}},"Open review"));}
+return h("div",{key:key,style:{borderTop:isFirst?"none":"1px solid #E9E9EB",padding:"18px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",minHeight:40,boxSizing:"border-box"}},
+h("span",{style:{fontSize:16,fontWeight:500,color:T.colorTextPrimary}},m.label),right);}
+function monthState(p,m){return monthRuns[p.key+"|"+m.label]||m;}
+function monthsBlock(p){if(p.kind==="custom"||!p.months||!p.months.length)return null;
+return h("div",{style:{borderTop:"1px solid #E9E9EB",background:"#FAFAFA"}},
+p.months.map(function(m,i){var st=monthState(p,m);return monthRow(p.key+"-m"+i,st,i===0,function(){runMonthlyReview(p,m.label);});}));}
+/* In-card notice, tight banner style: either the results came from a partial review, or a
+   monthly review has been run since the period results were produced. Both offer a re-run. */
+function cardBanner(p){var text=null;
+if(staleResults[p.key])text="There has been a monthly review since these results were updated. Re-run to update results.";
+else if(p.partial)text="Based on partial review ("+p.partialWindow+"). Re-run to update results.";
+if(!text)return null;
+return h("div",{style:{padding:"16px 24px 0"}},
 h(Banner,{variant:"info",style:{alignItems:"center",padding:"8px 8px 8px 16px"}},
 h("span",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",gap:16,width:"100%"}},
-h("span",null,"It looks like this VAT review might be completed."),
-h(SecondaryButton,{onClick:markQ1Completed,style:{flexShrink:0,height:30,boxSizing:"border-box",padding:"0 12px",borderRadius:6,fontSize:13,background:T.colorSurfacePrimary}},"Mark as completed")))):null;
-var statsRow=h("div",{style:{padding:"24px 24px 0",display:"flex",flexWrap:"nowrap",gap:16}},
-statCol("VAT reclaim",data.reclaimAmount,data.reclaimDelta,data.reclaimDeltaTooltip),
-statCol("Lines reviewed",data.linesReviewed),
-statCol("Findings",data.findings),
-statCol("Exposure",data.exposure,null,null,exposureHint()));
-var divider=h("div",{style:{borderTop:"1px solid #ECECEC",margin:"24px 24px 0"}});
-var monthMenuItems=showMonths?[]:data.months.map(function(m){return {label:m.label,run:function(){openResultsAI();if(onAction)onAction();}};});
-var buttonsRow=h("div",{style:{padding:showMonths?"24px 24px 24px":"24px 24px",display:"flex",gap:12}},
-h(PrimaryButton,{onClick:function(){openResultsAI();if(onAction)onAction();},style:{height:40,padding:"0 16px"}},"Open review"),
-h(SecondaryButton,{onClick:function(){openVATReport();if(onAction)onAction();},style:{height:40,padding:"0 16px 0 12px",gap:8}},h(NotesIc,null),h("span",null,"VAT report")),
-periodKebab(data.key,monthMenuItems,undefined,data.periodLabel));
-var monthsBlock=showMonths?h("div",{style:{borderTop:"1px solid #E9E9EB",background:"#FAFAFA"}},
-data.months.map(function(m,i){return monthRow(data.key+"-m"+i,m.label,m.done,i===0);})):null;
-return h("div",{key:data.key,style:{border:"1px solid #E9E9EB",borderRadius:16,background:T.colorSurfacePrimary,overflow:"hidden"}},
-headerRow,statsRow,noticeRow,divider,buttonsRow,monthsBlock);}
-/* First-time-use state for the current period: no run yet, so none of the stats/last-run/
-   Open review/VAT report/kebab UI applies – just the period, a "Not started" pill, and a
-   single action that launches the workflow straight into the late-claims question. */
-function notStartedCard(data,showMonths){
-var monthsBlock=showMonths?h("div",{style:{borderTop:"1px solid #E9E9EB",background:"#FAFAFA"}},
-data.months.map(function(m,i){return monthRow(data.key+"-m"+i,m.label,m.done,i===0);})):null;
-return h("div",{key:data.key,style:{border:"1px solid #E9E9EB",borderRadius:16,background:T.colorSurfacePrimary,overflow:"hidden"}},
+h("span",null,text),
+h(SecondaryButton,{onClick:function(){setRerunPeriod(p.periodLabel);setRerunOpen(true);},style:{flexShrink:0,height:30,boxSizing:"border-box",padding:"0 12px",borderRadius:6,fontSize:13,background:T.colorSurfacePrimary}},"Re-run"))));}
+/* No run yet. Same shape for the filing period (Run review, and a kebab offering to skip it)
+   and for the next period, where only a partial review of the closed part is available. */
+function noRunCard(p){var upcoming=p.status==="upcoming";
+return h("div",{key:p.key,style:{border:"1px solid #E9E9EB",borderRadius:16,background:T.colorSurfacePrimary,overflow:"hidden"}},
 h("div",{style:{padding:24,display:"flex",flexDirection:"column",gap:16}},
 h("div",{style:{display:"flex",flexDirection:"column",gap:4}},
 h("div",{style:{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:16}},
-h("span",{style:{fontSize:20,lineHeight:"28px",fontWeight:500,color:T.colorTextPrimary,letterSpacing:"0.2px"}},"VAT period: "+data.periodLabel),
-StatusPill("Not started","neutral")),
-h("p",{style:{margin:0,fontSize:14,color:T.colorTextSecondary,lineHeight:"22px"}},"Run workflow to review, resolve, and finalise this VAT Review.")),
-h(PrimaryButton,{onClick:function(){setPeriodStarted(true);runFullWorkflow(data.periodLabel);},style:{height:40,padding:"0 16px",alignSelf:"flex-start"}},h(PlayCircleIcon,{color:T.colorSurfacePrimary,size:18}),h("span",null,"Run review"))),
-monthsBlock);}
-function completedReviewCard(data,onAction){
-var monthMenuItems=data.months.map(function(m){return {label:m.label,run:function(){openResultsAI();if(onAction)onAction();}};});
-return h("div",{key:data.key,style:{border:"1px solid #E9E9EB",borderRadius:16,background:T.colorSurfacePrimary,padding:24,display:"flex",alignItems:"center",justifyContent:"space-between",gap:16}},
+h("span",{style:{fontSize:20,lineHeight:"28px",fontWeight:500,color:T.colorTextPrimary,letterSpacing:"0.2px"}},periodTitle(p)),
+periodPill(p.status)),
+h("p",{style:{margin:0,fontSize:14,color:T.colorTextSecondary,lineHeight:"22px"}},upcoming?("Partial review available ("+p.partialWindow+")."):"Run to review, resolve, and finalise this VAT period.")),
+h("div",{style:{display:"flex",alignItems:"center",gap:12}},
+h(PrimaryButton,{onClick:function(){upcoming?runPartialReview(p):runFilingReview(p);},style:{height:40,padding:"0 16px"}},h(PlayCircleIcon,{color:T.colorSurfacePrimary,size:18}),h("span",null,upcoming?"Run partial review":"Run review")),
+upcoming?null:periodKebab(p.key,[{label:"Skip review",run:function(){askSkipPeriod(p);}}],undefined,p,true))),
+monthsBlock(p));}
+/* A period with results: figures, the notice if the results are behind, and the review actions.
+   Custom-date runs use the same card without month rows, plus a destructive delete. */
+function resultsCard(p){
+var headerRow=h("div",{style:{padding:"24px 24px 0",display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:16}},
+h("div",{style:{display:"flex",flexDirection:"column",gap:4}},
+h("span",{style:{fontSize:20,lineHeight:"28px",fontWeight:500,color:T.colorTextPrimary,letterSpacing:"0.2px"}},periodTitle(p)),
+h("span",{style:{fontSize:14,color:T.colorTextSecondary}},runMeta(p))),
+periodPill(p.status));
+var statsRow=h("div",{style:{padding:"24px 24px 0",display:"flex",flexWrap:"nowrap",gap:16}},
+statCol("VAT reclaim (Box 5)",p.reclaimAmount,p.reclaimDelta,p.reclaimDeltaTooltip),
+statCol("Lines reviewed",p.linesReviewed),
+statCol("Findings",findingsLabel(p)),
+statCol("Exposure",p.exposure,null,null,exposureHint()));
+var buttonsRow=h("div",{style:{padding:"24px 24px",display:"flex",alignItems:"center",gap:12}},
+h(PrimaryButton,{onClick:function(){openResultsAI();},style:{height:40,padding:"0 16px"}},"Open review"),
+h(SecondaryButton,{onClick:function(){openVATReport();},style:{height:40,padding:"0 16px 0 12px",gap:8}},h(NotesIc,null),h("span",null,"VAT report")),
+periodKebab(p.key,[],undefined,p),
+p.kind==="custom"?h("div",{style:{marginLeft:"auto"}},deleteBtn(p)):null);
+return h("div",{key:p.key,style:{border:"1px solid #E9E9EB",borderRadius:16,background:T.colorSurfacePrimary,overflow:"hidden"}},
+headerRow,cardBanner(p),statsRow,
+h("div",{style:{borderTop:"1px solid #ECECEC",margin:"24px 24px 0"}}),
+buttonsRow,monthsBlock(p));}
+function periodBlock(p){return p.runBy?resultsCard(p):noRunCard(p);}
+/* Compact row under Completed reviews. A signed-off review keeps its headline figure and opens;
+   a skipped one says so and offers to re-open it. */
+function completedRow(p){var skipped=p.status==="skipped";
+return h("div",{key:p.key,style:{border:"1px solid #E9E9EB",borderRadius:16,background:T.colorSurfacePrimary,padding:24,display:"flex",alignItems:"center",justifyContent:"space-between",gap:16}},
 h("div",{style:{display:"flex",flexDirection:"column",gap:4,minWidth:0}},
-h("span",{style:{fontSize:16,fontWeight:500,color:T.colorTextPrimary}},"VAT period: "+data.periodLabel),
-h("span",{style:{fontSize:14,lineHeight:"22px",color:T.colorTextSecondary,whiteSpace:"nowrap"}},"Reclaim: "+data.reclaimAmount+" • "+data.lastRunWhen+" • Late claims "+(data.lateClaims?"included":"not included"))),
+h("span",{style:{fontSize:16,fontWeight:500,color:T.colorTextPrimary}},periodTitle(p)),
+h("span",{style:{fontSize:14,lineHeight:"22px",color:T.colorTextSecondary,whiteSpace:"nowrap"}},
+skipped?"Skipped VAT review":("VAT reclaim (Box 5): "+p.reclaimAmount+" • "+p.runWhen+" • Late claims "+(p.lateClaims?"included":"not included")))),
 h("div",{style:{display:"flex",alignItems:"center",gap:12,flexShrink:0}},
-StatusPill(data.statusLabel,data.statusTone),
-h(SecondaryButton,{onClick:function(){openResultsAI();if(onAction)onAction();}},"Open review"),
-periodKebab(data.key,monthMenuItems,36,data.periodLabel)));}
-var CURRENT_PERIOD={key:"q2-2026",periodLabel:"Apr 26 – Jun 26",statusLabel:"In progress",statusTone:"info",
-lastRunBy:"Laura Bennett",lastRunWhen:"30 Jul 26, 1.34pm",lateClaims:true,
-reclaimAmount:"£2,956.45",reclaimDelta:"+£431.10",reclaimDeltaTooltip:"Compared to the previous period (+17.1%)",linesReviewed:"35,803",findings:"17",exposure:"£1,728.67",unconfirmed:"£650.50",netImpact:"£1,200.45",
-months:[{label:"June 2026",done:false},{label:"May 2026",done:true},{label:"April 2026",done:true}]};
-/* Jan–Mar 26 sits alongside the current period at the top of the landing page rather than in
-   Completed reviews: the filing deadline has passed with March still unreviewed, so it carries
-   an "Overdue" pill instead of a status. */
-var OVERDUE_PERIOD={key:"q1-2026",periodLabel:"Jan 26 – Mar 26",statusLabel:"Overdue",statusTone:"error",
-lastRunBy:"Laura Bennett",lastRunWhen:"2 Apr 26, 9.14am",lateClaims:false,
-reclaimAmount:"£1,180.20",reclaimDelta:null,linesReviewed:"28,410",findings:"19",exposure:"£692.15",unconfirmed:"£245.80",netImpact:"£580.20",
-months:[{label:"March 2026",done:true},{label:"February 2026",done:true},{label:"January 2026",done:true}]};
-var COMPLETED_PERIODS=[
-{key:"q4-2025",periodLabel:"Oct 25 – Dec 25",statusLabel:"Completed",statusTone:"success",
-lastRunBy:"Laura Bennett",lastRunWhen:"3 Jan 26, 10.05am",lateClaims:false,
-reclaimAmount:"£2,410.35",reclaimDelta:null,linesReviewed:"31,204",findings:"22",exposure:"£1,102.80",unconfirmed:"£410.90",netImpact:"£945.60",
-months:[{label:"December 2025",done:true},{label:"November 2025",done:true},{label:"October 2025",done:true}]},
-{key:"q3-2025",periodLabel:"Jul 25 – Sep 25",statusLabel:"Completed",statusTone:"success",
-lastRunBy:"Owen Fairhurst",lastRunWhen:"4 Oct 25, 2.42pm",lateClaims:false,
-reclaimAmount:"£940.75",reclaimDelta:null,linesReviewed:"24,988",findings:"16",exposure:"£455.60",unconfirmed:"£172.30",netImpact:"£389.20",
-months:[{label:"September 2025",done:true},{label:"August 2025",done:true},{label:"July 2025",done:true}]},
-{key:"q2-2025",periodLabel:"Apr 25 – Jun 25",statusLabel:"Completed",statusTone:"success",
-lastRunBy:"Laura Bennett",lastRunWhen:"6 Jul 25, 11.20am",lateClaims:true,
-reclaimAmount:"£1,845.90",reclaimDelta:null,linesReviewed:"29,650",findings:"14",exposure:"£803.40",unconfirmed:"£312.60",netImpact:"£670.50",
-months:[{label:"June 2025",done:true},{label:"May 2025",done:true},{label:"April 2025",done:true}]},
-{key:"q1-2025",periodLabel:"Jan 25 – Mar 25",statusLabel:"Completed",statusTone:"success",
-lastRunBy:"Priya Shah",lastRunWhen:"3 Apr 25, 3.55pm",lateClaims:false,
-reclaimAmount:"£1,320.55",reclaimDelta:null,linesReviewed:"26,780",findings:"12",exposure:"£560.25",unconfirmed:"£213.70",netImpact:"£478.40",
-months:[{label:"March 2025",done:true},{label:"February 2025",done:true},{label:"January 2025",done:true}]},
-{key:"q4-2024",periodLabel:"Oct 24 – Dec 24",statusLabel:"Completed",statusTone:"success",
-lastRunBy:"Owen Fairhurst",lastRunWhen:"5 Jan 25, 9.40am",lateClaims:false,
-reclaimAmount:"£2,105.80",reclaimDelta:null,linesReviewed:"30,912",findings:"20",exposure:"£980.15",unconfirmed:"£375.80",netImpact:"£830.20",
-months:[{label:"December 2024",done:true},{label:"November 2024",done:true},{label:"October 2024",done:true}]},
-{key:"q1-2024",periodLabel:"Jan 24 – Mar 24",statusLabel:"Completed",statusTone:"success",
-lastRunBy:"Priya Shah",lastRunWhen:"1 Apr 24, 2.05pm",lateClaims:true,
-reclaimAmount:"£1,562.30",reclaimDelta:null,linesReviewed:"25,340",findings:"11",exposure:"£611.90",unconfirmed:"£240.50",netImpact:"£525.30",
-months:[{label:"March 2024",done:true},{label:"February 2024",done:true},{label:"January 2024",done:true}]}];
-var HISTORIC_RUNS=[
-{key:"h-q1-2026",periodLabel:"Jan 26 – Mar 26",lastRunBy:"Laura Bennett",lastRunWhen:"2 Apr 26, 9.14am",lateClaims:false},
-{key:"h-q4-2025",periodLabel:"Oct 25 – Dec 25",lastRunBy:"Laura Bennett",lastRunWhen:"3 Jan 26, 10.05am",lateClaims:false},
-{key:"h-q3-2025",periodLabel:"Jul 25 – Sep 25",lastRunBy:"Owen Fairhurst",lastRunWhen:"4 Oct 25, 2.42pm",lateClaims:false},
-{key:"h-q2-2025",periodLabel:"Apr 25 – Jun 25",lastRunBy:"Laura Bennett",lastRunWhen:"6 Jul 25, 11.20am",lateClaims:true},
-{key:"h-q1-2025",periodLabel:"Jan 25 – Mar 25",lastRunBy:"Priya Shah",lastRunWhen:"3 Apr 25, 3.55pm",lateClaims:false},
-{key:"h-q4-2024",periodLabel:"Oct 24 – Dec 24",lastRunBy:"Owen Fairhurst",lastRunWhen:"5 Jan 25, 9.40am",lateClaims:false},
-{key:"h-q3-2024",periodLabel:"Jul 24 – Sep 24",lastRunBy:"Marcus Webb",lastRunWhen:"2 Oct 24, 1.15pm",lateClaims:false},
-{key:"h-q2-2024",periodLabel:"Apr 24 – Jun 24",lastRunBy:"Laura Bennett",lastRunWhen:"4 Jul 24, 10.30am",lateClaims:false},
-{key:"h-q1-2024",periodLabel:"Jan 24 – Mar 24",lastRunBy:"Priya Shah",lastRunWhen:"1 Apr 24, 2.05pm",lateClaims:true},
-{key:"h-q4-2023",periodLabel:"Oct 23 – Dec 23",lastRunBy:"Owen Fairhurst",lastRunWhen:"4 Jan 24, 9.55am",lateClaims:false},
-{key:"h-q3-2023",periodLabel:"Jul 23 – Sep 23",lastRunBy:"Marcus Webb",lastRunWhen:"3 Oct 23, 11.45am",lateClaims:false},
-{key:"h-q2-2023",periodLabel:"Apr 23 – Jun 23",lastRunBy:"Laura Bennett",lastRunWhen:"5 Jul 23, 3.20pm",lateClaims:false},
-{key:"h-q1-2023",periodLabel:"Jan 23 – Mar 23",lastRunBy:"Priya Shah",lastRunWhen:"4 Apr 23, 9.10am",lateClaims:false},
-{key:"h-q4-2022",periodLabel:"Oct 22 – Dec 22",lastRunBy:"Owen Fairhurst",lastRunWhen:"6 Jan 23, 1.30pm",lateClaims:true},
-{key:"h-q3-2022",periodLabel:"Jul 22 – Sep 22",lastRunBy:"Marcus Webb",lastRunWhen:"4 Oct 22, 10.05am",lateClaims:false},
-{key:"h-q2-2022",periodLabel:"Apr 22 – Jun 22",lastRunBy:"Laura Bennett",lastRunWhen:"6 Jul 22, 2.50pm",lateClaims:false},
-{key:"h-q1-2022",periodLabel:"Jan 22 – Mar 22",lastRunBy:"Priya Shah",lastRunWhen:"5 Apr 22, 9.35am",lateClaims:false},
-{key:"h-q4-2021",periodLabel:"Oct 21 – Dec 21",lastRunBy:"Owen Fairhurst",lastRunWhen:"4 Jan 22, 11.15am",lateClaims:false},
-{key:"h-q3-2021",periodLabel:"Jul 21 – Sep 21",lastRunBy:"Marcus Webb",lastRunWhen:"5 Oct 21, 3.00pm",lateClaims:true},
-{key:"h-q2-2021",periodLabel:"Apr 21 – Jun 21",lastRunBy:"Laura Bennett",lastRunWhen:"6 Jul 21, 9.25am",lateClaims:false},
-{key:"h-q1-2021",periodLabel:"Jan 21 – Mar 21",lastRunBy:"Priya Shah",lastRunWhen:"5 Apr 21, 1.40pm",lateClaims:false},
-{key:"h-q4-2020",periodLabel:"Oct 20 – Dec 20",lastRunBy:"Owen Fairhurst",lastRunWhen:"4 Jan 21, 10.50am",lateClaims:false},
-{key:"h-q3-2020",periodLabel:"Jul 20 – Sep 20",lastRunBy:"Marcus Webb",lastRunWhen:"5 Oct 20, 2.15pm",lateClaims:false},
-{key:"h-q2-2020",periodLabel:"Apr 20 – Jun 20",lastRunBy:"Laura Bennett",lastRunWhen:"3 Jul 20, 9.00am",lateClaims:true},
-{key:"h-q1-2020",periodLabel:"Jan 20 – Mar 20",lastRunBy:"Priya Shah",lastRunWhen:"2 Apr 20, 11.55am",lateClaims:false},
-{key:"h-q4-2019",periodLabel:"Oct 19 – Dec 19",lastRunBy:"Owen Fairhurst",lastRunWhen:"6 Jan 20, 3.10pm",lateClaims:false},
-{key:"h-q3-2019",periodLabel:"Jul 19 – Sep 19",lastRunBy:"Marcus Webb",lastRunWhen:"4 Oct 19, 9.45am",lateClaims:false},
-{key:"h-q2-2019",periodLabel:"Apr 19 – Jun 19",lastRunBy:"Laura Bennett",lastRunWhen:"5 Jul 19, 1.20pm",lateClaims:false},
-{key:"h-q1-2019",periodLabel:"Jan 19 – Mar 19",lastRunBy:"Priya Shah",lastRunWhen:"3 Apr 19, 10.35am",lateClaims:true},
-{key:"h-q4-2018",periodLabel:"Oct 18 – Dec 18",lastRunBy:"Owen Fairhurst",lastRunWhen:"4 Jan 19, 9.05am",lateClaims:false}];
+periodPill(p.status),
+skipped
+?h(SecondaryButton,{onClick:function(){reopenPeriod(p);}},"Re-open")
+:h(SecondaryButton,{onClick:function(){openResultsAI();}},"Open review"),
+(!skipped&&p.kind==="custom")?deleteBtn(p,36):null));}
+/* ── Landing data ── */
+var CURRENT_PERIOD={key:"q2-2026",kind:"filing",periodLabel:"Apr 26 – Jun 26",
+runBy:"Laura Bennett",runWhen:"30 Jul 26, 1.34pm",lateClaims:true,
+reclaimAmount:"£2,956.45",reclaimDelta:"+£431.10",reclaimDeltaTooltip:"Compared to the previous period (+17.1%)",
+linesReviewed:"35,803",findingsResolved:10,findingsTotal:17,exposure:"£1,728.67",unconfirmed:"£650.50",netImpact:"£1,200.45",
+months:[{label:"April 2026",state:"done"},{label:"May 2026",state:"findings",findings:7},{label:"June 2026",state:"not_run"}]};
+/* The quarter after the filing one. Only the closed part can be reviewed, so it offers a
+   partial review and its later months are not reachable yet. */
+var UPCOMING_PERIOD={key:"q3-2026",kind:"filing",periodLabel:"Jul 26 – Sep 26",status:"upcoming",
+partialWindow:"01 Jul – 07 Aug",
+runBy:"Laura Bennett",runWhen:"30 Jul 26, 1.34pm",lateClaims:true,partial:true,
+reclaimAmount:"£2,956.45",reclaimDelta:"+£431.10",reclaimDeltaTooltip:"Compared to the previous period (+17.1%)",
+linesReviewed:"35,803",findingsResolved:12,findingsTotal:17,exposure:"£1,728.67",unconfirmed:"£650.50",netImpact:"£1,200.45",
+months:[{label:"July 2026",state:"not_run"},{label:"August 2026",state:"unavailable",availableFrom:"01 September 2026"},{label:"September 2026",state:"unavailable",availableFrom:"01 October 2026"}]};
+function completedSeed(){return [
+{key:"q1-2026",kind:"filing",periodLabel:"Jan 26 – Mar 26",status:"done",runBy:"Laura Bennett",runWhen:"2 Apr 26, 9.14am",lateClaims:false,reclaimAmount:"£1,180.20",linesReviewed:"28,410",findingsResolved:19,findingsTotal:19,exposure:"£692.15"},
+{key:"c-2026-q1",kind:"custom",periodLabel:"01 Jan 26 – 31 Mar 26",status:"done",runBy:"Laura Bennett",runWhen:"12 Apr 26, 4.20pm",lateClaims:true,reclaimAmount:"£1,402.60",linesReviewed:"9,884",findingsResolved:6,findingsTotal:6,exposure:"£318.40"},
+{key:"q4-2025",kind:"filing",periodLabel:"Oct 25 – Dec 25",status:"done",runBy:"Laura Bennett",runWhen:"3 Jan 26, 10.05am",lateClaims:false,reclaimAmount:"£2,410.35",linesReviewed:"31,204",findingsResolved:22,findingsTotal:22,exposure:"£1,102.80"},
+{key:"q3-2025",kind:"filing",periodLabel:"Jul 25 – Sep 25",status:"done",runBy:"Owen Fairhurst",runWhen:"4 Oct 25, 2.42pm",lateClaims:false,reclaimAmount:"£940.75",linesReviewed:"24,988",findingsResolved:16,findingsTotal:16,exposure:"£455.60"},
+{key:"q2-2025",kind:"filing",periodLabel:"Apr 25 – Jun 25",status:"done",runBy:"Laura Bennett",runWhen:"6 Jul 25, 11.20am",lateClaims:true,reclaimAmount:"£1,845.90",linesReviewed:"29,650",findingsResolved:14,findingsTotal:14,exposure:"£803.40"},
+{key:"q1-2025",kind:"filing",periodLabel:"Jan 25 – Mar 25",status:"skipped"},
+{key:"q4-2024",kind:"filing",periodLabel:"Oct 24 – Dec 24",status:"done",runBy:"Owen Fairhurst",runWhen:"5 Jan 25, 9.40am",lateClaims:false,reclaimAmount:"£2,105.80",linesReviewed:"30,912",findingsResolved:20,findingsTotal:20,exposure:"£980.15"}];}
+/* ── Landing actions ── */
+function runFilingReview(p){setPeriodStarted(true);runFullWorkflow(p.periodLabel);}
+function runPartialReview(p){setUpcomingPartial(true);runFullWorkflow(p.periodLabel);}
+/* A monthly review inside a period leaves that month with findings, and puts the period's own
+   results behind – hence the notice on the period card offering a re-run. */
+function runMonthlyReview(p,label){var key=p.key+"|"+label;
+setMonthRuns(function(prev){var n=Object.assign({},prev);n[key]={label:label,state:"findings",findings:7};return n;});
+var hasResults=(p.key===CURRENT_PERIOD.key&&periodStarted)||(p.key===UPCOMING_PERIOD.key&&upcomingPartial);
+if(hasResults)setStaleResults(function(prev){var n=Object.assign({},prev);n[p.key]=true;return n;});
+runFullWorkflow(label);}
+function askSkipPeriod(p){setConfirmAsk({title:"Skip this VAT review?",body:"“"+periodTitle(p)+"” moves to Completed reviews as skipped. You can re-open it at any time.",label:"Skip review",tone:"primary",run:function(){skipPeriod(p);}});}
+function skipPeriod(p){setFilingOutcome("skipped");setCompleted(function(prev){return [Object.assign({},p,{status:"skipped"})].concat(prev);});setToast(periodTitle(p)+" skipped");}
+function reopenPeriod(p){setCompleted(function(prev){return prev.filter(function(x){return x.key!==p.key;});});
+if(p.key===CURRENT_PERIOD.key){setFilingOutcome(null);setPeriodStarted(false);}
+setToast(periodTitle(p)+" re-opened");}
+function markPeriodDone(p){setFilingOutcome("done");setCompleted(function(prev){return [Object.assign({},p,{status:"done"})].concat(prev);});}
+function askDeleteRun(p){setConfirmAsk({title:"Delete this run?",body:"“"+periodTitle(p)+"” and its findings are removed from Mimo. This cannot be undone.",label:"Delete run",tone:"danger",run:function(){deleteRun(p);}});}
+function deleteRun(p){setCustomRuns(function(prev){return prev.filter(function(x){return x.key!==p.key;});});
+setCompleted(function(prev){return prev.filter(function(x){return x.key!==p.key;});});
+setToast("Run deleted");}
+/* Confirm step for the two destructive-ish actions: skipping a review and deleting a run. */
+function confirmModal(){var c=confirmAsk;if(!c)return null;var danger=c.tone==="danger";
+return h(React.Fragment,null,
+h("div",{onClick:function(){setConfirmAsk(null);},style:{position:"fixed",inset:0,background:"rgba(0,0,0,0.35)",zIndex:300}}),
+h("div",{style:{position:"fixed",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:440,maxWidth:"90vw",background:T.colorSurfacePrimary,borderRadius:16,boxShadow:"0 24px 48px rgba(0,0,0,0.18)",padding:24,zIndex:301,display:"flex",flexDirection:"column",gap:12}},
+h("span",{style:{fontSize:18,fontWeight:500,color:T.colorTextPrimary,lineHeight:"26px"}},c.title),
+h("p",{style:{margin:0,fontSize:14,color:T.colorTextSecondary,lineHeight:"22px"}},c.body),
+h("div",{style:{display:"flex",justifyContent:"flex-end",gap:8,marginTop:12}},
+h(SecondaryButton,{onClick:function(){setConfirmAsk(null);},style:{height:40,padding:"0 16px"}},"Cancel"),
+danger
+?h("button",{onClick:function(){setConfirmAsk(null);c.run();},style:{height:40,padding:"0 16px",border:"none",borderRadius:8,background:T.colorError,color:"#FFFFFF",fontSize:14,fontWeight:500,cursor:"pointer",fontFamily:"inherit"}},c.label)
+:h(PrimaryButton,{onClick:function(){setConfirmAsk(null);c.run();},style:{height:40,padding:"0 16px"}},c.label))));}
+/* ── Landing page ── */
+function onboardingCard(){return h("div",{style:{border:"1px solid #E9E9EB",borderRadius:16,background:T.colorSurfacePrimary,padding:24,display:"flex",flexDirection:"column",gap:12,position:"relative"}},
+h("button",{onClick:function(){setOnbDismissed(true);},title:"Dismiss",style:{position:"absolute",top:16,right:16,width:28,height:28,borderRadius:"50%",border:"none",background:"transparent",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:T.colorTextPrimary},onMouseEnter:function(e){e.currentTarget.style.background="#F5F5F5";},onMouseLeave:function(e){e.currentTarget.style.background="transparent";}},h(CloseIc,null)),
+h("span",{style:{alignSelf:"flex-start",display:"inline-flex",alignItems:"center",padding:"3px 8px",borderRadius:6,background:T.colorSuccessBg,color:T.colorBrandPrimary,fontSize:12,fontWeight:600}},"Get started"),
+h("div",{style:{display:"flex",flexDirection:"column",gap:4}},
+h("span",{style:{fontSize:20,lineHeight:"28px",fontWeight:500,color:T.colorTextPrimary,letterSpacing:"0.2px"}},"Mimo VAT Review"),
+h("p",{style:{margin:0,fontSize:14,color:T.colorTextSecondary,lineHeight:"22px",maxWidth:640}},"Learn how to review, resolve, and finalise a VAT Review in Mimo, including exporting the review findings for compliance or audit purposes.")),
+h(SecondaryButton,{onClick:function(){setToast("Opening training material");},style:{alignSelf:"flex-start",height:40,padding:"0 16px"}},"Go to training material"));}
 function periodsLanding(){
+var filing=Object.assign({},CURRENT_PERIOD,{status:periodStarted?"in_progress":"not_started"});
+/* before the period has been run there are no per-month results either */
+if(!periodStarted){filing.runBy=null;filing.months=filing.months.map(function(m){return {label:m.label,state:"not_run"};});}
+else if(lastLate!==null){filing.lateClaims=lastLate;}
+var upcoming=Object.assign({},UPCOMING_PERIOD);
+if(!upcomingPartial){upcoming.runBy=null;}
+else if(lastLate!==null){upcoming.lateClaims=lastLate;}
 return h("div",{style:{display:"flex",flexDirection:"column",gap:16,maxWidth:910,width:"100%"}},
-periodStarted?quarterCard(CURRENT_PERIOD):notStartedCard(CURRENT_PERIOD,true),
-q1Done?null:quarterCard(OVERDUE_PERIOD),
+(!onbDismissed&&!periodStarted)?onboardingCard():null,
+filingOutcome?null:periodBlock(filing),
+periodBlock(upcoming),
+customRuns.map(function(c){return periodBlock(c);}),
 h("div",{style:{borderTop:"1px solid #ECECEC",marginTop:24}}),
 h("span",{style:{fontSize:16,fontWeight:500,color:T.colorTextPrimary,marginTop:32}},"Completed reviews"),
-(q1Done?[Object.assign({},OVERDUE_PERIOD,{statusLabel:"Completed",statusTone:"success"})]:[]).concat(COMPLETED_PERIODS).map(function(o){return completedReviewCard(o);}));
+completed.length
+?completed.map(function(o){return completedRow(o);})
+:h("span",{style:{fontSize:16,color:T.colorTextSecondary}},"There are no completed reviews in Mimo yet."));
 }
-function historicPanel(){function openFromHistoric(){openResultsAI();setHistoricOpen(false);}
-var rows=h("div",{style:{border:"1px solid #E9E9EB",borderRadius:10,overflow:"hidden",background:T.colorSurfacePrimary}},
-HISTORIC_RUNS.map(function(o,i){return h("div",{key:o.key,style:{borderTop:i===0?"none":"1px solid #ECECEC",padding:"14px 16px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}},
-h("div",{style:{display:"flex",flexDirection:"column",gap:2,minWidth:0}},
-h("span",{style:{fontSize:14,fontWeight:500,color:T.colorTextPrimary}},o.periodLabel),
-h("span",{style:{fontSize:12,color:T.colorTextSecondary,whiteSpace:"nowrap"}},o.lastRunBy+" • "+o.lastRunWhen+" • Late claims "+(o.lateClaims?"included":"not included"))),
-h(SecondaryButton,{onClick:openFromHistoric,style:{height:32,padding:"0 12px",fontSize:13,flexShrink:0}},"Open review"));}));
-return h(React.Fragment,null,
-h("div",{onClick:function(){setHistoricOpen(false);},style:{position:"fixed",inset:0,background:"rgba(0,0,0,0.35)",zIndex:200}}),
-h("div",{style:{position:"fixed",top:0,right:0,bottom:0,width:560,background:T.colorSurfacePrimary,borderLeft:"1px solid #E9E9EB",boxShadow:"-8px 0 24px rgba(0,0,0,0.10)",zIndex:201,display:"flex",flexDirection:"column"}},
-h("div",{style:{height:56,padding:"0 20px",display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"1px solid #ECECEC",flexShrink:0}},
-h("span",{style:{fontSize:16,fontWeight:600,color:T.colorTextPrimary}},"Historic runs"),
-h("button",{onClick:function(){setHistoricOpen(false);},style:{border:"none",background:"transparent",cursor:"pointer",width:28,height:28,display:"flex",alignItems:"center",justifyContent:"center",color:T.colorTextSecondary,borderRadius:6,fontSize:16},onMouseEnter:function(e){e.currentTarget.style.background="#F5F5F5";},onMouseLeave:function(e){e.currentTarget.style.background="transparent";}},"✕")),
-h("div",{style:{flex:1,overflowY:"auto",padding:16}},rows)));}
 function actionCard(c,i){var cmts=(c.comments||[]).concat(cardComments[c.key]||[]);var open=!!expCards[c.key];var reviewed=!!reviewedCards[c.key];var B="M14 7.66669C14.0023 8.5466 13.7967 9.41461 13.4 10.2C12.9296 11.1412 12.2065 11.9328 11.3116 12.4862C10.4168 13.0396 9.3855 13.3329 8.33337 13.3334C7.45346 13.3356 6.58545 13.1301 5.80004 12.7334L2 14L3.26667 10.2C2.86995 9.41461 2.66441 8.5466 2.66671 7.66669C2.66714 6.61456 2.96041 5.58325 3.51385 4.6884C4.06729 3.79355 4.85893 3.07041 5.80004 2.60002C6.58545 2.2033 7.45346 1.99776 8.33337 2.00002H8.66671C10.0562 2.07668 11.3687 2.66319 12.3528 3.64726C13.3368 4.63132 13.9234 5.94388 14 7.33335V7.66669Z";
 return h("div",{key:i,style:{background:T.colorSurfacePrimary,border:"1px solid #DBDBDB",borderRadius:16,overflow:"hidden"}},h("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",gap:24,padding:"20px 24px"}},h("div",{style:{display:"flex",flexDirection:"column",gap:4,flex:1,minWidth:0}},h("span",{style:{fontSize:16,fontWeight:500,color:T.colorTextPrimary}},c.title),h("span",{style:{fontSize:14,color:T.colorTextSecondary}},c.desc)),h("div",{style:{display:"flex",alignItems:"center",gap:12,marginLeft:24,flexShrink:0}},c.actions.map(function(a,j){return h(PresetBtn,{key:j,label:a.label,play:a.play,count:a.count,tableIcon:a.tableIcon,gridIcon:a.gridIcon,onClick:function(){if(a.open==="vatreturn"){setVatRec(true);}else if(a.open){openModal(a.open);}else if(a.results){openResults();}}});}),h("div",{onClick:function(){setExpCards(function(p){var n=Object.assign({},p);n[c.key]=!n[c.key];return n;});},style:{display:"flex",alignItems:"center",gap:10,cursor:"pointer",paddingLeft:4}},h("span",{style:{position:"relative",display:"inline-flex",flexShrink:0}},h("svg",{width:16,height:16,viewBox:"0 0 16 16",fill:"none"},h("path",{d:B,stroke:cmts.length?T.colorSuccess:T.colorTextSecondary,strokeWidth:"1.25",strokeLinecap:"round",strokeLinejoin:"round"})),cmts.length?h("span",{style:{position:"absolute",top:-1,right:-1,width:6,height:6,borderRadius:"50%",background:T.colorSuccess}}):null),h("svg",{width:16,height:16,viewBox:"0 0 16 16",fill:"none",style:{flexShrink:0,transition:"transform 0.2s",transform:open?"rotate(180deg)":"rotate(0deg)"}},h("path",{d:"M4 6L8 10L12 6",stroke:T.colorTextSecondary,strokeWidth:"1.25",strokeLinecap:"round",strokeLinejoin:"round"}))))),open?h("div",{style:{borderTop:"1px solid #ECECEC",padding:"20px 24px",background:"#FBFBFB"}},h("div",{style:{border:"1px solid #ECECEC",borderRadius:12,background:"#FFFFFF",padding:"20px 24px",display:"flex",flexDirection:"column",gap:16}},h("div",{style:{fontSize:15,fontWeight:600,color:T.colorTextPrimary}},"Comments"),cmts.length?cmts.map(function(cm,ci){return h("div",{key:ci,style:{display:"flex",gap:12}},h("div",{style:{flexShrink:0,width:28,height:28,borderRadius:"50%",background:"#F0F0F0",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:600,color:"#7C7C7C"}},cm.initials),h("div",null,h("div",{style:{fontSize:14}},h("span",{style:{fontWeight:600,color:T.colorTextPrimary}},cm.name),h("span",{style:{color:T.colorTextSecondary,marginLeft:8}},cm.date)),h("div",{style:{fontSize:14,color:T.colorTextPrimary,marginTop:2,lineHeight:"20px"}},cm.text)));}):h("div",{style:{fontSize:14,color:T.colorTextSecondary}},"No comments yet."),h("div",{style:{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:12}},(!!draft[c.key+"_composing"])?h("div",{style:{flex:1,minWidth:0,display:"flex",flexDirection:"column",gap:10}},h("textarea",{autoFocus:true,value:draft[c.key]||"",onChange:function(e){var v=e.target.value;setDraft(function(p){var n=Object.assign({},p);n[c.key]=v;return n;});},placeholder:"Write a comment\u2026",rows:3,style:{width:"100%",boxSizing:"border-box",border:"1px solid "+T.colorBorderDark,borderRadius:8,padding:"10px 12px",fontSize:14,color:T.colorTextPrimary,fontFamily:"inherit",resize:"none",outline:"none",lineHeight:"20px"}}),h("div",{style:{display:"flex",gap:8}},h("button",{onClick:function(){var t=(draft[c.key]||"").trim();if(!t)return;setCardComments(function(p){var n=Object.assign({},p);n[c.key]=(n[c.key]||[]).concat([{name:"Laura Bennett",initials:"LB",date:"Just now",text:t}]);return n;});setDraft(function(p){var n=Object.assign({},p);n[c.key]="";n[c.key+"_composing"]=false;return n;});},style:{height:36,padding:"0 16px",border:"none",borderRadius:8,background:T.colorBrandPrimary,color:"#FFFFFF",fontSize:14,fontWeight:500,cursor:"pointer",fontFamily:"inherit"}},"Comment"),h("button",{onClick:function(){setDraft(function(p){var n=Object.assign({},p);n[c.key+"_composing"]=false;return n;});},style:{height:36,padding:"0 16px",border:"1px solid "+T.colorBorderDark,borderRadius:8,background:"#FFFFFF",color:T.colorTextPrimary,fontSize:14,fontWeight:500,cursor:"pointer",fontFamily:"inherit"}},"Cancel"))):h("button",{onClick:function(){setDraft(function(p){var n=Object.assign({},p);n[c.key+"_composing"]=true;return n;});},style:{display:"inline-flex",alignItems:"center",gap:8,height:36,padding:"0 14px",border:"1px solid "+T.colorBorderDark,borderRadius:8,background:"#FFFFFF",cursor:"pointer",fontSize:14,fontWeight:500,color:T.colorTextPrimary,fontFamily:"inherit"}},h("svg",{width:16,height:16,viewBox:"0 0 16 16",fill:"none"},h("path",{d:B,stroke:T.colorTextPrimary,strokeWidth:"1.25",strokeLinecap:"round",strokeLinejoin:"round"})),"Add comment"),h("div",{onClick:function(){setReviewedCards(function(p){var n=Object.assign({},p);n[c.key]=!n[c.key];return n;});},style:{display:"flex",alignItems:"center",gap:10,cursor:"pointer",userSelect:"none",flexShrink:0,paddingTop:4}},h("span",{style:{fontSize:14,fontWeight:500,color:T.colorTextPrimary}},reviewed?"Marked as reviewed":"Mark as reviewed"),h("div",{style:{width:44,height:24,borderRadius:12,background:reviewed?T.colorBrandPrimary:T.colorBorderDark,position:"relative",transition:"background 0.2s ease",flexShrink:0}},h("div",{style:{width:20,height:20,borderRadius:"50%",background:T.colorSurfacePrimary,boxShadow:"0 1px 3px rgba(0,0,0,0.15)",position:"absolute",top:2,left:reviewed?22:2,transition:"left 0.2s ease"}})))))):null);}
 var actionCards=h("div",{style:{display:"flex",flexDirection:"column",gap:16,marginTop:48}},h("p",{style:{fontSize:22,fontWeight:500,color:T.colorTextPrimary,letterSpacing:"-0.5px",margin:0}},"Workflows"),ACTION_CARDS.map(function(c,i){return actionCard(c,i);}));
@@ -2747,7 +2760,7 @@ function StepDone(){return h("svg",{width:20,height:20,viewBox:"0 0 20 20",fill:
 function StepSpin(){return h("svg",{width:20,height:20,viewBox:"0 0 20 20",fill:"none",style:{flexShrink:0,animation:"spin 0.75s linear infinite"}},h("path",{d:"M10 2A8 8 0 1 1 2 10",stroke:T.colorBrandPrimary,strokeWidth:"1.5",strokeLinecap:"round"}));}
 function StepPend(){return h("svg",{width:20,height:20,viewBox:"0 0 20 20",fill:"none",style:{flexShrink:0}},h("circle",{cx:"10",cy:"10",r:"9.25",stroke:"#E9E9EB",strokeWidth:"1.5"}));}
 function wfSteps(){if(modal==="miscoding")return [{title:"Reading transactions",duration:700},{title:"Syncing Xero",duration:800},{title:"Loading supplier rules",duration:900,subtext:"Loaded 42 supplier coding rules."},{title:"Comparing coding patterns",duration:1000,subtext:"Compared this period against historical coding."},{title:"Looking for miscodings",duration:1100,subtext:"8 potential miscodings found."},{title:"Identifying root causes",duration:900,subtext:"Supplier rule mismatches and threshold breaches flagged."},{title:"Suggesting actions",duration:700}];if(modal==="vatreturn")return [{title:"Reading VAT control accounts",duration:700},{title:"Syncing Xero",duration:800},{title:"Calculating return liability",duration:1000,subtext:"Boxes 1–9 computed for the period."},{title:"Comparing balances",duration:1000,subtext:"Control account £2,156.04 vs return £2,113.88."},{title:"Looking for variances",duration:1000,subtext:"1 residual variance found (£42.16)."},{title:"Identifying root causes",duration:900,subtext:"Timing difference on a late-posted invoice."},{title:"Suggesting actions",duration:700}];return [{title:"Reading transactions",duration:700,subtext:"Read 407 transactions for the period."},{title:"Syncing Xero",duration:800},{title:"Running VAT checks",duration:1000,subtext:"Checked output and input VAT across all codes."},{title:"Reviewing supplier coding",duration:1000,subtext:"Compared coding to historical supplier rules."},{title:"Looking for issues",duration:1100,subtext:"25 findings identified."},{title:"Identifying root causes",duration:900,subtext:"Domestic Reverse Charge and miscoding patterns flagged."},{title:"Summarising findings",duration:700}];}
-function periodCard(){return h("div",{style:{border:"1px solid #ECECEC",borderRadius:16,background:"#FFFFFF",padding:"24px",boxShadow:"0px 12px 12px rgba(0,0,0,0.04)",display:"flex",flexDirection:"column",gap:24}},h("div",{style:{fontSize:16,fontWeight:500,color:"#2A2A2A",lineHeight:"26px"}},"Which period do you want to review?"),h("div",{style:{display:"flex",flexDirection:"column",gap:16}},PERIODS.map(function(p,i){return h("div",{key:i,onClick:function(){setPeriod(p.input?"a custom period":p.label);setMarkedDone(false);},style:{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px",borderRadius:8,background:p.sel?"#E3E3E3":"#FBFBFB",cursor:"pointer",fontSize:16,fontWeight:p.sel?600:400,color:p.input?"#A5A5A5":"#2A2A2A",lineHeight:"26px"}},p.label,p.sel?h("span",{style:{color:T.colorTextThird,fontSize:14}},"↵"):null);})));}
+function periodCard(){return h("div",{style:{border:"1px solid #ECECEC",borderRadius:16,background:"#FFFFFF",padding:"24px",boxShadow:"0px 12px 12px rgba(0,0,0,0.04)",display:"flex",flexDirection:"column",gap:24}},h("div",{style:{fontSize:16,fontWeight:500,color:"#2A2A2A",lineHeight:"26px"}},"Which period do you want to review?"),h("div",{style:{display:"flex",flexDirection:"column",gap:16}},PERIODS.map(function(p,i){return h("div",{key:i,onClick:function(){setPeriod(p.input?"a custom period":p.label);setCustomFlow(!!p.input);setMarkedDone(false);},style:{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px",borderRadius:8,background:p.sel?"#E3E3E3":"#FBFBFB",cursor:"pointer",fontSize:16,fontWeight:p.sel?600:400,color:p.input?"#A5A5A5":"#2A2A2A",lineHeight:"26px"}},p.label,p.sel?h("span",{style:{color:T.colorTextThird,fontSize:14}},"↵"):null);})));}
 var PROTOTYPE_TODAY={y:2026,m:7,d:26};
 var MONTH_NAMES=["January","February","March","April","May","June","July","August","September","October","November","December"];
 function calGrid(y,m){var first=new Date(y,m,1).getDay();var days=new Date(y,m+1,0).getDate();var prevDays=new Date(y,m,0).getDate();var cells=[];for(var i=0;i<first;i++){cells.push({d:prevDays-first+1+i,cur:false});}for(var d=1;d<=days;d++){cells.push({d:d,cur:true});}var nd=1;while(cells.length%7!==0){cells.push({d:nd++,cur:false});}return cells;}
@@ -2775,7 +2788,7 @@ h("span",{style:{display:"inline-flex",padding:"0 3px",border:"1.5px solid #D549
 " by Laura Bennett")));}
 function workflowInitiatingCard(){return h("div",{style:{border:"1px solid #ECECEC",borderRadius:16,background:"#FFFFFF",padding:"24px",boxShadow:"0px 12px 12px rgba(0,0,0,0.04)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:16,minHeight:160}},h(StepSpin,null),h("div",{style:{fontSize:16,color:"#2A2A2A",lineHeight:"26px",fontWeight:500}},"Initiating workflow…"));}
 function lateClaimsLoadingCard(){return h("div",{style:{border:"1px solid #ECECEC",borderRadius:16,background:"#FFFFFF",padding:"24px",boxShadow:"0px 12px 12px rgba(0,0,0,0.04)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:16,minHeight:160}},h(StepSpin,null),h("div",{style:{fontSize:16,color:"#2A2A2A",lineHeight:"26px",fontWeight:500}},"Preparing date picker…"));}
-function dateCard(){var cells=calGrid(calYear,calMonth);var selY=filingDate?filingDate.getFullYear():null,selM=filingDate?filingDate.getMonth():null,selD=filingDate?filingDate.getDate():null;var prevPeriod=OVERDUE_PERIOD;var navBtnStyle={border:"none",background:"transparent",cursor:"pointer",color:T.colorTextSecondary,fontSize:16,padding:"4px 8px",fontFamily:"inherit"};
+function dateCard(){var cells=calGrid(calYear,calMonth);var selY=filingDate?filingDate.getFullYear():null,selM=filingDate?filingDate.getMonth():null,selD=filingDate?filingDate.getDate():null;var prevPeriod=completed[0]||{periodLabel:"the previous period"};var navBtnStyle={border:"none",background:"transparent",cursor:"pointer",color:T.colorTextSecondary,fontSize:16,padding:"4px 8px",fontFamily:"inherit"};
 return h("div",{style:{border:"1px solid #ECECEC",borderRadius:16,background:"#FFFFFF",padding:"24px",boxShadow:"0px 12px 12px rgba(0,0,0,0.04)",display:"flex",flexDirection:"column",gap:16}},
 h("div",{style:{fontSize:16,fontWeight:500,color:"#2A2A2A",lineHeight:"26px"}},"When did you submit the previous VAT report for "+(prevPeriod?prevPeriod.periodLabel:"the previous period")+" to HMRC?"),
 h("div",{style:{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:16}},
@@ -2989,9 +3002,9 @@ review?reviewOverlay(review):null,
 vatRec?h("div",{style:{position:"fixed",inset:0,zIndex:1000,background:"#FBFBFB"}},window.__VATReconciliationFlow?h(window.__VATReconciliationFlow,{onClose:function(){setVatRec(false);}}):null):null,
 activeTab==="account_transactions"?txSelectionPanel():null,
 auditOpen?h(AuditTrailSidebar,{onClose:function(){setAuditOpen(false);}}):null,
+confirmModal(),
 modal?null:rerunModal(),
 modal?null:checksSidebar(),
-historicOpen?historicPanel():null,
 toast?toastEl():null);
 }
 registerPage("VAT review",{icon:"flag",render:VATMiscodingsPage,keepAlive:true});})();// ── VAT Return page ──────────────────────────────────────────────────────
