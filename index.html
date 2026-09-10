@@ -2102,7 +2102,7 @@ open?h("div",{style:{position:"fixed",top:periodMenuPos.top,left:periodMenuPos.l
    and each month is not_run | findings | done | unavailable. */
 function PlusIc(){return h("svg",{width:18,height:18,viewBox:"0 0 18 18",fill:"none",style:{flexShrink:0}},h("path",{d:"M9 3.75v10.5M3.75 9h10.5",stroke:T.colorTextPrimary,strokeWidth:"1.5",strokeLinecap:"round"}));}
 function periodPill(status,dueLabel){var M={not_started:["Not started","neutral"],due:[dueLabel||"Due","warning"],overdue:["Overdue","error"],in_progress:["In progress","info"],upcoming:["Upcoming","neutral"],done:["Done","success"],skipped:["Skipped","gold"]};var c=M[status]||M.not_started;return StatusPill(c[0],c[1]);}
-function periodTitle(p){return (p.kind==="custom"?"Custom dates: ":"VAT period: ")+p.periodLabel;}
+function periodTitle(p){return (p.kind==="custom"?"Custom period: ":"VAT period: ")+p.periodLabel;}
 function findingsLabel(p){return p.findingsResolved+" / "+p.findingsTotal+" resolved";}
 function runMeta(p){return (p.partial?"Partial review: ":"Last run: ")+p.runBy+" • "+p.runWhen+" • Late claims "+(p.lateClaims?"included":"not included");}
 function TrashIc(){return h("svg",{width:18,height:18,viewBox:"0 0 20 20",fill:"none",style:{flexShrink:0}},h("path",{d:"M3.75 5.5h12.5M8.125 5.5V4.25a.75.75 0 0 1 .75-.75h2.25a.75.75 0 0 1 .75.75V5.5M5.5 5.5l.6 9.5a1.5 1.5 0 0 0 1.5 1.4h4.8a1.5 1.5 0 0 0 1.5-1.4l.6-9.5M8.5 8.5v5M11.5 8.5v5",stroke:T.colorError,strokeWidth:"1.25",strokeLinecap:"round",strokeLinejoin:"round"}));}
@@ -2157,7 +2157,7 @@ h("span",{style:{fontSize:20,lineHeight:"28px",fontWeight:500,color:T.colorTextP
 h("span",{style:{fontSize:14,color:T.colorTextSecondary}},runMeta(p))),
 periodPill(p.status,p.dueLabel));
 var statsRow=h("div",{style:{padding:"24px 24px 0",display:"flex",flexWrap:"nowrap",gap:16}},
-statCol("VAT reclaim (Box 5)",p.reclaimAmount,p.reclaimDelta,p.reclaimDeltaTooltip),
+statCol("VAT reclaim",p.reclaimAmount,p.reclaimDelta,p.reclaimDeltaTooltip),
 statCol("Lines reviewed",p.linesReviewed),
 statCol("Findings",findingsLabel(p)),
 statCol("Exposure",p.exposure,null,null,exposureHint()));
@@ -2178,7 +2178,7 @@ return h("div",{key:p.key,style:{border:"1px solid #E9E9EB",borderRadius:16,back
 h("div",{style:{display:"flex",flexDirection:"column",gap:4,minWidth:0}},
 h("span",{style:{fontSize:16,fontWeight:500,color:T.colorTextPrimary}},periodTitle(p)),
 h("span",{style:{fontSize:14,lineHeight:"22px",color:T.colorTextSecondary,whiteSpace:"nowrap"}},
-skipped?"Skipped VAT review":("VAT reclaim (Box 5): "+p.reclaimAmount+" • "+p.runWhen+" • Late claims "+(p.lateClaims?"included":"not included")))),
+skipped?"Skipped VAT review":("VAT reclaim: "+p.reclaimAmount+" • "+p.runWhen+" • Late claims "+(p.lateClaims?"included":"not included")))),
 h("div",{style:{display:"flex",alignItems:"center",gap:12,flexShrink:0}},
 periodPill(p.status,p.dueLabel),
 skipped
