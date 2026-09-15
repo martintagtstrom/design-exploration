@@ -2815,12 +2815,16 @@ ctab==="transactions"?txCard(TX_GROUPS):null));}
 /* Results body. Both panes stay mounted and the layout animates between the three views –
    remounting per view made the switch feel like a jump and reset the chat scroll. */
 function reviewStep(){
-var chatOn=wfView!=="canvas";var canvasOn=wfView!=="chat";
-var basis=wfView==="chat"?"100%":(wfView==="split"?"clamp(320px, 42%, 599px)":"0px");
+/* The shell is the same during the run and after it, so finishing a review animates into split
+   the same way switching views does – the canvas slides in from the right rather than the
+   whole body being swapped out. */
+var ready=stage==="results";var view=ready?wfView:"chat";
+var chatOn=view!=="canvas";var canvasOn=ready&&view!=="chat";
+var basis=view==="chat"?"100%":(view==="split"?"clamp(320px, 42%, 599px)":"0px");
 var EASE="cubic-bezier(0.32,0.72,0,1)";
 return h("div",{style:{flex:1,minHeight:0,display:"flex",overflow:"hidden"}},
 h("div",{style:{flexGrow:0,flexShrink:0,flexBasis:basis,minWidth:0,display:"flex",flexDirection:"column",overflow:"hidden",
-borderRight:"1px solid "+(wfView==="split"?"#ECECEC":"transparent"),
+borderRight:"1px solid "+(view==="split"?"#ECECEC":"transparent"),
 opacity:chatOn?1:0,pointerEvents:chatOn?"auto":"none",
 transition:"flex-basis 0.44s "+EASE+", opacity 0.3s ease, border-color 0.3s ease"}},wfChat(800)),
 h("div",{style:{flex:"1 1 0",minWidth:0,display:"flex",flexDirection:"column",overflow:"hidden",
@@ -2965,7 +2969,7 @@ open?h("div",null,(function(){var VIS=STEPS.slice(0,visibleSteps);return VIS.map
    flow reads at the pace it is written rather than landing all at once. */
 function workflowModal(){return h("div",{style:{position:"fixed",inset:0,zIndex:1000,background:"#FBFBFB",display:"flex",flexDirection:"column",animation:(modalClosing?"vatModalIn 0.22s ease reverse forwards":"vatModalIn 0.34s cubic-bezier(0.16,1,0.3,1)")}},
 wfTopBar(),
-h("div",{style:{flex:1,minHeight:0,display:"flex",flexDirection:"column",overflow:"hidden"}},stage==="results"?reviewStep():wfChat(800)),
+h("div",{style:{flex:1,minHeight:0,display:"flex",flexDirection:"column",overflow:"hidden"}},reviewStep()),
 rerunModal(),
 checksSidebar(),
 flowAuditOpen?h(AuditTrailSidebar,{onClose:function(){setFlowAuditOpen(false);}}):null,
