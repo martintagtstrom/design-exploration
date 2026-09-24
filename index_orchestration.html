@@ -2289,7 +2289,7 @@ return h("div",{style:{flexShrink:0,padding:"0 0 12px"}},ORCH.ChatInput({
 chips:chips,
 onRemoveChip:function(k){setSugChips(function(p){return p.filter(function(x){return x!==k;});});},
 value:wfDraft,busy:wfThinking,
-placeholder:chips.length?"Recode, ask for context or more...":"Request changes or more info...",
+placeholder:chips.length?"Recode, ask for context or more\u2026":"Tell Mimo what to change, or ask why",
 onChange:function(e){setWfDraft(e.target.value);},
 onKeyDown:function(e){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();orchSend();}},
 canSend:!!(wfDraft||"").trim()&&!wfThinking,onSend:orchSend,label:"Send message"}));}
@@ -3036,7 +3036,7 @@ style:{display:"inline-flex",alignItems:"center",justifyContent:"center",width:2
 
 h("div",{style:{display:"flex",alignItems:"center",width:"100%"}},
 h("textarea",{value:o.value||"",rows:1,readOnly:!!o.readOnly||busy,disabled:busy,
-placeholder:busy?"In progress":(o.placeholder||"Request changes or more info..."),
+placeholder:busy?"In progress":(o.placeholder||"Tell Mimo what to change, or ask why"),
 onChange:o.onChange,onKeyDown:o.onKeyDown,
 style:{flex:1,minWidth:0,width:"100%",boxSizing:"border-box",border:"none",outline:"none",resize:"none",background:"transparent",
 fontFamily:"inherit",fontSize:16,lineHeight:"26px",color:"#2A2A2A",padding:0,minHeight:26}})),
@@ -3100,7 +3100,7 @@ h("div",{style:{display:"flex",alignItems:"center",justifyContent:"center",margi
 h("span",{style:{fontSize:36,fontWeight:500,lineHeight:"44px",letterSpacing:"0",color:T.colorTextPrimary}},"Ready for reconciliation")),
 
 ORCH.ChatInput({value:shown,readOnly:true,canSend:ready,onSend:send,
-label:props.sendLabel||"Send",placeholder:"Request changes or more info..."}),
+label:props.sendLabel||"Send",placeholder:"What do you want to do?"}),
 
 h("div",{style:{textAlign:"center",fontSize:16,fontWeight:600,color:T.colorTextPrimary,margin:"56px 0 24px"}},"… or run a workflow"),
 workflowGrid());
@@ -3599,7 +3599,7 @@ chips:chips,
 onRemoveChip:function(k){setSweepChips(function(p){return p.filter(function(x){return x!==k;});});},
 value:pre?pre.text:"",
 readOnly:true,
-placeholder:chips.length?"Recode, ask for context or more...":"Request changes or more info...",
+placeholder:chips.length?"Recode, ask for context or more\u2026":"Tell Mimo what to change, or ask why",
 onKeyDown:function(e){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();if(pre&&pre.done)send();}},
 canSend:!!(pre&&pre.done),onSend:send,label:"Send message"}));}
 
