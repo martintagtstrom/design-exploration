@@ -2035,7 +2035,7 @@ return h("div",{style:{display:"flex",alignItems:"center",flexShrink:0,marginRig
 shown.map(orchAvatar),
 extra>0?h("span",{key:"more",title:people.slice(2).map(function(c){return c.name;}).join(", "),style:{width:28,height:28,borderRadius:"50%",flexShrink:0,boxSizing:"border-box",border:"2px solid "+T.colorSurfacePrimary,marginLeft:-8,display:"inline-flex",alignItems:"center",justifyContent:"center",background:"#E8EEFB",color:"#4C71DF",fontSize:11,fontWeight:600}},"+"+extra):null);}
 function orchFindingRow(sg){var done=!!resolved[sg.id];
-return h("div",{key:sg.id,onClick:function(){setReview(sg);},style:{display:"flex",alignItems:"center",gap:12,border:"1px solid "+T.colorBorderDark,borderRadius:10,background:"#FFFFFF",padding:"14px 16px",cursor:"pointer",transition:"border-color 0.15s ease"},onMouseEnter:function(e){e.currentTarget.style.borderColor=T.colorBorderHover;},onMouseLeave:function(e){e.currentTarget.style.borderColor=T.colorBorderDark;}},h("span",{style:{fontSize:15,fontWeight:600,color:T.colorTextPrimary,minWidth:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}},sg.contact),h("span",{style:{flexShrink:0,display:"inline-flex",alignItems:"center",padding:"3px 10px",borderRadius:6,background:"#F0F0F0",color:T.colorTextThird,fontSize:13,fontWeight:400,whiteSpace:"nowrap"}},catName(sg.cat)),h("div",{style:{flex:1}}),done?h("span",{style:{flexShrink:0,display:"inline-flex",alignItems:"center",gap:6,fontSize:13,fontWeight:500,color:T.colorBrandPrimary}},h(CheckGreenIc,null),"Resolved"):null,orchAvatars(sg),h("button",{onClick:function(e){e.stopPropagation();addSugChip(sg);},style:{flexShrink:0,display:"inline-flex",alignItems:"center",gap:8,height:34,padding:"0 14px",border:"1px solid "+T.colorBorderDark,borderRadius:8,background:"#FFFFFF",cursor:"pointer",fontFamily:"inherit",fontSize:14,fontWeight:500,color:T.colorTextPrimary}},h("svg",{width:16,height:16,viewBox:"0 0 20 20",fill:"none"},h("path",{d:"M17 9.6a6.7 6.7 0 0 1-7.2 6.7L4 17.5l1.2-4.6A6.7 6.7 0 1 1 17 9.6Z",stroke:T.colorTextPrimary,strokeWidth:"1.3",strokeLinejoin:"round"}),h("path",{d:"M10 7.6v4M8 9.6h4",stroke:T.colorTextPrimary,strokeWidth:"1.3",strokeLinecap:"round"})),h("span",null,"Add")),h("span",{onClick:function(e){e.stopPropagation();},style:{flexShrink:0,display:"inline-flex",alignItems:"center",justifyContent:"center",width:30,height:30,borderRadius:8,color:T.colorTextThird}},h("svg",{width:18,height:18,viewBox:"0 0 20 20",fill:"none"},h("circle",{cx:4.5,cy:10,r:1.4,fill:"currentColor"}),h("circle",{cx:10,cy:10,r:1.4,fill:"currentColor"}),h("circle",{cx:15.5,cy:10,r:1.4,fill:"currentColor"}))));}
+return h("div",{key:sg.id,onClick:function(){setReview(sg);},style:{display:"flex",alignItems:"center",gap:12,border:"1px solid "+T.colorBorderDark,borderRadius:10,background:"#FFFFFF",padding:"14px 16px",cursor:"pointer",transition:"border-color 0.15s ease"},onMouseEnter:function(e){e.currentTarget.style.borderColor=T.colorBorderHover;},onMouseLeave:function(e){e.currentTarget.style.borderColor=T.colorBorderDark;}},h("span",{style:{fontSize:15,fontWeight:600,color:T.colorTextPrimary,minWidth:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}},sg.contact),h("span",{style:{flexShrink:0,display:"inline-flex",alignItems:"center",padding:"3px 10px",borderRadius:6,background:"#F0F0F0",color:T.colorTextThird,fontSize:13,fontWeight:400,whiteSpace:"nowrap"}},catName(sg.cat)),h("div",{style:{flex:1}}),done?h("span",{style:{flexShrink:0,display:"inline-flex",alignItems:"center",gap:6,fontSize:13,fontWeight:500,color:T.colorBrandPrimary}},h(CheckGreenIc,null),"Resolved"):null,orchAvatars(sg),h("button",{onClick:function(e){e.stopPropagation();addSugChip(sg);},style:{flexShrink:0,display:"inline-flex",alignItems:"center",gap:8,height:32,boxSizing:"border-box",padding:"0 16px 0 12px",border:"1px solid #DBDBDB",borderRadius:8,background:"#FFFFFF",cursor:"pointer",fontFamily:"inherit",fontSize:14,fontWeight:500,letterSpacing:"0.15px",color:"#2A2A2A"}},h(ORCH.MsgPlusIc,null),h("span",null,"Add")),h("span",{onClick:function(e){e.stopPropagation();},style:{flexShrink:0,display:"inline-flex",alignItems:"center",justifyContent:"center",width:30,height:30,borderRadius:8,color:T.colorTextThird}},h("svg",{width:18,height:18,viewBox:"0 0 20 20",fill:"none"},h("circle",{cx:4.5,cy:10,r:1.4,fill:"currentColor"}),h("circle",{cx:10,cy:10,r:1.4,fill:"currentColor"}),h("circle",{cx:15.5,cy:10,r:1.4,fill:"currentColor"}))));}
 function orchFindings(){var list=sugFiltered();
 return h(React.Fragment,null,
 h("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,marginBottom:16}},
@@ -2285,7 +2285,7 @@ setTimeout(function(){setWfThinking(false);setWfMsgs(function(prev){return prev.
 function orchSend(){if(orchMode&&sugChips.length&&/recode/i.test((wfDraft||"").trim())){recodeChips();return;}sendWfMessage();}
 function orchComposer(){
 var chips=sugChips.map(function(id){var sg=sugOf(id);return sg?{key:id,label:sg.contact}:null;}).filter(Boolean);
-return h("div",{style:{flexShrink:0,padding:"0 0 24px"}},ORCH.ChatInput({
+return h("div",{style:{flexShrink:0,padding:"0 0 12px"}},ORCH.ChatInput({
 chips:chips,
 onRemoveChip:function(k){setSugChips(function(p){return p.filter(function(x){return x!==k;});});},
 value:wfDraft,busy:wfThinking,
@@ -2360,9 +2360,9 @@ h("div",{style:{display:"flex",flexDirection:"column",gap:10}},
 g.entries.map(function(e,i){return h(AuditEntry,{key:i,time:e.time,color:e.color,action:e.action,actor:e.actor,contact:e.contact,account:e.account,amount:e.amount,vat:e.vat});})));}));}
 function wfCanvas(){var BL="1px solid #EFF1F4";
 return h("div",{style:{flex:1,minWidth:0,display:"flex",flexDirection:"column",overflow:"hidden",background:T.colorSurfacePrimary}},
-h("div",{style:{flex:1,minHeight:0,overflowY:"auto",padding:"24px 32px 48px"}},
+h("div",{style:{flex:1,minHeight:0,overflowY:"auto",padding:orchMode?"24px 128px 48px":"24px 32px 48px"}},
 /* the tabs scroll away with the rest of the canvas rather than staying pinned */
-h("div",{style:{marginBottom:24}},wfCanvasTabs()),
+h("div",{style:{marginBottom:24,marginLeft:orchMode?-77:0,marginRight:orchMode?-77:0}},wfCanvasTabs()),
 ctab==="overview"?h(React.Fragment,null,
 h("div",{style:{fontSize:20,fontWeight:500,color:"#2A2A2A",letterSpacing:"0.2px"}},"Overview"),
 orchMode?h("div",{style:{height:16}}):h("div",{style:{fontSize:14,color:"#7C7C7C",marginTop:4,marginBottom:16}},REVIEW_GENERATED),
@@ -2389,7 +2389,7 @@ function reviewStep(){
    whole body being swapped out. */
 var ready=stage==="results";var view=ready?wfView:"chat";
 var chatOn=view!=="canvas";var canvasOn=ready&&view!=="chat";
-var basis=view==="chat"?"100%":(view==="split"?"clamp(320px, 42%, 599px)":"0px");
+var basis=view==="chat"?"100%":(view==="split"?(orchMode?"clamp(256px, 33.6%, 479px)":"clamp(320px, 42%, 599px)"):"0px");
 var EASE="cubic-bezier(0.32,0.72,0,1)";
 return h("div",{style:{flex:1,minHeight:0,display:"flex",overflow:"hidden"}},
 h("div",{style:{flexGrow:0,flexShrink:0,flexBasis:basis,minWidth:0,display:"flex",flexDirection:"column",overflow:"hidden",
@@ -2902,6 +2902,10 @@ h("circle",{cx:10,cy:10,r:7.25,stroke:"#2A2A2A",strokeWidth:"1.35"}),
 h("path",{d:"M10 6V10L12.75 11.75",stroke:"#2A2A2A",strokeWidth:"1.35",strokeLinecap:"round",strokeLinejoin:"round"}));}
 function OHeart(){return h("svg",{width:18,height:18,viewBox:"0 0 20 20",fill:"none",style:{flexShrink:0}},
 h("path",{d:"M10 16.2 4.4 10.8a3.3 3.3 0 0 1 4.7-4.6l.9.9.9-.9a3.3 3.3 0 0 1 4.7 4.6L10 16.2Z",stroke:"#2A2A2A",strokeWidth:"1.35",strokeLinejoin:"round"}));}
+/* message-plus-square, as the wireframe specifies for Add */
+function OMsgPlus(){return h("svg",{width:20,height:20,viewBox:"0 0 24 24",fill:"none",style:{flexShrink:0}},
+h("path",{d:"M12 8.5V13.5M9.5 11H14.5M7.2 17H16.8C17.92 17 18.48 17 18.908 16.782C19.284 16.59 19.59 16.284 19.782 15.908C20 15.48 20 14.92 20 13.8V7.2C20 6.08 20 5.52 19.782 5.092C19.59 4.716 19.284 4.41 18.908 4.218C18.48 4 17.92 4 16.8 4H7.2C6.08 4 5.52 4 5.092 4.218C4.716 4.41 4.41 4.716 4.218 5.092C4 5.52 4 6.08 4 7.2V20L7.2 17Z",
+stroke:"#2A2A2A",strokeWidth:"1.6",strokeLinecap:"round",strokeLinejoin:"round"}));}
 function OKebab(){return h("svg",{width:20,height:20,viewBox:"0 0 20 20",fill:"none",style:{flexShrink:0}},
 h("circle",{cx:4.5,cy:10,r:1.4,fill:"#2A2A2A"}),h("circle",{cx:10,cy:10,r:1.4,fill:"#2A2A2A"}),h("circle",{cx:15.5,cy:10,r:1.4,fill:"#2A2A2A"}));}
 function ODone(){return h("svg",{width:18,height:18,viewBox:"0 0 20 20",fill:"none",style:{flexShrink:0}},
@@ -2935,13 +2939,13 @@ function oCardTitle(t){return h("div",{style:{fontSize:16,fontWeight:500,color:"
    per open tab. Shared by both hosts so the strip never jumps when a tab switch
    moves the drawing from one to the other. */
 function stripIconBtn(icon,label){
-return h("button",{key:label,title:label,
-style:{width:30,height:30,flexShrink:0,borderRadius:8,border:"none",background:"transparent",cursor:"pointer",display:"inline-flex",alignItems:"center",justifyContent:"center"},
-onMouseEnter:function(e){e.currentTarget.style.background="#E4E4E4";},
-onMouseLeave:function(e){e.currentTarget.style.background="transparent";}},icon);}
+return h("button",{key:label,title:label,type:"button",
+style:{width:30,height:30,flexShrink:0,boxSizing:"border-box",borderRadius:8,border:"1px solid "+T.colorBorderDark,background:"#FFFFFF",cursor:"pointer",display:"inline-flex",alignItems:"center",justifyContent:"center"},
+onMouseEnter:function(e){e.currentTarget.style.background=T.colorSurfaceSecondary;e.currentTarget.style.borderColor=T.colorBorderHover;},
+onMouseLeave:function(e){e.currentTarget.style.background="#FFFFFF";e.currentTarget.style.borderColor=T.colorBorderDark;}},icon);}
 
 ORCH.TabStrip=function(){
-return h("div",{style:{height:48,flexShrink:0,boxSizing:"border-box",background:"#F0F0F0",display:"flex",alignItems:"center",gap:8,padding:"0 16px"}},
+return h("div",{style:{height:48,flexShrink:0,boxSizing:"border-box",background:"#F0F0F0",display:"flex",alignItems:"center",gap:6,padding:"0 16px"}},
 
 h("button",{title:"New request",
 onClick:function(){ORCH.openTab({id:"home-"+Date.now(),label:"New request",kind:"home"});},
@@ -2950,6 +2954,9 @@ onMouseEnter:function(e){e.currentTarget.style.background=T.colorBrandPrimaryHov
 onMouseLeave:function(e){e.currentTarget.style.background=T.colorBrandPrimary;}},h(OPlus,null)),
 stripIconBtn(h(OHistory,null),"Recent"),
 stripIconBtn(h(OHeart,null),"Saved"),
+
+/* the workspace controls end here; the open tabs start after the rule */
+h("div",{style:{width:1,height:22,flexShrink:0,background:T.colorBorderHover,margin:"0 6px"}}),
 
 h("div",{style:{display:"flex",alignItems:"center",gap:8,minWidth:0,overflow:"hidden"}},
 ORCH.tabs.map(function(t){var on=t.id===ORCH.tab;
@@ -2985,6 +2992,8 @@ return h("button",{key:it.v,title:it.label,onClick:dis?undefined:function(){setV
 style:{width:34,height:30,display:"flex",alignItems:"center",justifyContent:"center",border:"none",borderRadius:6,background:on?T.colorSuccessBg:"transparent",cursor:dis?"default":"pointer"}},
 h(it.Ic,{a:on,dim:dis}));}));};
 
+ORCH.MsgPlusIc=OMsgPlus;
+
 ORCH.Kebab=function(){
 return h("button",{title:"More",
 style:{width:34,height:34,borderRadius:8,border:"none",background:"transparent",cursor:"pointer",display:"inline-flex",alignItems:"center",justifyContent:"center",flexShrink:0},
@@ -2998,6 +3007,10 @@ onMouseLeave:function(e){e.currentTarget.style.background="transparent";}},h(OKe
    (findings gathered as chips above the field).
    opts: {chips,onRemoveChip,value,placeholder,onChange,onKeyDown,onSend,
           canSend,busy,readOnly,caption,maxWidth} */
+/* The canvas keeps a wide content inset; its tab row is pulled back out to
+   40% of that, so the tabs sit closer to the edge than the content they head. */
+var CANVAS_GUTTER=128;
+var CANVAS_TAB_PULL=Math.round(CANVAS_GUTTER*0.6);
 var CI_BORDER="#DBDBDB";
 function ciIconBtn(icon,onClick,label){
 return h("button",{title:label,onClick:onClick,type:"button",
@@ -3044,7 +3057,7 @@ transition:"background 0.15s ease, border-color 0.15s ease"}},
 h(OArrowUp,{c:canSend?"#FFFFFF":"#2A2A2A"}))))),
 
 (o.caption===false)?null:h("div",{style:{fontSize:14,lineHeight:"22px",letterSpacing:"0.15px",color:T.colorTextSecondary,whiteSpace:"nowrap"}},
-"Mimo can make mistakes, use your own judgement before taking actions."));};
+"Mimo can make mistakes, use your own judgement."));};
 
 /* ══════════════ HOME CONTENT ══════════════
    Drawn twice: as the page the walkthrough starts from, and inside a tab when
@@ -3566,10 +3579,8 @@ h("div",{style:{flex:1}}),
 sweepP>=6?h("span",{style:{flexShrink:0,display:"inline-flex",alignItems:"center",gap:6,fontSize:13,fontWeight:500,color:T.colorBrandPrimary}},h(ODone,null),"Published"):null,
 h("button",{onClick:function(e){e.stopPropagation();
 setSweepChips(function(prev){return picked?prev:prev.concat([key]);});},
-style:{flexShrink:0,display:"inline-flex",alignItems:"center",gap:8,height:34,padding:"0 14px",border:"1px solid "+T.colorBorderDark,borderRadius:8,background:"#FFFFFF",cursor:"pointer",fontFamily:"inherit",fontSize:14,fontWeight:500,color:T.colorTextPrimary}},
-h("svg",{width:16,height:16,viewBox:"0 0 20 20",fill:"none"},
-h("path",{d:"M17 9.6a6.7 6.7 0 0 1-7.2 6.7L4 17.5l1.2-4.6A6.7 6.7 0 1 1 17 9.6Z",stroke:T.colorTextPrimary,strokeWidth:"1.3",strokeLinejoin:"round"}),
-h("path",{d:"M10 7.6v4M8 9.6h4",stroke:T.colorTextPrimary,strokeWidth:"1.3",strokeLinecap:"round"})),
+style:{flexShrink:0,display:"inline-flex",alignItems:"center",gap:8,height:32,boxSizing:"border-box",padding:"0 16px 0 12px",border:"1px solid #DBDBDB",borderRadius:8,background:"#FFFFFF",cursor:"pointer",fontFamily:"inherit",fontSize:14,fontWeight:500,letterSpacing:"0.15px",color:"#2A2A2A"}},
+h(OMsgPlus,null),
 h("span",null,"Add")),
 h("span",{onClick:function(e){e.stopPropagation();},
 style:{flexShrink:0,display:"inline-flex",alignItems:"center",justifyContent:"center",width:30,height:30,borderRadius:8,color:T.colorTextThird}},h(OKebab,null)));}
@@ -3582,7 +3593,7 @@ else if(kind==="sweep"&&sweepP===3){setSweepP(4);setTimeout(function(){setSweepP
 var chips=(kind==="sweep")?sweepChips.map(function(k){
 var pp=null;PREPAYMENTS.forEach(function(x){if(x.inv===k)pp=x;});
 return pp?{key:k,label:pp.supplier}:null;}).filter(Boolean):[];
-return h("div",{style:{flexShrink:0,padding:"16px 24px 24px"}},
+return h("div",{style:{flexShrink:0,padding:"16px 24px 12px"}},
 ORCH.ChatInput({
 chips:chips,
 onRemoveChip:function(k){setSweepChips(function(p){return p.filter(function(x){return x!==k;});});},
@@ -3595,7 +3606,7 @@ canSend:!!(pre&&pre.done),onSend:send,label:"Send message"}));}
 /* ── the split body, shared by both workflow tabs ── */
 function flowBody(nodes,canvas,view,ready,kind){
 var chatOn=view!=="canvas";var canvasOn=ready&&view!=="chat";
-var basis=view==="chat"?"100%":(view==="split"?"clamp(320px, 42%, 599px)":"0px");
+var basis=view==="chat"?"100%":(view==="split"?"clamp(256px, 33.6%, 479px)":"0px");
 var EASE="cubic-bezier(0.32,0.72,0,1)";
 return h("div",{style:{flex:1,minHeight:0,display:"flex",overflow:"hidden"}},
 h("div",{style:{flexGrow:0,flexShrink:0,flexBasis:basis,minWidth:0,display:"flex",flexDirection:"column",overflow:"hidden",background:"#FBFBFB",
@@ -3611,7 +3622,8 @@ h("div",{style:{width:"100%",maxWidth:800,margin:"0 auto",boxSizing:"border-box"
 h("div",{style:{flex:"1 1 0",minWidth:0,display:"flex",flexDirection:"column",overflow:"hidden",background:"#FFFFFF",
 opacity:canvasOn?1:0,pointerEvents:canvasOn?"auto":"none",transform:canvasOn?"none":"translateX(8px)",
 transition:"opacity 0.34s ease "+(canvasOn?"0.06s":"0s")+", transform 0.44s "+EASE}},
-h("div",{style:{flex:1,minHeight:0,overflowY:"auto",padding:"24px 32px 48px"}},canvas)));}
+/* wider gutters so the canvas reads as a document, not a full-bleed table */
+h("div",{style:{flex:1,minHeight:0,overflowY:"auto",padding:"24px 128px 48px"}},canvas)));}
 
 /* ── what this host draws ── */
 if(!ORCH.tabs.length||kind===null||kind==="vat")return null;
@@ -3650,7 +3662,7 @@ cT("y1","Year-end isn't a workflow you have yet. I can build one from your close
 typed.y1?cT("y2","Want me to draft it?"):null,
 h("div",{style:{height:8}}))),
 h("div",{style:{width:"100%",maxWidth:800,margin:"0 auto",boxSizing:"border-box"}},
-h("div",{style:{flexShrink:0,padding:"16px 24px 24px"}},
+h("div",{style:{flexShrink:0,padding:"16px 24px 12px"}},
 ORCH.ChatInput({value:"",readOnly:true,canSend:false,label:"Send message"}))));
 }
 else if(kind==="sense"){
@@ -3673,7 +3685,9 @@ right=[sweepDone
 h("span",{key:"k"},ORCH.Kebab()),
 h("span",{key:"s2",style:{width:1,height:26,background:T.colorBorderDark,margin:"0 2px"}}),
 h("span",{key:"v"},ORCH.ViewSwitch(sweepView,setSweepView,sweepReady))];
-bodyEl=flowBody(sweepNodes(),h("div",null,sweepCanvasTabs(),h("div",{style:{paddingTop:24}},sweepCanvas())),sweepView,sweepReady,"sweep");
+bodyEl=flowBody(sweepNodes(),h("div",null,
+h("div",{style:{marginLeft:-CANVAS_TAB_PULL,marginRight:-CANVAS_TAB_PULL}},sweepCanvasTabs()),
+h("div",{style:{paddingTop:24}},sweepCanvas())),sweepView,sweepReady,"sweep");
 }
 
 return h(React.Fragment,null,
