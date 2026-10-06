@@ -970,9 +970,9 @@ style:{width:34,height:30,border:"none",borderRadius:6,display:"inline-flex",ali
 function TabHeader(p){return h("div",{style:{height:56,flexShrink:0,display:"flex",alignItems:"center",gap:12,padding:"0 16px 0 24px",background:"#FFFFFF",boxShadow:"0 1px 0 "+T.colorBorderDark+", 0 4px 12px rgba(0,0,0,0.04)",position:"relative",zIndex:4}},
 h("span",{style:{fontSize:18,fontWeight:500,color:"#1F2024"}},p.title),p.period?h("span",{style:{fontSize:16,color:T.colorTextSecondary,animation:"fadeIn .3s ease both"}},p.period):null,
 h("div",{style:{flex:1}}),
-p.ready?h(Fragment,null,p.marked?h(Badge,{v:"success",h:36},h(Ic.check,{s:16}),"Marked as done"):h(PrimaryBtn,{h:36,onClick:p.onMark},"Mark as done"),
+p.ready?h(Fragment,null,h("div",{style:{display:"flex",alignItems:"center",gap:8}},p.marked?h(Badge,{v:"success",h:36},h(Ic.check,{s:16}),"Marked as done"):h(PrimaryBtn,{h:36,onClick:p.onMark},"Mark as done"),
 h(Tooltip,{text:p.saved?"Saved to your library":"Add workflow to library"},h(IconBtn,{size:36,onClick:p.onSave,color:p.saved?T.colorBrandPrimary:"#2A2A2A","aria-label":p.saved?"Remove from library":"Add to library"},p.saved?h(Ic.libAdded,null):h(Ic.libAdd,null))),
-h(IconBtn,{title:"More",size:36},h(Ic.kebab,null)),h("div",{style:{width:1,height:28,background:T.colorBorderDark,margin:"0 4px"}}),
+h(IconBtn,{title:"More",size:36},h(Ic.kebab,null))),h("div",{style:{width:1,height:28,background:T.colorBorderDark,margin:"0 4px"}}),
 h(ViewSwitch,{view:p.view,setView:p.setView})):null);}
 
 function SummaryMsg(p){var blocks=p.blocks;var _n=useState(p.instant?blocks.length:0);var n=_n[0],setN=_n[1];
