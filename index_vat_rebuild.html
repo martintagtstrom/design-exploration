@@ -24,6 +24,7 @@ textarea::placeholder, input::placeholder { color:#9D9D9E; }
 @keyframes slideInLeft { from{transform:translateX(-100%)} to{transform:none} }
 @keyframes panelIn { from{opacity:0;transform:translateX(24px)} to{opacity:1;transform:none} }
 .no-scrollbar::-webkit-scrollbar{display:none}
+@keyframes starBreathe { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
 </style>
 </head>
 <body>
@@ -366,6 +367,8 @@ var CLIENT="Seabrook Foods Ltd";
 var USER={name:"Laura Bennett",initials:"LB"};
 var TODAY="05 Oct 26";
 
+/* the Mimo star, as used across index_orchestration.html (PATHS.starAi) */
+var STAR_AI="M9.99984 1.66669L11.6765 6.02592C11.9115 6.63695 12.029 6.94246 12.2117 7.19944C12.3737 7.4272 12.5727 7.6262 12.8004 7.78815C13.0574 7.97088 13.3629 8.08838 13.9739 8.32339L18.3332 10L13.9739 11.6767C13.3629 11.9117 13.0574 12.0292 12.8004 12.2119C12.5727 12.3738 12.3737 12.5728 12.2117 12.8006C12.029 13.0576 11.9115 13.3631 11.6765 13.9741L9.99984 18.3334L8.32321 13.9741C8.0882 13.3631 7.97069 13.0576 7.78796 12.8006C7.62601 12.5728 7.42702 12.3738 7.19926 12.2119C6.94228 12.0292 6.63677 11.9117 6.02574 11.6767L1.6665 10L6.02574 8.32339C6.63677 8.08838 6.94228 7.97088 7.19926 7.78815C7.42702 7.6262 7.62601 7.4272 7.78796 7.19944C7.97069 6.94246 8.0882 6.63695 8.32321 6.02592L9.99984 1.66669Z";
 /* ── Icons ───────────────────────────────────────────────────────────────── */
 function svg(size,children,extra){return h("svg",Object.assign({width:size,height:size,viewBox:"0 0 24 24",fill:"none",style:{flexShrink:0,display:"block"}},extra||{}),children);}
 function P(d,c,w){return h("path",{d:d,stroke:c||"currentColor",strokeWidth:w||1.5,strokeLinecap:"round",strokeLinejoin:"round"});}
@@ -383,12 +386,14 @@ stop:function(){return h("svg",{width:14,height:14,viewBox:"0 0 14 14",style:{di
 enter:function(){return svg(18,[P("M20 4v7a4 4 0 0 1-4 4H4M8 11l-4 4 4 4",null,1.5)]);},
 spinner:function(p){var s=(p&&p.s)||20;return h("svg",{width:s,height:s,viewBox:"0 0 20 20",fill:"none",style:{flexShrink:0,display:"block",animation:"spin 0.9s linear infinite"}},
 h("circle",{cx:10,cy:10,r:7,stroke:"#D5EBCF",strokeWidth:2}),h("path",{d:"M17 10a7 7 0 0 0-7-7",stroke:"#05A105",strokeWidth:2,strokeLinecap:"round"}));},
-sparkle:function(p){var s=(p&&p.s)||20;return h("svg",{width:s,height:s,viewBox:"0 0 24 24",style:{flexShrink:0,display:"block",animation:(p&&p.pulse)?"sparkPulse 1.4s ease-in-out infinite":"none"}},
-h("path",{d:"M12 1.5c.55 5.3 4.7 9.45 10.5 10.5-5.8 1.05-9.95 5.2-10.5 10.5-.55-5.3-4.7-9.45-10.5-10.5C7.3 10.95 11.45 6.8 12 1.5Z",fill:"#05A105"}));},
+sparkle:function(p){var s=(p&&p.s)||20;return h("svg",{width:s,height:s,viewBox:"0 0 20 20",fill:"none",style:{flexShrink:0,display:"block",overflow:"visible",transformOrigin:"center",animation:(p&&p.pulse)?"starBreathe 2s cubic-bezier(.65,0,.35,1) infinite":"none"}},
+h("path",{d:STAR_AI,fill:"#05A105",stroke:"#05A105",strokeWidth:1.66667,strokeLinecap:"round",strokeLinejoin:"round"}));},
 search:function(){return svg(20,[h("circle",{key:"c",cx:11,cy:11,r:7,stroke:"currentColor",strokeWidth:1.5}),P("m20 20-4-4")]);},
 book:function(){return svg(20,[P("M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2V4ZM22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7V4Z",null,1.4)]);},
 question:function(){return svg(20,[P("M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v10a1.5 1.5 0 0 1-1.5 1.5H10l-4.5 3.5V17h0A1.5 1.5 0 0 1 4 15.5v-10Z",null,1.4),P("M9.75 8.75a2.25 2.25 0 0 1 4.37.75c0 1.5-2.12 2-2.12 2M12 14h.01",null,1.4)]);},
-tool:function(){return svg(20,[P("M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94L14.7 6.3Z",null,1.4)]);},
+tool:function(){/* DS "icon / data" (Figma 658:6982) */return svg(20,[h("rect",{key:"a",x:1.75,y:1.75,width:4.5,height:4.5,rx:1.2,stroke:"currentColor",strokeWidth:1.4}),h("rect",{key:"b",x:9.75,y:5.75,width:4.5,height:4.5,rx:1.2,stroke:"currentColor",strokeWidth:1.4}),
+h("rect",{key:"c",x:17.75,y:9.75,width:4.5,height:4.5,rx:1.2,stroke:"currentColor",strokeWidth:1.4}),h("rect",{key:"d",x:2.75,y:11.75,width:4.5,height:4.5,rx:1.2,stroke:"currentColor",strokeWidth:1.4}),
+P("M17.75 13.6H14.2C13.5 13.6 13 14.1 13 14.8V16.3C13 17 12.5 17.5 11.8 17.5H11.2C10.5 17.5 10 18 10 18.7V21C10 21.7 10.5 22.25 11.2 22.25H21.05C21.7 22.25 22.25 21.7 22.25 21.05V14.25",null,1.4)]);},
 checkCircle:function(){return h("svg",{width:22,height:22,viewBox:"0 0 22 22",fill:"none",style:{flexShrink:0,display:"block",animation:"stepPop .35s cubic-bezier(.34,1.4,.64,1) both"}},
 h("circle",{cx:11,cy:11,r:10,stroke:"#05A105",strokeWidth:1.6}),h("path",{d:"m6.5 11.2 3 3 6-6.2",stroke:"#05A105",strokeWidth:1.6,strokeLinecap:"round",strokeLinejoin:"round"}));},
 dot:function(c){return h("svg",{width:22,height:22,viewBox:"0 0 22 22",style:{flexShrink:0,display:"block"}},h("circle",{cx:11,cy:11,r:6,fill:c||"#B8B8B8"}));},
@@ -461,8 +466,8 @@ var WF={name:"VAT readiness check",
 sub:"A custom workflow lets you run checks that are not yet defined.",
 steps:[
 {name:"Gather evidence",desc:"Transactions, VAT codes and documents behind every box",run:"Gathering evidence",result:"412 transactions across 9 boxes",chip:"23 excluded",ms:2000},
-{name:"Run weighted checks",desc:"Each check scored by its risk to the filing",run:"Running weighted checks",result:"14 checks, 1 blocking failure",chip:"6 findings",ms:2600},
-{name:"Check late claims",desc:"Bills dated in earlier periods that missed their return",run:"Checking late claims",result:null,chip:"1 late claim",ms:1700,late:true},
+{name:"Run weighted checks",verified:true,desc:"Each check scored by its risk to the filing",run:"Running weighted checks",result:"14 checks, 1 blocking failure",chip:"6 findings",ms:2600},
+{name:"Check late claims",verified:true,desc:"Bills dated in earlier periods that missed their return",run:"Checking late claims",result:null,chip:"1 late claim",ms:1700,late:true},
 {name:"Score and flag",desc:"Readiness score, blocking checks and anomalies",run:"Scoring the return",result:"72 / 100",chip:"Not ready to file",ms:1500}]};
 
 function wfDescription(a){return "Scores the "+a.period+" return out of 100 against weighted checks"+(a.late?", including late claims received since "+a.filed+".":", without late claims.");}
@@ -489,6 +494,7 @@ lines:[["Electricity – Unit 4, Pitfield depot","Supply period 01–31 May 2026
 function actionOf(f){if(f.tag==="Re-code VAT")return{title:"Re-code transaction",primary:"Re-code & resolve",done:"Re-coded"};
 if(f.tag==="Remove duplicate")return{title:"Remove duplicate",primary:"Delete duplicate & resolve",done:"Duplicate removed"};
 if(f.tag==="Request invoice")return{title:"Request the VAT invoice",primary:"Request invoice",done:"Invoice requested"};
+if(f.tag==="Add to schedule")return{title:"Add to prepayment schedule",primary:"Add to schedule",done:"Added"};
 return{title:"Late claim included",primary:"Resolve",done:"Resolved"};}
 
 /* VAT boxes: overclaims are in the opening figures, and resolving a finding moves them */
@@ -527,6 +533,91 @@ var LARGEST=[
 ["05 Jul 26","Hiscox Insurance","£2,940.00","Re-code VAT"],
 ["12 Sep 26","Dales Deli Group","£2,246.40","None"],
 ["08 Jul 26","British Gas Business","£2,140.00","Re-code VAT"]];
+
+/* ══════════════ SCENARIO 2: COMBINED PREPAYMENT SCHEDULE ══════════════
+   Triggered when the opening prompt mentions "schedule". Same flow as the VAT review:
+   two questions, a proposed workflow, a run, then results in split view. */
+var FY_MONTHS=["Apr 26","May 26","Jun 26","Jul 26","Aug 26","Sep 26","Oct 26","Nov 26","Dec 26","Jan 27","Feb 27","Mar 27"];
+var ACCTS={"1400":"1400 – Prepayments","1410":"1410 – Prepaid software & subscriptions"};
+var SQ1={step:1,total:2,q:"I found two prepayment accounts with balances: 1400 – Prepayments and 1410 – Prepaid software & subscriptions. Go ahead with both?",other:true,options:[
+{label:"Yes, combine both accounts",accts:["1400","1410"]},
+{label:"Only 1400 – Prepayments",accts:["1400"]},
+{label:"Only 1410 – Prepaid software & subscriptions",accts:["1410"]}]};
+var SQ2={step:2,total:2,q:"Should the schedule reflect the entire financial year?",options:[
+{label:"Yes, the full financial year (Apr 26 – Mar 27)",fy:true,period:"Apr 26 – Mar 27"},
+{label:"No, year to date (Apr 26 – Sep 26)",fy:false,period:"Apr 26 – Sep 26"}]};
+
+var S_EXPLAIN=[
+"I've put together a prepayment schedule workflow for you to review and save. It reads both prepayment accounts, then scans every bill posted this financial year for costs that cover future months, like annual insurance, software licences and rent paid in advance.",
+"Each prepayment gets a straight-line release profile from its service period, and the schedule shows additions and monthly releases side by side for both accounts. The closing balance per account is tied back to the ledger, so any difference shows up before you post anything.",
+"Invoices I think should be prepayments are listed as suggestions. Nothing moves until you add them to the schedule."];
+
+var S_WF={name:"Combined prepayment schedule",sub:"A custom workflow lets you run checks that are not yet defined."};
+function acctsText(a){return (a.accts||["1400","1410"]).map(function(k){return ACCTS[k];}).join(" and ");}
+function sDescription(a){return "Builds one schedule for "+acctsText(a)+" covering "+a.period+". Suggested invoices are added once you approve them.";}
+
+/* prepayments already on the accounts (bf) and invoices that were expensed in full (suggestions) */
+var PREPAYS=[
+{id:"p1",bf:true,contact:"Hartley & Co Insurance",ref:"INV-4471",acct:"1400",total:7200,start:3,months:12,lineLabel:"Employers' liability cover 26/27"},
+{id:"p2",bf:true,contact:"Northgate Media",ref:"INV-2318",acct:"1400",total:4500,start:3,months:6,lineLabel:"Campaign retainer H2 2026"},
+{id:"p3",bf:true,contact:"Baxter Software Ltd",ref:"INV-9902",acct:"1410",total:2880,start:4,months:12,lineLabel:"Annual platform licence 26/27"},
+{id:"p4",bf:true,contact:"Microsoft UK",ref:"MS-88120",acct:"1410",total:1440,start:-2,months:12,lineLabel:"Microsoft 365 Business, annual"}];
+
+function invoiceFor(o){return{from:o.from,tag:o.tag,rightAddr:[o.legal,o.addr,o.vatNo],fromBlock:[o.legal,o.addr1,o.addr2,"United Kingdom"],no:o.ref,date:o.dateLong,due:o.due,
+lines:[[o.line,o.period,"1",o.rate,fmt(o.net),fmt(o.gross)]],subtotal:fmt(o.net),vatLabel:"VAT ("+o.rate+"):",vat:fmt(o.gross-o.net),total:fmt(o.gross),terms:o.terms};}
+
+var S_SUGG=[
+{id:"q1",post:4,contact:"Salesforce UK",ref:"SF-55091",acct:"1410",total:4800,start:5,months:12,coded:"6220 – Subscriptions",date:"30 Aug 26",vatRate:"20% (VAT on Exp.)",gross:5760,
+lineLabel:"Sales Cloud Enterprise, annual licence",period:"1 Sep 26 – 31 Aug 27",
+comments:[{name:"Owen Fairhurst",initials:"OF",date:"02 Oct 26, 10:12",text:"Paid annually up front since 2024. Should always have sat in 1410."}],
+inv:{from:"SALESFORCE UK LTD",tag:"Cloud software · Annual subscription",legal:"Salesforce UK Ltd",addr:"Salesforce Tower, London EC2N 4AY",addr1:"110 Bishopsgate",addr2:"London EC2N 4AY",vatNo:"VAT GB 822 1188 70",dateLong:"30 August 2026",due:"29 September 2026",line:"Sales Cloud Enterprise – 10 users",rate:"20%",net:4800,gross:5760,terms:"Annual subscription, billed in advance for the term shown."}},
+{id:"q2",post:5,contact:"Airedale Estates Ltd",ref:"AE-2026-Q3",acct:"1400",total:6400,start:6,months:3,coded:"6000 – Rent",date:"22 Sep 26",vatRate:"No VAT",gross:6400,
+lineLabel:"Unit 7 rent, quarter in advance",period:"1 Oct 26 – 31 Dec 26",
+comments:[{name:"Laura Bennett",initials:"LB",date:"03 Oct 26, 09:05",text:"Rent is billed a quarter ahead. The last three quarters were expensed the same way."}],
+inv:{from:"AIREDALE ESTATES LTD",tag:"Commercial lease · Rent in advance",legal:"Airedale Estates Ltd",addr:"Sterling House, Keighley BD21 3JL",addr1:"Sterling House, Cavendish Street",addr2:"Keighley BD21 3JL",vatNo:"VAT GB 411 2098 77",dateLong:"22 September 2026",due:"1 October 2026",line:"Rent – Unit 7, Airedale Business Park",rate:"No VAT",net:6400,gross:6400,terms:"Rent is payable quarterly in advance. The landlord has not opted to tax."}},
+{id:"q3",post:4,contact:"NFU Mutual",ref:"NFU-41220",acct:"1400",total:3600,start:5,months:12,coded:"6030 – Insurance",date:"28 Aug 26",vatRate:"Exempt Expenses",gross:3600,
+lineLabel:"Motor fleet policy 26/27",period:"1 Sep 26 – 31 Aug 27",
+inv:{from:"NFU MUTUAL",tag:"Motor fleet · Exempt insurance",legal:"NFU Mutual Insurance Society Ltd",addr:"Tiddington Road, Stratford-upon-Avon CV37 7BJ",addr1:"Tiddington Road",addr2:"Stratford-upon-Avon CV37 7BJ",vatNo:"VAT GB 122 3346 08",dateLong:"28 August 2026",due:"11 September 2026",line:"Motor fleet – 4 vehicles, annual premium",rate:"Exempt",net:3600,gross:3600,terms:"Insurance is exempt from VAT. Cover runs for 12 months from the start date."}},
+{id:"q4",post:5,contact:"Harrogate Trade Show",ref:"HTS-1182",acct:"1400",total:2250,start:10,months:1,coded:"6110 – Advertising & marketing",date:"14 Sep 26",vatRate:"20% (VAT on Exp.)",gross:2700,
+lineLabel:"Stand booking, Northern Food Show (Feb 27)",period:"February 2027",
+inv:{from:"HARROGATE TRADE SHOW LTD",tag:"Exhibitions · Stand booking",legal:"Harrogate Trade Show Ltd",addr:"Kings Road, Harrogate HG1 5LA",addr1:"Harrogate Convention Centre",addr2:"Harrogate HG1 5LA",vatNo:"VAT GB 309 4471 22",dateLong:"14 September 2026",due:"14 October 2026",line:"Shell scheme stand B14 – Northern Food Show",rate:"20%",net:2250,gross:2700,terms:"The event takes place 16–18 February 2027. Payment secures the stand."}},
+{id:"q5",post:3,contact:"Adobe Systems",ref:"ADB-77812",acct:"1410",total:1560,start:4,months:12,coded:"6220 – Subscriptions",date:"25 Jul 26",vatRate:"20% (VAT on Exp.)",gross:1872,
+lineLabel:"Creative Cloud for teams, annual",period:"1 Aug 26 – 31 Jul 27",
+inv:{from:"ADOBE SYSTEMS SOFTWARE IRELAND",tag:"Creative software · Annual plan",legal:"Adobe Systems Software Ireland Ltd",addr:"4–6 Riverwalk, Dublin 24",addr1:"4–6 Riverwalk, Citywest",addr2:"Dublin 24",vatNo:"VAT GB 701 4471 05",dateLong:"25 July 2026",due:"25 July 2026",line:"Creative Cloud for teams – 3 licences",rate:"20%",net:1560,gross:1872,terms:"Annual plan, paid up front."}}];
+
+function monthsIn(fy){return fy===false?6:12;}
+function releaseAt(p,m){return (m>=p.start&&m<p.start+p.months)?p.total/p.months:0;}
+function schedRow(p,fy){var L=monthsIn(fy);var mon=p.total/p.months;
+var post=p.post!=null?p.post:p.start;var before=Math.max(0,Math.min(p.months,0-p.start));var opening=post<0?p.total-before*mon:0;
+var additions=(post>=0&&post<L)?p.total:0;var rel=[];var sum=0;
+for(var m=0;m<L;m++){var r=releaseAt(p,m);rel.push(r);sum+=r;}
+return{opening:opening,additions:additions,releases:rel,released:sum,closing:opening+additions-sum};}
+
+/* the suggestions as findings, so the list, drawer and chat details all work unchanged */
+function scheduleFindings(a){var acc=a.accts||["1400","1410"];var fy=a.fy!==false;
+return S_SUGG.filter(function(s){return acc.indexOf(s.acct)>=0;}).map(function(s){
+var mon=s.total/s.months;var r=schedRow(s,a.fy);var inFy=Math.min(s.months,Math.max(0,monthsIn(a.fy)-s.start));
+var text="This invoice covers "+s.period+" but was expensed in full to "+s.coded+" when it was posted on "+s.date+". Moving it to "+ACCTS[s.acct]+" releases "+fmt(mon)+(s.months>1?" a month over "+s.months+" months":" in "+FY_MONTHS[s.start])+
+", so "+fmt(r.closing)+" sits on the balance sheet at "+(fy?"year end":"the end of September")+" instead of in the P&L.";
+return{id:s.id,kind:"prepay",contact:s.contact,ref:s.ref,tag:"Add to schedule",weight:0,acct:s.acct,acctName:ACCTS[s.acct],total:s.total,start:s.start,post:s.post,months:s.months,monthly:mon,
+text:text,account:s.coded,amount:fmt(s.gross),net:fmt(s.total),vatAmount:fmt(s.gross-s.total),vat:s.vatRate,date:s.date,lineLabel:s.lineLabel+" ("+s.period+")",comments:s.comments,
+releaseLabel:s.months>1?fmt(mon)+" a month, "+s.months+" months":fmt(mon)+" in "+FY_MONTHS[s.start],
+releaseRows:FY_MONTHS.slice(0,monthsIn(a.fy)).map(function(m,i){return{m:m,v:r.releases[i]};}).filter(function(x){return x.v>0;}).map(function(x){return{m:x.m,v:fmt(x.v)};}),
+history:[],invoice:invoiceFor(Object.assign({ref:s.ref,period:s.period},s.inv))};});}
+
+function sSteps(a){var acc=a.accts||["1400","1410"];var n=scheduleFindings(a).length;var bf=PREPAYS.filter(function(p){return acc.indexOf(p.acct)>=0;}).length;
+return[
+{name:"Read prepayment accounts",desc:"Balances and existing schedules for each account",run:"Reading prepayment accounts",result:acc.join(" and ")+" read",chip:bf+" prepayments on file",ms:1800},
+{name:"Scan bills for prepaid costs",desc:"Invoices that cover future months but were expensed",run:"Scanning bills for prepaid costs",result:"146 bills since Apr 26",chip:n+" invoices identified",ms:2600},
+{name:"Build release profiles",desc:"Straight-line monthly releases per prepayment",run:"Building release profiles",result:"Straight-line, monthly",chip:a.period,ms:1700},
+{name:"Combine and reconcile",desc:"One schedule, tied back to each ledger balance",run:"Combining and reconciling",result:"Ties to the ledger",chip:"£0.00 difference",ms:1500}];}
+
+/* totals per account; includeSugg adds every suggestion, otherwise only the ones applied */
+function schedTotals(a,state,includeSugg){var acc=a.accts||["1400","1410"];var out={};
+acc.forEach(function(k){out[k]={opening:0,additions:0,released:0,closing:0,rel:[]};for(var m=0;m<monthsIn(a.fy);m++)out[k].rel.push(0);});
+var items=PREPAYS.filter(function(p){return acc.indexOf(p.acct)>=0;}).concat(scheduleFindings(a).filter(function(f){return includeSugg||state[f.id]==="applied";}));
+items.forEach(function(p){var r=schedRow(p,a.fy);var t=out[p.acct];t.opening+=r.opening;t.additions+=r.additions;t.released+=r.released;t.closing+=r.closing;r.releases.forEach(function(v,i){t.rel[i]+=v;});});
+return{acc:acc,byAcct:out,items:items};}
 
 /* ══════════════ CHAT COMPONENTS (DS: Chat / Content, Chat / Input) ══════════════ */
 var STATUS_IC={thinking:function(){return h(Ic.spinner,null);},asking:function(){return h("span",{style:{color:"#9D9D9E"}},h(Ic.question,null));},
@@ -606,19 +697,22 @@ function StreamText(p){var s=useStream(p.k,p.paras.join("\n\n"),p.speed);
 useEffect(function(){if(s.done&&p.onDone)p.onDone();},[s.done]);
 return h(Paras,{paras:s.text.split("\n\n")});}
 
+/* DS Badge "Verified": Mimo mark + label, marks steps built on Mimo's own checks */
+function VerifiedBadge(){return h("span",{title:"Built on Mimo's verified checks",style:{display:"inline-flex",alignItems:"center",gap:4,height:19,boxSizing:"border-box",padding:"0 6px",margin:"0 2px 0 8px",border:"1px solid #2A2A2A",borderRadius:4,background:"#FFFFFF",verticalAlign:"2px",fontSize:12,lineHeight:"17px",fontWeight:500,color:"#2A2A2A",whiteSpace:"nowrap"}},
+h("svg",{width:11,height:10,viewBox:"0 0 21.3 20",style:{display:"block",flexShrink:0}},h("path",{d:"M21.2948 0.316406H16.2686V19.8237H21.2948V0.316406Z",fill:"#1F2024"}),h("path",{d:"M3.55406 0L0 3.55406L10.9144 14.4685L14.4685 10.9144L3.55406 0Z",fill:"#1F2024"}),h("path",{d:"M5.56185 10.7422H0.535645V19.8197H5.56185V10.7422Z",fill:"#1F2024"})),"Verified");}
 /* Custom flow card: full proposal, or collapsed to its header once run */
-function ProposalCard(p){var a=p.answers;var steps=wfSteps(a);
+function ProposalCard(p){var a=p.answers;var W=p.wf||WF;var steps=p.steps||wfSteps(a);
 useEffect(function(){if(p.collapsed||!p.onRun)return;function k(e){if(e.key==="Enter"&&!(e.target&&/TEXTAREA|INPUT/.test(e.target.tagName))){e.preventDefault();p.onRun();}}
 window.addEventListener("keydown",k);return function(){window.removeEventListener("keydown",k);};},[p.collapsed]);
-var head=h("div",null,h("div",{style:{fontSize:16,lineHeight:"26px",fontWeight:500,color:"#2A2A2A"}},"Proposed workflow: "+WF.name),
-h("div",{style:{fontSize:16,lineHeight:"26px",color:"#9D9D9E"}},WF.sub));
+var head=h("div",null,h("div",{style:{fontSize:16,lineHeight:"26px",fontWeight:500,color:"#2A2A2A"}},"Proposed workflow: "+W.name),
+h("div",{style:{fontSize:16,lineHeight:"26px",color:"#9D9D9E"}},W.sub));
 if(p.collapsed)return h("div",{style:cardStyle({boxShadow:"none",animation:"fadeIn .3s ease both"})},head);
 return h("div",{style:cardStyle({animation:"dockIn .35s cubic-bezier(.16,1,.3,1) both"})},head,
-h("div",{style:{fontSize:16,lineHeight:"26px",color:"#2A2A2A",margin:"20px 0 20px"}},wfDescription(a)),
+h("div",{style:{fontSize:16,lineHeight:"26px",color:"#2A2A2A",margin:"20px 0 20px"}},p.desc||wfDescription(a)),
 h("div",null,steps.map(function(s,i){return h(Fragment,{key:i},
 h("div",{style:{display:"flex",alignItems:"flex-start",gap:12}},
 h("span",{style:{width:24,height:24,marginTop:1,borderRadius:"50%",background:"#ECECEC",color:"#545453",fontSize:13,fontWeight:500,display:"inline-flex",alignItems:"center",justifyContent:"center",flexShrink:0}},i+1),
-h("div",{style:{fontSize:16,lineHeight:"26px"}},h("span",{style:{fontWeight:500,color:"#2A2A2A"}},s.name),h("span",{style:{color:"#9D9D9E"}},"  "+s.desc))),
+h("div",{style:{fontSize:16,lineHeight:"26px"}},h("span",{style:{fontWeight:500,color:"#2A2A2A"}},s.name),s.verified?h(VerifiedBadge,null):null,h("span",{style:{color:"#9D9D9E"}},"  "+s.desc))),
 i<steps.length-1?h("div",{style:{width:1,height:20,background:T.colorBorderMedium,margin:"6px 0 6px 12px"}}):null);})),
 h("div",{style:{display:"flex",gap:8,marginTop:24}},
 h(PrimaryBtn,{onClick:p.onRun},"Run workflow",h(Ic.enter,null)),h(SecondaryBtn,{onClick:p.onCancel},"Cancel")));}
@@ -630,7 +724,7 @@ var label=stopped?"Stopped":allDone?"Completed":"In progress";
 return h("div",{style:{animation:"fadeIn .3s ease both"}},
 h("div",{onClick:p.onToggle,style:{display:"flex",alignItems:"flex-start",gap:12,cursor:"pointer",userSelect:"none"}},
 h("span",{style:{color:"#545453",marginTop:3}},h(Ic.tool,null)),
-h("div",null,h("div",{style:{display:"flex",alignItems:"center",gap:6,fontSize:16,lineHeight:"26px",fontWeight:500,color:"#2A2A2A"}},WF.name,h(Ic.chev,{up:!p.collapsed})),
+h("div",null,h("div",{style:{display:"flex",alignItems:"center",gap:6,fontSize:16,lineHeight:"26px",fontWeight:500,color:"#2A2A2A"}},p.name||WF.name,h(Ic.chev,{up:!p.collapsed})),
 h("div",{style:{fontSize:14,lineHeight:"22px",color:T.colorTextSecondary}},label))),
 h("div",{style:{overflow:"hidden",maxHeight:p.collapsed?0:600,opacity:p.collapsed?0:1,transition:"max-height .45s cubic-bezier(.16,1,.3,1), opacity .3s ease"}},
 h("div",{style:{paddingTop:16}},steps.map(function(s,i){var status=st[i]||"pending";var last=i===steps.length-1;var r=p.results[i];
@@ -659,6 +753,7 @@ function Strike(p){return h("span",null,h("span",{style:{textDecoration:"line-th
 function changeLine(f){if(f.tag==="Re-code VAT")return h(Fragment,null,"Re-code VAT: ",h(Strike,{from:f.vat,to:f.recodeVat}));
 if(f.tag==="Remove duplicate")return "Remove duplicate of "+((f.history&&f.history[0]&&f.history[0].ref)||"earlier bill");
 if(f.tag==="Request invoice")return "Request a full VAT invoice before filing";
+if(f.tag==="Add to schedule")return h(Fragment,null,"Move to "+f.acctName+": ",h(Strike,{from:"expensed in full",to:f.releaseLabel}));
 return "Included as a late claim, "+f.vatAmount+" input VAT";}
 
 function FindingRow(p){var f=p.f;var st=p.state;var _h=useState(false);var hv=_h[0],setHv=_h[1];var done=st&&st!=="open";
@@ -726,9 +821,36 @@ function AuditLog(p){return h("div",{style:{display:"flex",flexDirection:"column
 h("span",{style:{width:64,flexShrink:0,fontSize:13,color:T.colorTextSecondary,fontVariantNumeric:"tabular-nums"}},e.t),
 h("div",{style:{fontSize:14,lineHeight:"22px",color:"#2A2A2A"}},h("span",{style:{fontWeight:500}},e.who),"  ",e.what));}));}
 
+/* Schedule: additions and releases per prepayment, grouped by account, with a combined total */
+function ScheduleView(p){var a=p.answers;var T0=schedTotals(a,p.state,false);var L=monthsIn(a.fy);var months=FY_MONTHS.slice(0,L);
+var pending=p.findings.filter(function(f){return (p.state[f.id]||"open")==="open";}).length;
+var cols=["240px","96px","96px"].concat(months.map(function(){return "86px";})).concat(["104px"]);var grid=cols.join(" ");
+var minW=240+96+96+86*L+104;
+var cell=function(v,o){o=o||{};return h("div",{style:Object.assign({padding:"10px 12px",fontSize:13,lineHeight:"20px",textAlign:"right",color:v?"#2A2A2A":"#B8B8B8",fontVariantNumeric:"tabular-nums",whiteSpace:"nowrap"},o.st||{})},v?fmt(v).replace("£",""):(o.dash===false?"":"–"));};
+var first=function(content,o){return h("div",{style:Object.assign({padding:"10px 12px",fontSize:13,lineHeight:"20px",position:"sticky",left:0,background:(o&&o.bg)||"#FFFFFF",zIndex:1,minWidth:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"},(o&&o.st)||{})},content);};
+var row=function(key,firstEl,r,o){o=o||{};var bg=o.bg||"#FFFFFF";var st=o.bold?{fontWeight:600}:{};
+return h("div",{key:key,style:{display:"grid",gridTemplateColumns:grid,background:bg,borderBottom:"1px solid "+T.colorBorderLight}},first(firstEl,{bg:bg,st:st}),
+cell(r.opening,{st:st}),cell(r.additions,{st:st}),r.rel.map(function(v,i){return h(Fragment,{key:i},cell(v,{st:st}));}),cell(r.closing,{st:st}));};
+var groups=T0.acc.map(function(k){var items=T0.items.filter(function(x){return x.acct===k;});var tot=T0.byAcct[k];
+return h(Fragment,{key:k},
+h("div",{style:{display:"grid",gridTemplateColumns:grid,background:"#FBFBFB",borderBottom:"1px solid "+T.colorBorderLight}},first(ACCTS[k],{bg:"#FBFBFB",st:{fontWeight:600}}),h("div",{style:{gridColumn:"2 / -1"}})),
+items.map(function(x){var r=schedRow(x,a.fy);return row(x.id,h("span",{title:x.contact+" "+x.ref+(x.kind==="prepay"?" (added from suggestions)":"")},x.kind==="prepay"?h("span",{style:{display:"inline-block",width:6,height:6,borderRadius:3,background:T.colorBrandPrimary,marginRight:8,verticalAlign:"middle"}}):null,x.contact,h("span",{style:{color:T.colorTextSecondary}},"  "+x.ref)),{opening:r.opening,additions:r.additions,rel:r.releases,closing:r.closing});}),
+row(k+"t","Total "+k,{opening:tot.opening,additions:tot.additions,rel:tot.rel,closing:tot.closing},{bold:true}));});
+var comb={opening:0,additions:0,rel:months.map(function(){return 0;}),closing:0};T0.acc.forEach(function(k){var t=T0.byAcct[k];comb.opening+=t.opening;comb.additions+=t.additions;comb.closing+=t.closing;t.rel.forEach(function(v,i){comb.rel[i]+=v;});});
+return h("div",null,
+h("div",{style:{marginBottom:16}},h("div",{style:{fontSize:14,fontWeight:500,color:"#2A2A2A"}},CLIENT),h("div",{style:{fontSize:24,fontWeight:600,color:"#2A2A2A",margin:"4px 0"}},"Prepayment schedule"),
+h("div",{style:{fontSize:14,color:T.colorTextSecondary}},a.period+" · "+T0.acc.map(function(k){return ACCTS[k];}).join(" and "))),
+pending?h("div",{style:{fontSize:14,lineHeight:"22px",color:"#545453",marginBottom:16}},pending+" suggested "+(pending>1?"invoices aren't":"invoice isn't")+" in the schedule yet. Add them from Suggestions."):null,
+h("div",{style:{border:"1px solid "+T.colorBorderDark,borderRadius:8,overflow:"hidden",background:"#FFFFFF"}},
+h("div",{style:{overflowX:"auto"}},h("div",{style:{minWidth:minW}},
+h("div",{style:{display:"grid",gridTemplateColumns:grid,background:"#FBFBFB",borderBottom:"1px solid "+T.colorBorderDark}},
+first("Prepayment",{bg:"#FBFBFB",st:{color:"#757980"}}),["Opening","Additions"].concat(months).concat(["Closing"]).map(function(x,i){return h("div",{key:i,style:{padding:"10px 12px",fontSize:12,color:"#757980",textAlign:"right",whiteSpace:"nowrap"}},x);})),
+groups,row("all","Combined",comb,{bold:true,bg:"#F7F7F7"})))));}
+
 function ResultsPanel(p){var open=p.findings.filter(function(f){return (p.state[f.id]||"open")==="open";}).length;
-var tabs=[{v:"findings",label:"Findings",count:open||null},{v:"analysis",label:"Analysis"},{v:"report",label:"VAT report"},{v:"tx",label:"Transaction table"},{v:"paper",label:"Working paper"},{v:"audit",label:"Audit log"}];
+var tabs=p.scen==="schedule"?[{v:"findings",label:"Suggestions",count:open||null},{v:"schedule",label:"Schedule"},{v:"audit",label:"Audit log"}]:[{v:"findings",label:"Findings",count:open||null},{v:"analysis",label:"Analysis"},{v:"report",label:"VAT report"},{v:"tx",label:"Transaction table"},{v:"paper",label:"Working paper"},{v:"audit",label:"Audit log"}];
 var body;if(p.tab==="findings")body=h("div",{style:{display:"flex",flexDirection:"column",gap:12}},p.findings.map(function(f){return h(FindingRow,{key:f.id,f:f,state:p.state[f.id]||"open",onOpen:function(){p.onOpen(f.id);},onApply:function(){p.onApply(f.id);},onAdd:function(){p.onAdd(f);}});}));
+else if(p.tab==="schedule")body=h(ScheduleView,p);
 else if(p.tab==="analysis")body=h(Analysis,p);else if(p.tab==="report")body=h(VatReport,p);else if(p.tab==="tx")body=h(TxTable,p);else if(p.tab==="paper")body=h(WorkingPaper,p);else body=h(AuditLog,p);
 return h("div",{style:{flex:1,minWidth:0,minHeight:0,display:"flex",flexDirection:"column",background:"#FFFFFF"}},
 h("div",{style:{padding:"20px 32px 0",flexShrink:0}},h(Tabs,{tabs:tabs,value:p.tab,onChange:p.setTab})),
@@ -774,6 +896,7 @@ h("div",{style:{fontSize:14,lineHeight:"22px",color:"#2A2A2A"}},f.text),
 h("div",{style:{height:1,background:T.colorSuccessBorder,margin:"18px 0"}}),
 h("div",{style:{fontSize:16,fontWeight:500,color:"#2A2A2A",marginBottom:14}},act.title),
 f.tag==="Re-code VAT"?h("div",{style:{display:"flex",gap:16,marginBottom:16}},h(Field,{label:"VAT amount",from:f.vatAmount,to:newVat(f)}),h(Field,{label:"VAT rate name",from:f.vat,to:f.recodeVat})):
+f.tag==="Add to schedule"?h("div",{style:{display:"flex",gap:16,marginBottom:16}},h(Field,{label:"Account",from:f.account,to:f.acctName}),h(Field,{label:"Release",from:"Expensed in full",to:f.releaseLabel})):
 f.tag==="Remove duplicate"?h("div",{style:{fontSize:14,lineHeight:"22px",color:"#545453",marginBottom:16}},"Keeps "+f.history[0].ref+" ("+f.history[0].date+") and deletes "+f.ref+". "+f.vatAmount+" comes off box 4."):
 f.tag==="Request invoice"?h("div",{style:{fontSize:14,lineHeight:"22px",color:"#545453",marginBottom:16}},"Sends a request to "+f.contact+" for the final VAT invoice, and holds "+f.vatAmount+" of input VAT until it arrives."):
 h("div",{style:{fontSize:14,lineHeight:"22px",color:"#545453",marginBottom:16}},f.vatAmount+" of input VAT is in box 4 for this return."),
@@ -786,16 +909,26 @@ f.invoice?h("div",{style:{marginTop:28}},h("div",{style:{display:"flex",alignIte
 h("div",{style:{background:"#E9E9EB",padding:12,borderRadius:4}},h(InvoiceDoc,{inv:f.invoice}))):null);
 else if(tab==="tx"){body=h("div",null,h(TxDetails,{f:f}),
 f.journal?h(Fragment,null,h(H2,null,"Journal #"+f.journal.ref),h(Table,{cols:[{label:"Account",k:"a",w:"2fr"},{label:"Debit",k:"d",right:true},{label:"Credit",k:"c",right:true}],rows:f.journal.lines})):null);}
+else if(f.kind==="prepay")body=h(Table,{cols:[{label:"Month",k:"m",w:"1fr"},{label:"Release",k:"v",w:"1fr",right:true}],rows:f.releaseRows});
 else body=h(Table,{cols:[{label:"Date",k:"date",w:"92px"},{label:"Reference",k:"ref",w:"1fr"},{label:"Description",k:"desc",w:"1.6fr"},{label:"Net",k:"net",right:true,w:"96px"},{label:"VAT rate",k:"vat",w:"1.3fr"}],rows:f.history||[]});
 return h("div",{style:{flex:1,minWidth:0,minHeight:0,display:"flex",flexDirection:"column",background:"#FFFFFF",animation:"fadeIn .3s ease both"}},
 h("div",{style:{padding:"28px 32px 0",flexShrink:0}},
 h("div",{style:{display:"flex",alignItems:"center",gap:12}},h("span",{style:{fontSize:24,fontWeight:500,color:"#2A2A2A"}},f.contact),h(Tag,null,f.tag),h("div",{style:{flex:1}}),badge,
 h(IconBtn,{title:"Close",onClick:p.onClose,hoverBg:"#E2E2E2",style:{borderRadius:"50%",background:"#F0F0F0"}},h(Ic.close,{s:16}))),
-h("div",{style:{marginTop:16}},h(Tabs,{tabs:[{v:"suggestion",label:"Suggestion"},{v:"tx",label:"Transaction details"},{v:"hist",label:"Historical transactions"}],value:tab,onChange:setTab}))),
+h("div",{style:{marginTop:16}},h(Tabs,{tabs:[{v:"suggestion",label:"Suggestion"},{v:"tx",label:"Transaction details"},f.kind==="prepay"?{v:"hist",label:"Release profile"}:{v:"hist",label:"Historical transactions"}],value:tab,onChange:setTab}))),
 h("div",{style:{flex:1,minHeight:0,overflowY:"auto",padding:"24px 32px 32px"}},body),
 h("div",{style:{flexShrink:0,display:"flex",gap:12,padding:"14px 24px",borderTop:"1px solid "+T.colorBorderDark,background:"#FFFFFF"}},
 h("button",{type:"button",disabled:done,onClick:p.onIgnore,style:{height:40,padding:"0 16px",border:"none",borderRadius:8,background:T.colorErrorBg,color:T.colorError,fontSize:14,fontWeight:500,fontFamily:"inherit",cursor:done?"default":"pointer",opacity:done?0.5:1}},"Ignore suggestion"),
 h(PrimaryBtn,{disabled:done,onClick:p.onAcknowledge,style:{flex:1}},"Resolve")));}
+
+/* Open in fullscreen: the invoice opens as its own page in a new browser tab */
+function openInvoiceTab(f){if(!f||!f.invoice)return;var w=window.open("","_blank");if(!w)return;
+var div=document.createElement("div");var root=ReactDOM.createRoot(div);ReactDOM.flushSync(function(){root.render(h(InvoiceDoc,{inv:f.invoice}));});var body=div.innerHTML;root.unmount();
+var title=(f.invoice.no||"Invoice")+" · "+f.contact;
+w.document.open();w.document.write('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>'+title.replace(/</g,"&lt;")+'</title>'+
+'<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">'+
+'<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased;background:#E9E9EB;padding:48px 24px}.page{max-width:794px;margin:0 auto}@media print{body{background:#fff;padding:0}.page>div{box-shadow:none!important}}</style></head>'+
+'<body><div class="page">'+body+'</div></body></html>');w.document.close();}
 
 /* ══════════════ CONVERSATION (one per tab) ══════════════ */
 var TH={kind:"thinking",label:"Thinking"},ASK={kind:"asking",label:"Asking for context"};
@@ -803,7 +936,7 @@ function nowHM(){var d=new Date();return String(d.getHours()).padStart(2,"0")+":
 function useTimers(){var ref=useRef([]);useEffect(function(){return function(){ref.current.forEach(clearTimeout);};},[]);
 return{later:function(ms,fn){ref.current.push(setTimeout(fn,ms));},clear:function(){ref.current.forEach(clearTimeout);ref.current=[];}};}
 
-var APPS=[{t:"VAT review",d:"Checks journals and invoices for VAT anomalies.",live:true},{t:"Prepayments",d:"Checks and creates working paper for prepaid expenses."},{t:"Accruals",d:"Analyses patterns to detect accrued expenses."},
+var APPS=[{t:"VAT review",d:"Checks journals and invoices for VAT anomalies.",live:true},{t:"Prepayments",d:"Checks and creates working paper for prepaid expenses.",live:true,prompt:"Create a combined prepayment schedule"},{t:"Accruals",d:"Analyses patterns to detect accrued expenses."},
 {t:"P&L review",d:"Surfaces unexpected variances in the P&L."},{t:"Miscodings",d:"Checks account codes and detects potential miscodings."},{t:"Bank recs",d:"Reconciles any bank account or credit cards."},
 {t:"Payroll",d:"Ties payroll journals to the payroll report."},{t:"Deferred revenue",d:"Builds release schedules for income billed in advance."},{t:"Fixed assets",d:"Rolls forward the register and checks depreciation."}];
 
@@ -820,7 +953,7 @@ h(Composer,{value:p.draft,onChange:p.setDraft,onSend:p.onSend,placeholder:"Descr
 h("div",{style:{height:1,background:T.colorBorderDark,margin:"48px 0 56px"}}),
 h("div",{style:{textAlign:"center",fontSize:24,color:"#1F2024",marginBottom:32}},"Apps ready to use"),
 h("div",{style:{display:"grid",gridTemplateColumns:"repeat(3, minmax(0,1fr))",gap:16}},APPS.map(function(a){
-return h("button",Object.assign({key:a.t,type:"button",onClick:function(){if(a.live)p.onApp("Run a VAT review");else{setToast(a.t);setTimeout(function(){setToast(null);},2200);}},
+return h("button",Object.assign({key:a.t,type:"button",onClick:function(){if(a.live)p.onApp(a.prompt||"Run a VAT review");else{setToast(a.t);setTimeout(function(){setToast(null);},2200);}},
 style:{height:148,textAlign:"left",display:"flex",flexDirection:"column",justifyContent:"flex-end",gap:6,padding:16,border:"1px solid "+T.colorBorderDark,borderRadius:8,background:"#FFFFFF",cursor:"pointer",fontFamily:"inherit"}},
 hover({borderColor:T.colorBorderDark,boxShadow:"none"},{borderColor:T.colorBorderHover,boxShadow:"0 6px 16px rgba(0,0,0,0.05)"})),
 h("span",{style:{fontSize:18,lineHeight:"24px",fontWeight:500,color:"#1F2024"}},a.t,h("span",{style:{display:"inline-block",verticalAlign:"-3px",marginLeft:6}},h(Ic.arrowRight,{s:18}))),
@@ -866,6 +999,7 @@ var _lg=useState([]);var log=_lg[0],setLog=_lg[1];
 var _mk=useState(false);var marked=_mk[0],setMarked=_mk[1];
 var _fu=useState(false);var fullInv=_fu[0],setFullInv=_fu[1];
 var _pu=useState(false);var promptsUsed=_pu[0],setPromptsUsed=_pu[1];var _sel=useState(null);var selBtn=_sel[0],setSelBtn=_sel[1];
+var _sc=useState("vat");var scen=_sc[0],setScen=_sc[1];var SCN=useRef("vat");var isS=scen==="schedule";
 var scrollRef=useRef(null);var seq=useRef(0);var doneStreams=useRef({});
 function meta(o){p.onMeta(p.id,o);}
 function addLog(what,who){setLog(function(l){return l.concat([{t:nowHM(),who:who||USER.name,what:what}]);});}
@@ -875,8 +1009,8 @@ function setStatus(lines){setItems(function(xs){return xs.filter(function(x){ret
 function push(){var add=[].slice.call(arguments);setItems(function(xs){return xs.filter(function(x){return x.type!=="status";}).concat(add.map(function(a){return Object.assign({k:++seq.current},a);}));});}
 function setF(id,v){FS.current=Object.assign({},FS.current);FS.current[id]=v;setFstate(FS.current);}
 
-var findings=useMemo(function(){var list=FINDINGS_BASE.slice();if(answers.late)list.push(lateClaim(answers.filed||"7 Aug 26"));
-return list.map(function(f){var x=extraC[f.id];return x?Object.assign({},f,{comments:(f.comments||[]).concat(x)}):f;});},[answers.late,answers.filed,extraC]);
+var findings=useMemo(function(){var list=scen==="schedule"?scheduleFindings(answers):FINDINGS_BASE.slice();if(scen!=="schedule"&&answers.late)list.push(lateClaim(answers.filed||"7 Aug 26"));
+return list.map(function(f){var x=extraC[f.id];return x?Object.assign({},f,{comments:(f.comments||[]).concat(x)}):f;});},[scen,answers.late,answers.filed,answers.accts,answers.fy,extraC]);
 
 useEffect(function(){p.onOverlay(p.id,!!detail);},[detail]);
 useEffect(function(){var el=scrollRef.current;if(el)el.scrollTo({top:el.scrollHeight,behavior:"smooth"});},[items,dock,run,view]);
@@ -888,24 +1022,25 @@ var ro=new ResizeObserver(function(){var sc=scrollRef.current;if(sc&&stick.curre
 ro.observe(el);return function(){ro.disconnect();};},[phase]);
 
 /* steps 1–2 → 3 */
-function begin(text){setPhase("chat");meta({label:"VAT review"});addLog("Started a chat: “"+text+"”");
+function begin(text){var sc=/schedule/i.test(text)?"schedule":"vat";SCN.current=sc;setScen(sc);if(sc==="schedule")setRtab("findings");setPhase("chat");meta({label:sc==="schedule"?"Prepayment schedule":"VAT review"});addLog("Started a chat: “"+text+"”");
 setItems([{type:"user",text:text,k:++seq.current}]);setDock("busy");
 tm.later(450,function(){setStatus([TH]);});tm.later(1400,function(){thenStatus(ASK);});tm.later(2200,function(){setDock("q1");});}
 /* 3 → 4 */
-function answerQ1(o){setA({period:o.period,periodLabel:o.label});setDock("busy");setStatus([TH]);
+function answerQ1(o){if(SCN.current==="schedule")setA({accts:o.accts||["1400","1410"],acctLabel:o.label});else setA({period:o.period,periodLabel:o.label});setDock("busy");setStatus([TH]);
 tm.later(1000,function(){thenStatus(ASK);});tm.later(1900,function(){setDock("q2");});}
 /* 4 → 5, or straight to the proposal */
-function answerQ2(o){setA({late:o.late,lateLabel:o.label});push({type:"answered",pairs:[[Q1.q,A.current.periodLabel],[Q2.q,o.label]]});addLog("Scoped the review to "+A.current.period+(o.late?", late claims included":""));
+function answerQ2(o){if(SCN.current==="schedule"){setA({fy:o.fy,period:o.period});push({type:"answered",pairs:[[SQ1.q,A.current.acctLabel],[SQ2.q,o.label]]});addLog("Scoped the schedule to "+acctsText(A.current)+", "+o.period);propose();return;}
+setA({late:o.late,lateLabel:o.label});push({type:"answered",pairs:[[Q1.q,A.current.periodLabel],[Q2.q,o.label]]});addLog("Scoped the review to "+A.current.period+(o.late?", late claims included":""));
 if(o.late){setDock("busy");tm.later(250,function(){setStatus([TH]);});tm.later(1100,function(){thenStatus(ASK);});tm.later(1800,function(){setDock("free");});}else propose();}
 /* 5 → 6 */
 function answerQ3(v){setA({filed:v});push({type:"answered",pairs:[[Q3.q,v]]});propose();}
 /* 6 → 7 */
 function propose(){setDock("busy");tm.later(250,function(){setStatus([TH]);});
 tm.later(1200,function(){thenStatus({kind:"creating",label:"Creating workflow proposal"});});
-tm.later(3000,function(){push({type:"stream",key:p.id+"-x"+seq.current,paras:EXPLAIN,after:"proposal"});setDock("busy");});}
+tm.later(3000,function(){push({type:"stream",key:p.id+"-x"+seq.current,paras:SCN.current==="schedule"?S_EXPLAIN:EXPLAIN,after:"proposal"});setDock("busy");});}
 function onStreamDone(item){if(doneStreams.current[item.key])return;doneStreams.current[item.key]=true;if(item.thenItem){setItems(function(xs){return xs.concat([{type:item.thenItem,k:++seq.current}]);});}if(item.after)setDock(item.after);}
 /* 7 → 8 → 9 → 10 */
-function runWf(){var steps=wfSteps(A.current);setDock("busy");push({type:"wfcard"},{type:"user",text:"Run workflow"});meta({status:"running"});addLog("Ran "+WF.name+" for "+A.current.period);
+function runWf(){var isSch=SCN.current==="schedule";var steps=isSch?sSteps(A.current):wfSteps(A.current);setDock("busy");push({type:"wfcard"},{type:"user",text:"Run workflow"});meta({status:"running"});addLog("Ran "+(isSch?S_WF.name:WF.name)+" for "+A.current.period);
 tm.later(60,function(){setStatus([TH]);});tm.later(1000,function(){thenStatus({kind:"initiating",label:"Initiating workflow"});});
 tm.later(2500,function(){setShowPeriod(true);push({type:"progress"});setRun({statuses:steps.map(function(){return "pending";}),results:[],collapsed:false});
 var t=350;steps.forEach(function(s,i){
@@ -914,7 +1049,7 @@ tm.later(t,function(){setRun(function(r){var st=r.statuses.slice();st[i]="done";
 tm.later(t+700,function(){setRun(function(r){return Object.assign({},r,{collapsed:true});});push({type:"summary"});});});}
 /* the split view opens once the summary has finished writing itself */
 function finishRun(){if(doneStreams.current.summary)return;doneStreams.current.summary=true;
-tm.later(500,function(){setReady(true);setView("split");setDock("next");meta({status:"done"});addLog("Workflow completed: 72 / 100, not ready to file","Mimo");});}
+tm.later(500,function(){setReady(true);setView("split");setDock("next");meta({status:"done"});addLog(SCN.current==="schedule"?"Workflow completed: schedule built, "+scheduleFindings(A.current).length+" suggestions":"Workflow completed: 72 / 100, not ready to file","Mimo");});}
 function cancelWf(){setDock("busy");push({type:"stream",key:p.id+"-c"+seq.current,paras:["No problem, nothing has been run. Tell me what you'd like to change and I'll update the workflow."],after:"default"});}
 function stop(){tm.clear();items.forEach(function(x){if(x.type==="stream")doneStreams.current[x.key]=true;});setRun(function(r){return Object.assign({},r,{statuses:r.statuses.map(function(s){return s==="active"||s==="pending"?"stopped":s;})});});
 push({type:"note",text:"Stopped. Nothing has been changed in Xero."});setDock("default");meta({status:"stopped"});addLog("Stopped the run");}
@@ -932,6 +1067,11 @@ if(fc.length){var ex={};fc.forEach(function(c){ex[c.fid]=[{name:USER.name,initia
 setExtraC(function(o){var n=Object.assign({},o);Object.keys(ex).forEach(function(k){n[k]=(n[k]||[]).concat(ex[k]);});return n;});
 fc.forEach(function(c){addLog("Commented on "+c.label+": “"+t+"”");});
 reply="Added your note to "+fc.map(function(c){return c.label;}).join(" and ")+". It's in the comments on "+(fc.length>1?"each finding":"the finding")+" and in the audit log.";}
+else if(SCN.current==="schedule"&&/\b(add|apply)\b.*\ball\b|\ball\b.*suggestion/i.test(t)){var todoS=findings.filter(function(f){return (FS.current[f.id]||"open")==="open";});
+todoS.forEach(function(f){setF(f.id,"applied");addLog("Added to schedule: "+f.contact+" ("+f.ref+")");});
+var tt=schedTotals(A.current,FS.current,false);var cl=0;tt.acc.forEach(function(k){cl+=tt.byAcct[k].closing;});
+reply=todoS.length?"Done. I've added "+todoS.length+" invoices to the schedule: "+todoS.map(function(f){return f.contact;}).join(", ")+". The combined closing balance at "+(A.current.fy!==false?"year end":"the end of September")+" is now "+fmt(cl)+".":"Every suggestion is already in the schedule.";}
+else if(SCN.current==="schedule"&&/releases?\b.*month|by month/i.test(t)){reply="Here are the releases by month for "+A.current.period+", for everything currently in the schedule.";tableAfter="releases";}
 else if(/\b(apply|re-?code|resolve)\b.*\ball\b|\ball\b.*\b(re-?code|recodes)\b/i.test(t)){var todo=findings.filter(function(f){return f.tag==="Re-code VAT"&&(FS.current[f.id]||"open")==="open";});
 todo.forEach(function(f){setF(f.id,"applied");addLog("Re-coded: "+f.contact+" ("+f.ref+")");});
 reply=todo.length?"Done. I've re-coded "+todo.length+" transactions: "+todo.map(function(f){return f.contact;}).join(", ")+". The score is now "+score(FS.current)+" out of 100"+(blocked(FS.current)?".":", and the blocking check has cleared."):"There are no open re-codes left.";}
@@ -946,20 +1086,37 @@ if(txt.length<4||!box||!s.rangeCount||!box.contains(s.anchorNode)){setSelBtn(nul
 var r=s.getRangeAt(0).getBoundingClientRect();setSelBtn({x:r.left+r.width/2,y:r.top,text:txt});}
 
 /* ── rendering ── */
-var steps=wfSteps(answers);
+var steps=isS?(answers.period?sSteps(answers):[]):wfSteps(answers);
 function renderItem(it){switch(it.type){
 case "user":return h(UserBubble,{key:it.k,text:it.text,quotes:it.quotes});
 case "status":return h(StatusLines,{key:"status",lines:it.lines});
 case "answered":return h(Answered,{key:it.k,pairs:it.pairs});
 case "stream":return h(StreamText,{key:it.k,k:it.key,paras:it.paras,onDone:function(){onStreamDone(it);}});
-case "wfcard":return h(ProposalCard,{key:it.k,answers:answers,collapsed:true});
+case "wfcard":return h(ProposalCard,{key:it.k,answers:answers,collapsed:true,wf:isS?S_WF:null});
 case "largest":return h("div",{key:it.k,style:{animation:"fadeIn .35s ease both"}},h(Table,{cols:[{label:"Date",k:0,w:"104px"},{label:"Contact",k:1,w:"1fr"},{label:"Gross",k:2,w:"118px",right:true},{label:"Finding",k:3,w:"136px"}],rows:LARGEST}));
 case "txdetails":var tf=findings.filter(function(f){return f.id===it.fid;})[0];if(!tf)return null;
 return h("div",{key:it.k,style:{display:"flex",flexDirection:"column",gap:12,animation:"fadeIn .35s ease both"}},h("div",{style:{fontSize:16,lineHeight:"26px",color:"#2A2A2A"}},"Transaction details for "+tf.contact+":"),h(TxDetails,{f:tf}));
 case "note":return h("div",{key:it.k,style:{fontSize:16,lineHeight:"26px",color:"#545453"}},it.text);
-case "progress":return h(Progress,{key:it.k,steps:steps,statuses:run.statuses,results:run.results,collapsed:run.collapsed,onToggle:function(){setRun(function(r){return Object.assign({},r,{collapsed:!r.collapsed});});}});
-case "summary":return h(SummaryMsg,{key:it.k,instant:ready,blocks:summaryBlocks(),onDone:finishRun});}
+case "progress":return h(Progress,{key:it.k,name:isS?S_WF.name:null,steps:steps,statuses:run.statuses,results:run.results,collapsed:run.collapsed,onToggle:function(){setRun(function(r){return Object.assign({},r,{collapsed:!r.collapsed});});}});
+case "summary":return h(SummaryMsg,{key:it.k,instant:ready,blocks:isS?sSummaryBlocks():summaryBlocks(),onDone:finishRun});
+case "releases":return h("div",{key:it.k,style:{animation:"fadeIn .35s ease both"}},h(Table,{cols:[{label:"Month",k:0,w:"1fr"}].concat(releasesByMonth().acc.map(function(k,i){return{label:k,k:i+1,w:"1fr",right:true};})).concat([{label:"Total",k:releasesByMonth().acc.length+1,w:"1fr",right:true}]),rows:releasesByMonth().rows}));}
 return null;}
+/* scenario 2 summary: what the combined schedule looks like with every suggestion added */
+function releasesByMonth(){var tt=schedTotals(answers,fstate,false);var rows=FY_MONTHS.slice(0,monthsIn(answers.fy)).map(function(m,i){var tot=0;var r=[m];tt.acc.forEach(function(k){var v=tt.byAcct[k].rel[i];tot+=v;r.push(fmt(v));});r.push(fmt(tot));return r;});
+return{acc:tt.acc,rows:rows};}
+function sSummaryBlocks(){var a=answers;var cur=schedTotals(a,{},false);var all=schedTotals(a,{},true);var sug=scheduleFindings(a);var bf=cur.items.length;
+var rows=all.acc.map(function(k){var t=all.byAcct[k];return[k,fmt(t.opening),fmt(t.additions),fmt(t.released),fmt(t.closing)];});
+var moved=0;all.acc.forEach(function(k){moved+=all.byAcct[k].closing-cur.byAcct[k].closing;});
+var p16={margin:0,fontSize:16,lineHeight:"26px"};
+return[h("div",{style:{fontSize:20,lineHeight:"28px",fontWeight:600,color:"#1F2024"}},"Schedule ready for review"),
+h("p",{style:p16},(all.acc.length>1?"I've combined "+acctsText(a)+" into one schedule":"I've built the schedule for "+acctsText(a))+" for "+a.period+". "+bf+" prepayments were already on the accounts, and I found "+sug.length+" more invoices that were expensed in full but cover future months."),
+h(Table,{cols:[{label:"Account",k:0,w:"84px"},{label:"Opening",k:1,w:"1fr",right:true},{label:"Additions",k:2,w:"1fr",right:true},{label:"Releases",k:3,w:"1fr",right:true},{label:"Closing",k:4,w:"1fr",right:true}],rows:rows}),
+h("p",{style:p16},"These figures include all "+sug.length+" suggestions. Adding them moves "+fmt(moved)+" out of the P&L and onto the balance sheet at "+(a.fy!==false?"year end":"the end of September")+". Review them in Suggestions before anything is posted."),
+all.acc.indexOf("1400")>=0?h("p",{style:Object.assign({},p16,{color:"#545453"})},"To confirm with the client: Airedale has billed rent a quarter in advance all year, so the earlier quarters may need the same treatment."):null,
+h("div",null,h(ArtifactChip,{label:"Prepayment schedule canvas",open:view!=="chat",onToggle:function(){setView(view==="chat"?"split":"chat");}})),
+promptsUsed?null:h("div",null,h("div",{style:{fontSize:16,lineHeight:"26px",color:"#2A2A2A",marginBottom:12}},"What do you want to do next?"),
+h("div",{style:{display:"flex",flexWrap:"wrap",gap:8}},["Show releases by month","Add all suggestions to the schedule"].map(function(t){
+return h(SecondaryBtn,{key:t,h:40,px:16,style:{fontSize:16,fontWeight:400},onClick:function(){setPromptsUsed(true);setCtext(t);setFocusKey(function(n){return n+1;});}},"\u201C"+t+"\u201D");})))];}
 function summaryBlocks(){var n=findings.length;var rows=[["Box 1 ties to VAT on sales","Passed"],["Reverse charge entries net off","Failed, blocking"],["Exempt and zero-rated coding","2 miscoded"],["Standard rate on utilities","1 at 5%"],["Input VAT backed by invoices","1 proforma only"],["Duplicate bills","1 found"]];
 if(answers.late)rows.push(["Late claims","1 included, £512.88"]);
 return[h("div",{style:{fontSize:20,lineHeight:"28px",fontWeight:600,color:"#1F2024"}},"Not ready to file"),
@@ -974,13 +1131,13 @@ return h(SecondaryBtn,{key:t,h:40,px:16,style:{fontSize:16,fontWeight:400},onCli
 
 function dockEl(){switch(dock){
 case "busy":return h(Composer,{busy:true,onStop:stop});
-case "q1":return h(Questionnaire,{q:Q1,onAnswer:answerQ1});
-case "q2":return h(Questionnaire,{q:Q2,onAnswer:answerQ2});
+case "q1":return h(Questionnaire,{q:isS?SQ1:Q1,onAnswer:answerQ1});
+case "q2":return h(Questionnaire,{q:isS?SQ2:Q2,onAnswer:answerQ2});
 case "free":return h(FreeText,{q:Q3,onSubmit:answerQ3});
-case "proposal":return h(ProposalCard,{answers:answers,onRun:runWf,onCancel:cancelWf});
+case "proposal":return h(ProposalCard,{answers:answers,onRun:runWf,onCancel:cancelWf,wf:isS?S_WF:null,steps:isS?sSteps(answers):null,desc:isS?sDescription(answers):null});
 case "default":return h(Composer,{value:draft,onChange:setDraft,onSend:sendDefault,placeholder:"Request changes or more info...",autoFocus:true});
 case "next":return h(Composer,{value:ctext,onChange:setCtext,onSend:sendNext,chips:chips,onRemoveChip:function(k){setChips(function(cs){return cs.filter(function(c){return c.key!==k;});});},
-placeholder:chips.length?"Recode, ask for context or more...":"What action do you want to take next?",autoFocus:true,focusKey:focusKey});}
+placeholder:chips.length?(isS?"Add, ask for context or more...":"Recode, ask for context or more..."):"What action do you want to take next?",autoFocus:true,focusKey:focusKey});}
 return null;}
 var actionsDisclaimer=dock==="q1"||dock==="q2"||dock==="free"||dock==="proposal";
 
@@ -992,9 +1149,9 @@ h("div",{ref:contentRef,style:{maxWidth:CHAT_W,margin:"0 auto",padding:"24px 0 3
 dock!=="none"?h("div",{style:{flexShrink:0,padding:narrow?"0 16px 14px":"0 24px 14px",transition:"padding 0.44s "+EASE}},h("div",{style:{maxWidth:CHAT_W,margin:"0 auto"}},dockEl(),h(Disclaimer,{actions:actionsDisclaimer}))):null);}
 
 if(phase==="start")return h("div",{style:{flex:1,display:p.active?"flex":"none",flexDirection:"column",minHeight:0}},
-h(StartView,{draft:draft,setDraft:setDraft,onSend:function(){var t=draft.trim();if(t){setDraft("");begin(t);}},onApp:function(t){setDraft("");typeInto(t,setDraft,function(){setFocusKey(function(n){return n+1;});});},focusKey:focusKey}));
+h(StartView,{draft:draft,setDraft:setDraft,onSend:function(){var t=draft.trim();if(t){setDraft("");begin(t);}},onApp:function(t){setDraft("");begin(t);},focusKey:focusKey}));
 
-var resultsProps={findings:findings,state:fstate,late:!!answers.late,filed:answers.filed,period:answers.period,log:log,tab:rtab,setTab:setRtab,
+var resultsProps={scen:scen,answers:answers,findings:findings,state:fstate,late:!!answers.late,filed:answers.filed,period:answers.period,log:log,tab:rtab,setTab:setRtab,
 onOpen:function(id){setDetail(id);setItems(function(xs){var last=xs[xs.length-1];if(last&&last.type==="txdetails"&&last.fid===id)return xs;return xs.concat([{type:"txdetails",fid:id,k:++seq.current}]);});},onApply:applyF,onAdd:function(f){addChip({key:f.id,fid:f.id,label:f.contact});}};
 var df=detail?findings.filter(function(f){return f.id===detail;})[0]:null;
 /* Same as index_canvas.html: both panes stay mounted and the layout animates between the views.
@@ -1010,11 +1167,11 @@ transition:"flex-basis 0.44s "+EASE+", opacity 0.3s ease, border-color 0.3s ease
 h("div",{style:{flex:"1 1 0",minWidth:0,minHeight:0,display:"flex",flexDirection:"column",overflow:"hidden",
 opacity:rightOn?1:0,pointerEvents:rightOn?"auto":"none",transform:rightOn?"none":"translateX(8px)",
 transition:"opacity 0.34s ease "+(rightOn?"0.06s":"0s")+", transform 0.44s "+EASE}},
-df?h(Drawer,{f:df,state:fstate[df.id]||"open",onClose:function(){setDetail(null);},onApply:function(){applyF(df.id);},onAcknowledge:function(){ackF(df.id);},onIgnore:function(){ignoreF(df.id);},onFullscreen:function(){setFullInv(true);}})
+df?h(Drawer,{f:df,state:fstate[df.id]||"open",onClose:function(){setDetail(null);},onApply:function(){applyF(df.id);},onAcknowledge:function(){ackF(df.id);},onIgnore:function(){ignoreF(df.id);},onFullscreen:function(){openInvoiceTab(df);}})
 :ready?h("div",{onMouseUp:onMouseUp,onScrollCapture:function(){if(selBtn)setSelBtn(null);},style:{flex:1,minHeight:0,display:"flex",flexDirection:"column"}},h(ResultsPanel,Object.assign({wide:mode==="canvas"},resultsProps))):null));
 
 return h("div",{style:{flex:1,display:p.active?"flex":"none",flexDirection:"column",minHeight:0}},
-h(TabHeader,{title:"VAT review",period:showPeriod?answers.period:null,ready:ready,view:view,setView:setView,marked:marked,onMark:function(){setMarked(true);addLog("Marked the review as done");}}),
+h(TabHeader,{title:isS?"Prepayment schedule":"VAT review",period:showPeriod?answers.period:null,ready:ready,view:view,setView:setView,marked:marked,onMark:function(){setMarked(true);addLog("Marked the review as done");}}),
 body,
 selBtn?h("div",{style:{position:"fixed",left:selBtn.x,top:selBtn.y-44,transform:"translateX(-50%)",zIndex:60}},
 h(SecondaryBtn,{h:34,px:10,onClick:function(){var t=selBtn.text;addChip({key:"q"+Date.now(),label:"“"+(t.length>36?t.slice(0,36)+"…":t)+"”"});setSelBtn(null);if(window.getSelection)window.getSelection().removeAllRanges();},style:{boxShadow:"0 6px 16px rgba(0,0,0,0.10)"}},h(Ic.msgPlus,null),"Add to chat")):null,
