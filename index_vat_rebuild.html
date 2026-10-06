@@ -764,7 +764,7 @@ var stLabel=st==="applied"?actionOf(f).done:st==="ignored"?"Ignored":st==="ackno
 return h("div",{style:{position:"relative"},onMouseEnter:function(){setHv(true);},onMouseLeave:function(){setHv(false);}},
 h("div",{onClick:p.onOpen,style:{display:"flex",alignItems:"center",gap:12,minHeight:48,padding:"6px 8px 6px 14px",border:"1px solid "+T.colorBorderDark,borderRadius:8,background:hv&&!done?"#F7F7F7":"#FFFFFF",cursor:"pointer",transition:"background .12s",opacity:done?0.75:1}},
 h("span",{style:{fontSize:14,fontWeight:600,color:"#2A2A2A",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}},f.contact),h(Tag,null,f.tag),
-f.blocking&&!done?h(Badge,{v:"error",h:24,style:{fontSize:12}},"Blocking"):null,
+
 h("div",{style:{flex:1}}),
 h(AvatarStack,{people:people(f)}),
 done?h(Badge,{v:st==="ignored"?"neutral":"success"},st==="ignored"?null:h(Ic.check,{s:16}),stLabel)
@@ -1031,7 +1031,7 @@ var ro=new ResizeObserver(function(){var sc=scrollRef.current;if(sc&&stick.curre
 ro.observe(el);return function(){ro.disconnect();};},[phase]);
 
 /* steps 1–2 → 3 */
-function begin(text){var sc=/schedule/i.test(text)?"schedule":"vat";SCN.current=sc;setScen(sc);if(sc==="schedule")setRtab("findings");setPhase("chat");meta({label:sc==="schedule"?"Prepayment schedule":"VAT review"});addLog("Started a chat: “"+text+"”");
+function begin(text){var sc=/schedule/i.test(text)?"schedule":"vat";SCN.current=sc;setScen(sc);if(sc==="schedule")setRtab("findings");setPhase("chat");meta({label:sc==="schedule"?S_WF.name:WF.name});addLog("Started a chat: “"+text+"”");
 setItems([{type:"user",text:text,k:++seq.current}]);setDock("busy");
 tm.later(450,function(){setStatus([TH]);});tm.later(1400,function(){thenStatus(ASK);});tm.later(2200,function(){setDock("q1");});}
 /* 3 → 4 */
@@ -1180,7 +1180,7 @@ df?h(Drawer,{f:df,state:fstate[df.id]||"open",onClose:function(){setDetail(null)
 :ready?h("div",{onMouseUp:onMouseUp,onScrollCapture:function(){if(selBtn)setSelBtn(null);},style:{flex:1,minHeight:0,display:"flex",flexDirection:"column"}},h(ResultsPanel,Object.assign({wide:mode==="canvas"},resultsProps))):null));
 
 return h("div",{style:{flex:1,display:p.active?"flex":"none",flexDirection:"column",minHeight:0}},
-h(TabHeader,{saved:(p.lib||[]).some(function(w){return w.name===(isS?S_WF.name:WF.name);}),onSave:function(){var n=isS?S_WF.name:WF.name;var was=(p.lib||[]).some(function(w){return w.name===n;});p.onToggleLib(n);addLog(was?"Removed "+n+" from the library":"Added "+n+" to the library");showToast(was?"Removed from your library":"Added to your library. Find it in the menu.");},title:isS?"Prepayment schedule":"VAT review",period:showPeriod?answers.period:null,ready:ready,view:view,setView:setView,marked:marked,onMark:function(){setMarked(true);addLog("Marked the review as done");}}),
+h(TabHeader,{saved:(p.lib||[]).some(function(w){return w.name===(isS?S_WF.name:WF.name);}),onSave:function(){var n=isS?S_WF.name:WF.name;var was=(p.lib||[]).some(function(w){return w.name===n;});p.onToggleLib(n);addLog(was?"Removed "+n+" from the library":"Added "+n+" to the library");showToast(was?"Removed from your library":"Added to your library. Find it in the menu.");},title:isS?S_WF.name:WF.name,period:showPeriod?answers.period:null,ready:ready,view:view,setView:setView,marked:marked,onMark:function(){setMarked(true);addLog("Marked the review as done");}}),
 body,
 toast?h("div",{style:{position:"fixed",left:"50%",top:120,transform:"translateX(-50%)",background:"#2A2A2A",color:"#FFF",fontSize:14,padding:"10px 16px",borderRadius:8,zIndex:80,animation:"fadeIn .2s ease both",display:"flex",alignItems:"center",gap:8}},h(Ic.check,{s:16,c:"#FFFFFF"}),toast):null,
 selBtn?h("div",{style:{position:"fixed",left:selBtn.x,top:selBtn.y-44,transform:"translateX(-50%)",zIndex:60}},
@@ -1225,7 +1225,9 @@ border:on?"1.5px solid "+T.colorBrandPrimary:"1px solid "+T.colorBorderMedium,fo
 h("span",{style:{overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}},t.label),end);}
 
 function TopBar(p){var _m=useState(null);var menu=_m[0],setMenu=_m[1];var _s=useState("idle");var sync=_s[0],setSync=_s[1];
-function doSync(){if(sync!=="idle")return;setSync("busy");setTimeout(function(){setSync("done");setTimeout(function(){setSync("idle");},2200);},1600);}
+var _ls=useState(function(){return Date.now()-14*60000;});var lastSync=_ls[0],setLastSync=_ls[1];
+function doSync(){if(sync!=="idle")return;setSync("busy");setTimeout(function(){setSync("done");setLastSync(Date.now());setTimeout(function(){setSync("idle");},2200);},1600);}
+function syncAgo(){var m=Math.floor((Date.now()-lastSync)/60000);return m<1?"Last synced just now":"Last synced "+m+(m===1?" minute":" minutes")+" ago";}
 return h("div",{style:{height:48,flexShrink:0,display:"flex",alignItems:"center",gap:6,padding:"0 16px 0 12px",background:"#F5F5F5",borderBottom:"1px solid "+T.colorBorderDark}},
 h(IconBtn,{title:"Menu",onClick:function(){setMenu("nav");}},h(Ic.menu,null)),
 h(IconBtn,{title:"History",onClick:function(){setMenu("history");}},h(Ic.history,null)),
@@ -1234,8 +1236,8 @@ h("div",{style:{width:1,height:24,background:T.colorBorderHover,margin:"0 8px"}}
 h("div",{style:{display:"flex",alignItems:"center",gap:8,minWidth:0,overflow:"hidden"}},p.tabs.map(function(t){return h(TabPill,{key:t.id,t:t,active:t.id===p.active,onSelect:function(){p.onSelect(t.id);},onClose:function(){p.onClose(t.id);}});})),
 h(IconBtn,{title:"New chat",onClick:p.onNew,style:{marginLeft:4}},h(Ic.plus,{s:20})),
 h("div",{style:{flex:1}}),
-h("button",Object.assign({type:"button",onClick:doSync,style:{display:"inline-flex",alignItems:"center",gap:8,height:32,padding:"0 10px",border:"none",borderRadius:8,background:"transparent",fontFamily:"inherit",fontSize:14,fontWeight:500,color:"#2A2A2A",cursor:"pointer"}},hover({background:"transparent"},{background:"rgba(0,0,0,0.06)"})),
-sync==="busy"?h(Ic.sync,{spin:true}):sync==="done"?h("span",{style:{color:T.colorBrandPrimary}},h(Ic.check,{s:16})):null,sync==="busy"?"Syncing…":sync==="done"?"Synced just now":"Sync with Xero"),
+h(Tooltip,{text:syncAgo()},h("button",Object.assign({type:"button",onClick:doSync,style:{display:"inline-flex",alignItems:"center",gap:8,height:32,padding:"0 10px",border:"none",borderRadius:8,background:"transparent",fontFamily:"inherit",fontSize:14,fontWeight:500,color:"#2A2A2A",cursor:"pointer"}},hover({background:"transparent"},{background:"rgba(0,0,0,0.06)"})),
+sync==="busy"?h(Ic.sync,{spin:true}):sync==="done"?h("span",{style:{color:T.colorBrandPrimary}},h(Ic.check,{s:16})):null,sync==="busy"?"Syncing…":sync==="done"?"Synced just now":"Sync with Xero")),
 menu==="nav"?h(NavDrawer,{lib:p.lib,onClose:function(){setMenu(null);}}):null,
 menu==="history"?h(Popover,{left:48,title:"Recent",onClose:function(){setMenu(null);},rows:p.tabs.filter(function(t){return t.label!=="New chat";}).map(function(t){return{a:t.label,b:"Open now",onClick:function(){p.onSelect(t.id);}};}).concat([
 {a:"VAT review · Apr 26 – Jun 26",b:"Filed 7 Aug 26"},{a:"Prepayments · Sep 26",b:"Completed 30 Sep 26"},{a:"Bank recs · HSBC Business",b:"Completed 29 Sep 26"}])}):null,
