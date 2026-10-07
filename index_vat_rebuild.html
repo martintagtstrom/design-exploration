@@ -938,9 +938,10 @@ function nowHM(){var d=new Date();return String(d.getHours()).padStart(2,"0")+":
 function useTimers(){var ref=useRef([]);useEffect(function(){return function(){ref.current.forEach(clearTimeout);};},[]);
 return{later:function(ms,fn){ref.current.push(setTimeout(fn,ms));},clear:function(){ref.current.forEach(clearTimeout);ref.current=[];}};}
 
-var APPS=[{t:"VAT review",d:"Checks journals and invoices for VAT anomalies.",live:true},{t:"Prepayments",d:"Checks and creates working paper for prepaid expenses.",live:true,prompt:"Create a combined prepayment schedule"},{t:"Accruals",d:"Analyses patterns to detect accrued expenses."},
-{t:"P&L review",d:"Surfaces unexpected variances in the P&L."},{t:"Miscodings",d:"Checks account codes and detects potential miscodings."},{t:"Bank recs",d:"Reconciles any bank account or credit cards."},
-{t:"Payroll",d:"Ties payroll journals to the payroll report."},{t:"Deferred revenue",d:"Builds release schedules for income billed in advance."},{t:"Fixed assets",d:"Rolls forward the register and checks depreciation."}];
+var CAT_ICON={"VAT":"flag","Adjustments":"switchHorizontal","P&L":"calculator","Balance sheet":"rows","Bookkeeping":"book"};
+var APPS=[{t:"VAT review",cat:"VAT",d:"Checks journals and invoices for VAT anomalies.",live:true},{t:"Prepayments",cat:"Adjustments",d:"Checks and creates working paper for prepaid expenses.",live:true,prompt:"Create a combined prepayment schedule"},{t:"Accruals",cat:"Adjustments",d:"Analyses patterns to detect accrued expenses."},
+{t:"P&L review",cat:"P&L",d:"Surfaces unexpected variances in the P&L."},{t:"Miscodings",cat:"Bookkeeping",d:"Checks account codes and detects potential miscodings."},{t:"Bank recs",cat:"Bookkeeping",d:"Reconciles any bank account or credit cards."},
+{t:"Payroll",cat:"Balance sheet",d:"Ties payroll journals to the payroll report."},{t:"Deferred revenue",cat:"Adjustments",d:"Builds release schedules for income billed in advance."},{t:"Fixed assets",cat:"Adjustments",d:"Rolls forward the register and checks depreciation."}];
 
 function ClientMark(){return h("div",{style:{display:"flex",alignItems:"center",justifyContent:"center",gap:10}},
 h("svg",{width:28,height:28,viewBox:"0 0 28 28"},h("rect",{width:28,height:28,rx:7,fill:"#1B2A4A"}),h("path",{d:"M5 17c3-3 6-3 9 0s6 3 9 0M5 12c3-3 6-3 9 0s6 3 9 0",stroke:"#7FC4E8",strokeWidth:2,fill:"none",strokeLinecap:"round"})),
@@ -959,17 +960,20 @@ return txt;}
 function StartView(p){var ph=useTypedPlaceholder(START_PH,!!p.draft);var _t=useState(null);var toast=_t[0],setToast=_t[1];
 return h("div",{style:{flex:1,overflowY:"auto",background:T.colorSurfaceSecondary}},
 h("div",{style:{maxWidth:CHAT_W,margin:"0 auto",padding:"112px 24px 64px"}},
-h(ClientMark,null),
-h("div",{style:{textAlign:"center",fontSize:36,lineHeight:"44px",fontWeight:400,color:"#1F2024",margin:"40px 0 40px"}},"Ready for reconciliation"),
+h("div",{style:{display:"flex",justifyContent:"center"}},h(MIMO_LOGO,{h:32})),
+h("div",{style:{textAlign:"center",fontSize:36,lineHeight:"44px",fontWeight:400,color:"#1F2024",margin:"48px 0 40px"}},"What should we tackle today?"),
 h(Composer,{value:p.draft,onChange:p.setDraft,onSend:p.onSend,placeholder:ph,autoFocus:true,focusKey:p.focusKey}),
 h("div",{style:{height:1,background:T.colorBorderDark,margin:"48px 0 56px"}}),
-h("div",{style:{textAlign:"center",fontSize:24,color:"#1F2024",marginBottom:32}},"Apps ready to use"),
+h("div",{style:{display:"flex",alignItems:"center",justifyContent:"center",gap:10,fontSize:24,lineHeight:"32px",color:"#1F2024",marginBottom:32}},
+h("span",{title:"Built on Mimo's verified checks",style:{display:"inline-flex",alignItems:"center",gap:7,height:34,boxSizing:"border-box",padding:"0 10px",border:"1.5px solid #2A2A2A",borderRadius:7,background:"#FFFFFF",fontSize:20,lineHeight:"28px",fontWeight:500,color:"#2A2A2A"}},
+h("svg",{width:19,height:18,viewBox:"0 0 21.3 20",style:{display:"block",flexShrink:0}},h("path",{d:"M21.2948 0.316406H16.2686V19.8237H21.2948V0.316406Z",fill:"#1F2024"}),h("path",{d:"M3.55406 0L0 3.55406L10.9144 14.4685L14.4685 10.9144L3.55406 0Z",fill:"#1F2024"}),h("path",{d:"M5.56185 10.7422H0.535645V19.8197H5.56185V10.7422Z",fill:"#1F2024"})),"Verified workflows")),
 h("div",{style:{display:"grid",gridTemplateColumns:"repeat(3, minmax(0,1fr))",gap:16}},APPS.map(function(a){
 return h("button",Object.assign({key:a.t,type:"button",onClick:function(){if(a.live)p.onApp(a.prompt||"Run a VAT review");else{setToast(a.t);setTimeout(function(){setToast(null);},2200);}},
-style:{height:148,textAlign:"left",display:"flex",flexDirection:"column",justifyContent:"flex-end",gap:6,padding:16,border:"1px solid "+T.colorBorderDark,borderRadius:8,background:"#FFFFFF",cursor:"pointer",fontFamily:"inherit"}},
+style:{height:163,boxSizing:"border-box",textAlign:"left",display:"flex",flexDirection:"column",justifyContent:"space-between",alignItems:"flex-start",gap:8,padding:"16px 12px 16px 16px",border:"1px solid "+T.colorBorderDark,borderRadius:8,background:"#FFFFFF",cursor:"pointer",fontFamily:"inherit"}},
 hover({borderColor:T.colorBorderDark,boxShadow:"none"},{borderColor:T.colorBorderHover,boxShadow:"0 6px 16px rgba(0,0,0,0.05)"})),
-h("span",{style:{fontSize:18,lineHeight:"24px",fontWeight:500,color:"#1F2024"}},a.t,h("span",{style:{display:"inline-block",verticalAlign:"-3px",marginLeft:6}},h(Ic.arrowRight,{s:18}))),
-h("span",{style:{fontSize:14,lineHeight:"21px",color:T.colorTextSecondary}},a.d));}))),
+h("span",{style:{display:"inline-flex",alignItems:"center",gap:4,height:21,boxSizing:"border-box",padding:"2px 6px 2px 4px",borderRadius:6,background:"#ECECEC",color:"#7C7C7C",fontSize:12,lineHeight:"17px",fontWeight:500}},NI(CAT_ICON[a.cat],14),a.cat),
+h("span",{style:{display:"flex",flexDirection:"column",gap:8}},h("span",{style:{fontSize:18,lineHeight:"26px",fontWeight:500,color:"#2A2A2A"}},a.t),
+h("span",{style:{fontSize:14,lineHeight:"22px",color:"#7C7C7C"}},a.d)));}))),
 toast?h("div",{style:{position:"fixed",left:"50%",bottom:32,transform:"translateX(-50%)",background:"#2A2A2A",color:"#FFF",fontSize:14,padding:"10px 16px",borderRadius:8,zIndex:50,animation:"fadeIn .2s ease both"}},toast+" isn't part of this prototype yet. Try VAT review."):null);}
 
 function ViewSwitch(p){var items=[{v:"chat",I:Ic.chat,l:"Chat view"},{v:"split",I:Ic.split,l:"Split view"},{v:"canvas",I:Ic.canvas,l:"Canvas view"}];
@@ -1200,7 +1204,7 @@ h("div",{style:{display:"flex",justifyContent:"flex-end",marginBottom:12}},h(Ico
 h(InvoiceDoc,{inv:df.invoice}))):null);}
 
 /* ══════════════ TOP BAR ══════════════ */
-var MIMO_LOGO=function(){return h("svg",{width:98,height:21,viewBox:"0 0 98 21",fill:"#1F2024"},
+var MIMO_LOGO=function(p){var hh=(p&&p.h)||21;return h("svg",{width:Math.round(98*hh/21),height:hh,style:{display:"block"},viewBox:"0 0 98 21",fill:"#1F2024"},
 h("path",{d:"M21.2948 0.316406H16.2686V19.8237H21.2948V0.316406Z"}),h("path",{d:"M3.55406 0L0 3.55406L10.9144 14.4685L14.4685 10.9144L3.55406 0Z"}),h("path",{d:"M5.56185 10.7422H0.535645V19.8197H5.56185V10.7422Z"}),
 h("path",{d:"M32.0013 19.8173V0.316406H36.4094L41.4536 12.2309C41.7614 12.9701 42.0807 13.7995 42.4143 14.7189H42.4684C42.7929 13.7995 43.1084 12.9701 43.4162 12.2309L48.4449 0.316406H52.826V19.816H49.4314V5.84742H49.3773C49.215 6.2711 49.0373 6.73857 48.8429 7.24724C48.6497 7.7572 48.4437 8.2736 48.2273 8.79515L43.5488 19.816H41.29L36.5974 8.78099C36.381 8.25815 36.1763 7.74045 35.9818 7.22534C35.7886 6.71151 35.6109 6.24277 35.4474 5.81909H35.3933V19.8147H32L32.0013 19.8173Z"}),
 h("path",{d:"M54.7979 3.35338V0H58.3135V3.35338H54.7979ZM54.8519 19.8151V5.38678H58.2594V19.8163H54.8519V19.8151Z"}),
@@ -1211,8 +1215,9 @@ var NAV=["Home","Collect documents","Inbox","Bank reconciliation","VAT review","
 /* ══════════════ MAIN MENU (Figma Rebuild VAT 14:9721) ══════════════
    Opens from the hamburger as a panel under the top bar and pushes the workspace aside.
    Recents moved here from the top bar. The user stays pinned to the bottom. */
-function NI(name){var sp={stroke:"currentColor",strokeWidth:1.25,strokeLinecap:"round",strokeLinejoin:"round",fill:"none"};
-var v=function(kids){return h("svg",{width:20,height:20,viewBox:"0 0 20 20",fill:"none",style:{flexShrink:0,display:"block"}},kids);};
+function NI(name,size){var sz=size||20;var sp={stroke:"currentColor",strokeWidth:1.25*20/sz,strokeLinecap:"round",strokeLinejoin:"round",fill:"none"};
+if(name==="book")return h("svg",{width:sz,height:sz,viewBox:"0 0 24 24",fill:"none",style:{flexShrink:0,display:"block"}},h("path",Object.assign({},sp,{strokeWidth:1.25*24/sz,d:"M12 9.4C12 7.15979 12 6.03968 12.436 5.18404C12.8195 4.43139 13.4314 3.81947 14.184 3.43597C15.0397 3 16.1598 3 18.4 3H18.8C19.9201 3 20.4802 3 20.908 3.21799C21.2843 3.40973 21.5903 3.71569 21.782 4.09202C22 4.51984 22 5.07989 22 6.2V14.8C22 15.9201 22 16.4802 21.782 16.908C21.5903 17.2843 21.2843 17.5903 20.908 17.782C20.4802 18 19.9201 18 18.8 18H17.4252C16.1729 18 15.5467 18 14.9784 18.1726C14.4752 18.3254 14.0071 18.5759 13.6009 18.9098C13.142 19.287 12.7947 19.808 12.1001 20.8499L12 21L11.8999 20.8499C11.2053 19.808 10.858 19.287 10.3991 18.9098C9.99286 18.5759 9.52476 18.3254 9.02161 18.1726C8.45325 18 7.82711 18 6.57482 18H5.2C4.07989 18 3.51984 18 3.09202 17.782C2.71569 17.5903 2.40973 17.2843 2.21799 16.908C2 16.4802 2 15.9201 2 14.8V6.2C2 5.07989 2 4.51984 2.21799 4.09202C2.40973 3.71569 2.71569 3.40973 3.09202 3.21799C3.51984 3 4.07989 3 5.2 3H5.6C7.84021 3 8.96031 3 9.81596 3.43597C10.5686 3.81947 11.1805 4.43139 11.564 5.18404C12 6.03968 12 7.15979 12 9.4ZM12 21V9.4"})));
+var v=function(kids){return h("svg",{width:sz,height:sz,viewBox:"0 0 20 20",fill:"none",style:{flexShrink:0,display:"block"}},kids);};
 if(name==="checkVerified")return v([h("path",Object.assign({key:1,d:NAVP.checkVerifiedBadge},sp)),h("path",Object.assign({key:2,d:NAVP.checkVerifiedMark},sp))]);
 if(name==="rows")return v([h("path",Object.assign({key:1,d:NAVP.rowsTop},sp)),h("path",Object.assign({key:2,d:NAVP.rowsBottom},sp))]);
 if(name==="settings")return v([h("path",Object.assign({key:1,d:NAVP.settingsGear},sp)),h("path",Object.assign({key:2,d:NAVP.settingsCircle},sp))]);
@@ -1220,7 +1225,7 @@ if(name==="clock")return v([h("path",Object.assign({key:1,d:"M2.6 10a7.4 7.4 0 1
 if(name==="training")return v([h("path",Object.assign({key:1,d:"M10 3.3 2.5 7.1 10 10.9l7.5-3.8L10 3.3Z"},sp)),h("path",Object.assign({key:2,d:"M5.3 8.6v3.8c0 .8 2.1 2.3 4.7 2.3s4.7-1.5 4.7-2.3V8.6M17.5 7.1v4.5"},sp))]);
 if(name==="bookmark")return h(Ic.bookmark,null);
 if(name==="dots")return v([2.5,10,17.5].map(function(x,k){return h("circle",{key:k,cx:x===2.5?4.6:x===10?10:15.4,cy:10,r:1.2,fill:"currentColor"});}));
-if(name==="calculator")return v([h("rect",Object.assign({key:1,x:3,y:3,width:14,height:14,rx:2},sp)),h("path",Object.assign({key:2,d:"M7 13l6-6M7.2 7.5h1.6M11.2 12.5h1.6M12 11.7v1.6"},sp))]);
+if(name==="calculator")return v([h("path",Object.assign({key:1,d:"M30.5833 15.4167L21.4167 24.5833M23.0833 18.75V15.4167M21.4167 17.0833H24.75M27.25 22.9167H30.5833M22.5 27.5H29.5C30.9001 27.5 31.6002 27.5 32.135 27.2275C32.6054 26.9878 32.9878 26.6054 33.2275 26.135C33.5 25.6002 33.5 24.9001 33.5 23.5V16.5C33.5 15.0999 33.5 14.3998 33.2275 13.865C32.9878 13.3946 32.6054 13.0122 32.135 12.7725C31.6002 12.5 30.9001 12.5 29.5 12.5H22.5C21.0999 12.5 20.3998 12.5 19.865 12.7725C19.3946 13.0122 19.0122 13.3946 18.7725 13.865C18.5 14.3998 18.5 15.0999 18.5 16.5V23.5C18.5 24.9001 18.5 25.6002 18.7725 26.135C19.0122 26.6054 19.3946 26.9878 19.865 27.2275C20.3998 27.5 21.0999 27.5 22.5 27.5Z",transform:"translate(-16 -10)"},sp))]);
 return v([h("path",Object.assign({key:1,d:NAVP[name]},sp))]);}
 var ASSOC=[{l:"Collect documents",i:"fileQuestion"},{l:"Inbox",i:"inbox"},{l:"Reconcile",i:"checkVerified"},{l:"VAT review",i:"flag"},{l:"Adjustments",i:"switchHorizontal"},{l:"Profit & Loss",i:"calculator"},{l:"Balance sheet",i:"rows"}];
 var PAST_RECENTS=["VAT readiness check, Apr 26 – Jun 26","Bank reconciliation, HSBC Business","Prepayments, Sep 26","Accruals sweep, Aug 26"];
@@ -1293,7 +1298,7 @@ function syncAgo(){var m=Math.floor((Date.now()-lastSync)/60000);return m<1?"Las
 return h("div",{style:{height:48,flexShrink:0,display:"flex",alignItems:"center",gap:6,padding:"0 16px 0 12px",background:"#F5F5F5",borderBottom:"1px solid "+T.colorBorderDark}},
 h(IconBtn,{title:"Menu",onClick:p.onMenu,style:p.menuOpen?{background:"rgba(0,0,0,0.06)"}:{}},h(Ic.menu,null)),
 h(IconBtn,{title:"Notifications",onClick:p.onBell,style:Object.assign({position:"relative"},p.bellOpen?{background:"rgba(0,0,0,0.06)"}:{})},h(Ic.bell,null),h("span",{style:{position:"absolute",top:6,right:7,width:7,height:7,borderRadius:4,background:T.colorBrandPrimary,border:"1.5px solid #F5F5F5"}})),
-h("div",{style:{width:1,height:24,background:T.colorBorderHover,margin:"0 8px"}}),
+h("span",{style:{fontSize:14,lineHeight:"22px",fontWeight:500,color:"#2A2A2A",whiteSpace:"nowrap",marginLeft:2}},CLIENT),h("div",{style:{width:1,height:24,background:T.colorBorderHover,margin:"0 8px"}}),
 h("div",{style:{display:"flex",alignItems:"center",gap:8,minWidth:0,overflow:"hidden"}},p.tabs.map(function(t){return h(TabPill,{key:t.id,t:t,active:t.id===p.active,onSelect:function(){p.onSelect(t.id);},onClose:function(){p.onClose(t.id);}});})),
 h(IconBtn,{title:"New workflow",onClick:p.onNew,style:{marginLeft:4}},h(Ic.plus,{s:20})),
 h("div",{style:{flex:1}}),
