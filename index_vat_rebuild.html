@@ -464,7 +464,7 @@ var Q1={step:1,total:2,q:"Which period do you want to review?",other:true,option
 {label:"Last full month (Sep 26)",period:"Sep 26"},
 {label:"Partial review for current VAT period (01 Oct 26 – 05 Oct 26)",period:"01 Oct 26 – 05 Oct 26"}]};
 var Q2={step:2,total:2,q:"Include late claims in the review?",options:[{label:"Yes, include late claims",late:true},{label:"No, skip for now",late:false}]};
-var Q3={q:"When did you file your last VAT return (Apr 26 – Jun 26)?",placeholder:"Type date of filing, e.g. 7 Aug 26"};
+var Q3={q:"When did you submit the previous VAT return for Apr 26 – Jun 26 to HMRC?",placeholder:"Type date of filing, e.g. 7 Aug 26"};
 
 var WF={name:"VAT readiness check",
 sub:"A custom workflow lets you run checks that are not yet defined.",
@@ -543,13 +543,16 @@ var LARGEST=[
    two questions, a proposed workflow, a run, then results in split view. */
 var FY_MONTHS=["Apr 26","May 26","Jun 26","Jul 26","Aug 26","Sep 26","Oct 26","Nov 26","Dec 26","Jan 27","Feb 27","Mar 27"];
 var ACCTS={"1400":"1400 – Prepayments","1410":"1410 – Prepaid software & subscriptions"};
-var SQ1={step:1,total:2,q:"I found two prepayment accounts with balances: 1400 – Prepayments and 1410 – Prepaid software & subscriptions. Go ahead with both?",other:true,options:[
+var SQ1={step:1,total:3,q:"I found two prepayment accounts with balances: 1400 – Prepayments and 1410 – Prepaid software & subscriptions. Go ahead with both?",other:true,options:[
 {label:"Yes, combine both accounts",accts:["1400","1410"]},
 {label:"Only 1400 – Prepayments",accts:["1400"]},
 {label:"Only 1410 – Prepaid software & subscriptions",accts:["1410"]}]};
-var SQ2={step:2,total:2,q:"Should the schedule reflect the entire financial year?",options:[
+var SQ2={step:2,total:3,q:"Should the schedule reflect the entire financial year?",options:[
 {label:"Yes, the full financial year (Apr 26 – Mar 27)",fy:true,period:"Apr 26 – Mar 27"},
 {label:"No, year to date (Apr 26 – Sep 26)",fy:false,period:"Apr 26 – Sep 26"}]};
+var SQ3={step:3,total:3,q:"Do you want to provide your own prepayment schedule?",options:[
+{label:"Yes, upload my own schedule",own:true},
+{label:"No, build it from the ledger",own:false}]};
 
 var S_EXPLAIN=[
 "I've put together a prepayment schedule workflow for you to review and save. It reads both prepayment accounts, then scans every bill posted this financial year for costs that cover future months, like annual insurance, software licences and rent paid in advance.",
@@ -558,7 +561,7 @@ var S_EXPLAIN=[
 
 var S_WF={name:"Combined prepayment schedule",sub:"A custom workflow lets you run checks that are not yet defined."};
 function acctsText(a){return (a.accts||["1400","1410"]).map(function(k){return ACCTS[k];}).join(" and ");}
-function sDescription(a){return "Builds one schedule for "+acctsText(a)+" covering "+a.period+". Suggested invoices are added once you approve them.";}
+function sDescription(a){return "Builds one schedule for "+acctsText(a)+" covering "+a.period+(a.ownFile?", starting from your schedule ("+a.ownFile+")":"")+". Suggested invoices are added once you approve them.";}
 
 /* prepayments already on the accounts (bf) and invoices that were expensed in full (suggestions) */
 var PREPAYS=[
@@ -611,7 +614,7 @@ history:[],invoice:invoiceFor(Object.assign({ref:s.ref,period:s.period},s.inv))}
 
 function sSteps(a){var acc=a.accts||["1400","1410"];var n=scheduleFindings(a).length;var bf=PREPAYS.filter(function(p){return acc.indexOf(p.acct)>=0;}).length;
 return[
-{name:"Read prepayment accounts",desc:"Balances and existing schedules for each account",run:"Reading prepayment accounts",result:acc.join(" and ")+" read",chip:bf+" prepayments on file",ms:1800},
+(a.ownFile?{name:"Read your schedule",desc:"Opening balances and release profiles from "+a.ownFile,run:"Reading "+a.ownFile,result:bf+" prepayments matched to "+acc.join(" and "),chip:"Schedule imported",ms:1900}:{name:"Read prepayment accounts",desc:"Balances and existing schedules for each account",run:"Reading prepayment accounts",result:acc.join(" and ")+" read",chip:bf+" prepayments on file",ms:1800}),
 {name:"Scan bills for prepaid costs",desc:"Invoices that cover future months but were expensed",run:"Scanning bills for prepaid costs",result:"146 bills since Apr 26",chip:n+" invoices identified",ms:2600},
 {name:"Build release profiles",desc:"Straight-line monthly releases per prepayment",run:"Building release profiles",result:"Straight-line, monthly",chip:a.period,ms:1700},
 {name:"Combine and reconcile",desc:"One schedule, tied back to each ledger balance",run:"Combining and reconciling",result:"Ties to the ledger",chip:"£0.00 difference",ms:1500}];}
@@ -761,6 +764,58 @@ h("span",{style:{color:"#545453"}},h(Ic.file,null)),h("span",{style:{fontSize:14
 function PromptBtn(p){return h("button",Object.assign({type:"button",onClick:p.onClick,style:{display:"inline-flex",alignItems:"center",gap:8,height:38,padding:"8px 12px 8px 16px",border:"none",borderRadius:8,background:"transparent",color:"#2A2A2A",fontFamily:"inherit",fontSize:14,lineHeight:"22px",fontWeight:500,cursor:"pointer",textAlign:"left"}},hover({background:"transparent"},{background:"#F0F0F0"})),
 h("span",null,p.children),h("svg",{width:20,height:20,viewBox:"0 0 20 20",fill:"none",style:{display:"block",flexShrink:0}},h("path",{d:"M10 6.667 13.333 10 10 13.333M13.333 10H6.667M18.333 10a8.333 8.333 0 1 1-16.666 0 8.333 8.333 0 0 1 16.666 0Z",stroke:"currentColor",strokeWidth:1.25,strokeLinecap:"round",strokeLinejoin:"round"})));}
 
+/* upload your own file (DS "FileUpload", Figma 8548:22281) */
+var UPLOAD_ART='<svg width="86" height="56" viewBox="0 0 86 56" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M53.2218 13.2854C53.7433 11.3393 55.7436 10.1844 57.6897 10.7059L76.3653 15.71L79.0693 22.1909L82.5746 30.5922L76.6263 52.7914C76.1049 54.7375 74.1046 55.8924 72.1585 55.3709L47.4927 48.7617C45.5466 48.2403 44.3917 46.2399 44.9132 44.2939L53.2218 13.2854Z" fill="#DCF0D7"/><path d="M73.5917 26.0608L76.3652 15.71L82.5746 30.5921L75.0427 28.574C74.1084 28.3236 73.6412 28.1984 73.4287 27.8304C73.2162 27.4623 73.3414 26.9952 73.5917 26.0608Z" fill="#D0EFC8"/><path d="M32.7772 13.2854C32.2557 11.3393 30.2554 10.1844 28.3093 10.7059L9.63377 15.71L6.92969 22.1909L3.42441 30.5922L9.37268 52.7914C9.89413 54.7375 11.8945 55.8924 13.8405 55.3709L38.5064 48.7617C40.4524 48.2403 41.6073 46.2399 41.0859 44.2939L32.7772 13.2854Z" fill="#D2DEF6"/><path d="M12.4073 26.0608L9.63379 15.71L3.42442 30.5921L10.9563 28.574C11.8907 28.3236 12.3578 28.1984 12.5703 27.8304C12.7828 27.4623 12.6576 26.9952 12.4073 26.0608Z" fill="#BCCFF2"/><g style="filter:drop-shadow(0 5px 4px rgba(0,0,0,0.11))"><path d="M24.1064 4.54527C24.1064 2.03499 26.1414 0 28.6517 0H52.7417L58.086 6.92787L65.0139 15.9084V44.5437C65.0139 47.0539 62.9789 49.0889 60.4686 49.0889H28.6517C26.1414 49.0889 24.1064 47.0539 24.1064 44.5437V4.54527Z" fill="#F4F4F2"/><path d="M40.5298 16.6773C45.1308 15.2975 40.3532 38.7483 36.769 35.5225C32.3247 31.5224 53.4258 25.4261 51.4695 31.2921C49.7549 36.4332 35.4016 18.2152 40.5298 16.6773Z" stroke="#FF6056" stroke-width="1.57261"/><path d="M52.7417 13.3517V0L65.0139 15.9085H55.2984C54.0932 15.9085 53.4905 15.9085 53.1161 15.534C52.7417 15.1596 52.7417 14.557 52.7417 13.3517Z" fill="#D6D6D4"/></g></svg>';
+function UploadCard(p){var ref=useRef(null);var _d=useState(false);var drag=_d[0],setDrag=_d[1];var _f=useState(null);var file=_f[0],setFile=_f[1];
+function take(name){if(!name)return;setFile(name);setTimeout(function(){p.onFile(name);},650);}
+function pick(){if(ref.current)ref.current.click();}
+return h("div",{style:{background:"#FFFFFF",border:"1px solid "+T.colorBorderDark,borderRadius:16,padding:24,boxShadow:"0 12px 24px rgba(0,0,0,0.06)",display:"flex",flexDirection:"column",gap:16,animation:"dockIn .35s cubic-bezier(.16,1,.3,1) both"}},
+h("div",{style:{fontSize:16,lineHeight:"26px",fontWeight:500,color:"#2A2A2A"}},p.title||"Upload file"),
+h("div",{onDragOver:function(e){e.preventDefault();setDrag(true);},onDragLeave:function(){setDrag(false);},onDrop:function(e){e.preventDefault();setDrag(false);var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];take(f?f.name:p.sample);},
+style:{display:"flex",flexDirection:"column",alignItems:"center",gap:24,padding:"32px 16px",border:"1px dashed "+(drag?T.colorBrandPrimary:T.colorBorderDark),borderRadius:8,background:drag?T.colorBrandLighter:"#FFFFFF",transition:"background .15s, border-color .15s",textAlign:"center"}},
+h("div",{style:{display:"flex",flexDirection:"column",alignItems:"center",gap:16}},
+h("div",{dangerouslySetInnerHTML:{__html:UPLOAD_ART},style:{width:86,height:56,lineHeight:0}}),
+file?h("div",{style:{display:"flex",flexDirection:"column",gap:4,alignItems:"center"}},h("div",{style:{display:"flex",alignItems:"center",gap:8,fontSize:14,lineHeight:"22px",fontWeight:500,color:"#2A2A2A"}},h(Ic.spinner,{s:16}),"Uploading "+file),h("div",{style:{fontSize:14,lineHeight:"22px",color:"#7C7C7C"}},"Reading the schedule"))
+:h("div",{style:{display:"flex",flexDirection:"column",gap:4}},
+h("div",{style:{fontSize:14,lineHeight:"22px",fontWeight:500,color:"#2A2A2A"}},"Drag & drop your file here, or",h("br"),h("span",{onClick:pick,style:{color:T.colorBrandPrimary,cursor:"pointer"}},"Choose a file")," to upload it manually"),
+h("div",{style:{fontSize:14,lineHeight:"22px",color:"#7C7C7C"}},p.hint||"Can be any document type"))),
+file?null:h(PrimaryBtn,{onClick:pick,style:{padding:"0 16px 0 12px"}},h(Ic.plus,{s:20}),"Upload document"),
+h("input",{ref:ref,type:"file",style:{display:"none"},onChange:function(e){var f=e.target.files&&e.target.files[0];take(f?f.name:null);}})),
+p.onSkip?h("div",{style:{display:"flex",justifyContent:"flex-end"}},h(SecondaryBtn,{h:36,onClick:p.onSkip},p.skipLabel||"Skip")):null);}
+
+/* filing date picker for late claims (from the original VAT review), with the new action row */
+var MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+var MON3=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function calCells(y,m){var first=new Date(y,m,1).getDay();var days=new Date(y,m+1,0).getDate();var prevDays=new Date(y,m,0).getDate();var out=[];
+for(var i=first-1;i>=0;i--)out.push({d:prevDays-i,cur:false});for(var d=1;d<=days;d++)out.push({d:d,cur:true});var n=1;while(out.length%7)out.push({d:n++,cur:false});return out;}
+function FiledPreview(){return h("div",{style:{width:240,flexShrink:0,borderRadius:10,background:"#F5F5F5",border:"1px solid #ECECEC",padding:10,boxShadow:"0 4px 10px rgba(0,0,0,0.06)",display:"flex",flexDirection:"column",gap:6}},
+h("span",{style:{fontSize:10,fontWeight:600,color:"#9A9A9A",textTransform:"uppercase",letterSpacing:"0.3px"}},"Completed"),
+h("div",{style:{border:"1px solid #ECECEC",borderRadius:8,background:"#FFFFFF",padding:"8px 10px",display:"flex",flexDirection:"column",gap:4}},
+h("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",gap:6}},h("span",{style:{fontSize:10,fontWeight:600,color:"#2A2A2A"}},"01 Apr 2026 - 30 Jun 2026"),h("span",{style:{fontSize:8,fontWeight:600,color:T.colorTextSecondary,background:"#F0F0F0",padding:"1px 5px",borderRadius:4}},"Filed")),
+h("div",{style:{fontSize:9,color:T.colorTextSecondary,display:"flex",alignItems:"center",gap:3,flexWrap:"wrap",lineHeight:"14px"}},"Submitted ",h("span",{style:{display:"inline-flex",padding:"0 3px",border:"1.5px solid #D5493A",borderRadius:4,color:"#2A2A2A",fontWeight:600}},"07 Aug 2026")," by Laura Bennett")));}
+function DateCard(p){var _y=useState(2026);var y=_y[0],setY=_y[1];var _m=useState(7);var m=_m[0],setM=_m[1];var _s=useState(null);var sel=_s[0],setSel=_s[1];
+var TD={y:2026,m:9,d:5};
+function shift(k){var nm=m+k,ny=y;if(nm<0){nm=11;ny--;}if(nm>11){nm=0;ny++;}setM(nm);setY(ny);}
+var nav={border:"none",background:"transparent",cursor:"pointer",color:T.colorTextSecondary,fontSize:16,padding:"4px 8px",fontFamily:"inherit",borderRadius:6};
+function confirm(){if(sel)p.onSubmit(sel.d+" "+MON3[sel.m]+" "+String(sel.y).slice(2));}
+return h("div",{style:cardStyle({display:"flex",flexDirection:"column",gap:16,animation:"dockIn .35s cubic-bezier(.16,1,.3,1) both"})},
+h("div",{style:{fontSize:16,lineHeight:"26px",fontWeight:500,color:"#2A2A2A"}},p.q.q),
+h("div",{style:{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:16}},
+h("div",{style:{fontSize:14,lineHeight:"22px",color:T.colorTextSecondary,flex:1,minWidth:0}},"The submission date is stated on the HMRC receipt as well as in the ",h("span",{style:{color:T.colorBrandPrimary,textDecoration:"underline"}},"Xero VAT Returns"),"."),
+h(FiledPreview,null)),
+h("div",{style:{border:"1px solid #ECECEC",borderRadius:12,padding:20,background:"#FBFBFB"}},
+h("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}},
+h("div",{style:{display:"flex",gap:2}},h("button",{type:"button","aria-label":"Previous year",onClick:function(){setY(y-1);},style:nav},"\u00AB"),h("button",{type:"button","aria-label":"Previous month",onClick:function(){shift(-1);},style:nav},"\u2039")),
+h("span",{style:{fontSize:15,fontWeight:600,color:"#2A2A2A"}},MONTHS[m]+" "+y),
+h("div",{style:{display:"flex",gap:2}},h("button",{type:"button","aria-label":"Next month",onClick:function(){shift(1);},style:nav},"\u203A"),h("button",{type:"button","aria-label":"Next year",onClick:function(){setY(y+1);},style:nav},"\u00BB"))),
+h("div",{style:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:4,marginBottom:4}},["Su","Mo","Tu","We","Th","Fr","Sa"].map(function(d){return h("span",{key:d,style:{fontSize:13,fontWeight:600,color:"#2A2A2A",textAlign:"center",padding:"4px 0"}},d);})),
+h("div",{style:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:4}},calCells(y,m).map(function(c,i){var isSel=c.cur&&sel&&sel.y===y&&sel.m===m&&sel.d===c.d;var isToday=c.cur&&y===TD.y&&m===TD.m&&c.d===TD.d;
+return h("button",Object.assign({key:i,type:"button",disabled:!c.cur,onClick:c.cur?function(){setSel({y:y,m:m,d:c.d});}:undefined,style:{height:36,borderRadius:8,border:isSel?"1.5px solid "+T.colorBrandPrimary:"1px solid transparent",background:isSel?"#FFFFFF":"transparent",color:c.cur?"#2A2A2A":"#C7C7C7",fontSize:15,fontWeight:isSel||isToday?600:400,cursor:c.cur?"pointer":"default",fontFamily:"inherit"}},c.cur&&!isSel?hover({background:"transparent"},{background:"#F0F0F0"}):{}),c.d);})),
+h("div",{style:{borderTop:"1px solid #ECECEC",marginTop:12,paddingTop:10,textAlign:"center"}},h("button",{type:"button",onClick:function(){setSel({y:TD.y,m:TD.m,d:TD.d});setM(TD.m);setY(TD.y);},style:{border:"none",background:"transparent",cursor:"pointer",color:T.colorBrandPrimary,fontSize:14,fontWeight:600,fontFamily:"inherit"}},"Today"))),
+h("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,marginTop:8}},
+h(PrimaryBtn,{onClick:confirm,disabled:!sel,style:{opacity:sel?1:0.5,cursor:sel?"pointer":"default"}},"Confirm and continue",h(Ic.enter,null)),
+h("button",Object.assign({type:"button",onClick:p.onSkip,style:{height:40,padding:"0 16px",border:"none",borderRadius:8,background:T.colorErrorBg,color:T.colorError,fontSize:14,fontWeight:500,fontFamily:"inherit",cursor:"pointer"}},hover({filter:"none"},{filter:"brightness(0.97)"})),"Skip late claims for now")));}
+
 /* ══════════════ RESULTS (right panel / canvas) ══════════════ */
 function Tabs(p){return h("div",{style:{display:"flex",gap:28,borderBottom:"1px solid "+T.colorBorderDark,overflowX:"auto",overflowY:"hidden",scrollbarWidth:"none",flexShrink:0},className:"no-scrollbar"},p.tabs.map(function(t){var on=t.v===p.value;
 return h("button",{key:t.v,type:"button",onClick:function(){p.onChange(t.v);},
@@ -782,13 +837,14 @@ if(f.tag==="Remove duplicate")return{title:"Delete duplicate",body:"This deletes
 if(f.tag==="Request invoice")return{title:"Request VAT invoice",body:"Mimo will email "+f.contact+" asking for a full VAT invoice for "+f.ref+" ("+f.amount+"). The input VAT stays out of the return until it arrives."};
 if(f.tag==="Add to schedule")return{title:"Add to prepayment schedule",body:"This moves "+f.net+" from "+f.contact+" to "+f.acctName+" and releases "+f.releaseLabel+"."};
 return{title:"Resolve late claim",body:"This includes "+f.contact+" ("+f.ref+") in this return as a late claim, adding "+f.vatAmount+" of input VAT."};}
+function doneToast(f){if(f.tag==="Recode VAT")return "Recoded in Xero: "+f.contact;if(f.tag==="Remove duplicate")return "Duplicate deleted in Xero: "+f.ref;if(f.tag==="Request invoice")return "Invoice request sent to "+f.contact;if(f.tag==="Add to schedule")return "Added to the prepayment schedule: "+f.contact;return "Late claim included: "+f.contact;}
 function ConfirmDialog(p){
 useEffect(function(){function k(e){if(e.key==="Escape")p.onCancel();if(e.key==="Enter"){e.preventDefault();p.onConfirm();}}document.addEventListener("keydown",k);return function(){document.removeEventListener("keydown",k);};},[p.title]);
 return ReactDOM.createPortal(h("div",{onClick:p.onCancel,style:{position:"fixed",inset:0,zIndex:400,background:"rgba(31,32,36,0.24)",display:"flex",alignItems:"center",justifyContent:"center",padding:16,animation:"fadeIn .15s ease both"}},
 h("div",{onClick:function(e){e.stopPropagation();},role:"dialog","aria-modal":true,style:{width:440,maxWidth:"100%",boxSizing:"border-box",background:"#FFFFFF",border:"1px solid "+T.colorBorderDark,borderRadius:12,padding:"24px",boxShadow:"0 16px 40px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.05)",animation:"dockIn .25s cubic-bezier(.16,1,.3,1) both"}},
 h("div",{style:{fontSize:20,lineHeight:"28px",fontWeight:600,color:"#2A2A2A"}},p.title),
 h("div",{style:{marginTop:8,fontSize:16,lineHeight:"26px",color:"#7C7C7C"}},p.body),
-h("div",{style:{display:"flex",gap:8,marginTop:32}},h(SecondaryBtn,{h:48,onClick:p.onCancel,style:{flex:1,fontSize:16,fontWeight:400}},p.cancelLabel||"Cancel"),h(PrimaryBtn,{h:48,onClick:p.onConfirm,style:{flex:1,fontSize:16,fontWeight:400}},p.confirmLabel)))),document.body);}
+h("div",{style:{display:"flex",gap:8,marginTop:32}},h(PrimaryBtn,{h:48,onClick:p.onConfirm,style:{flex:1,fontSize:16,fontWeight:400}},p.confirmLabel),h(SecondaryBtn,{h:48,onClick:p.onCancel,style:{flex:1,fontSize:16,fontWeight:400}},p.cancelLabel||"Cancel")))),document.body);}
 function ConfirmModal(p){var c=confirmCopy(p.f);return h(ConfirmDialog,{title:c.title,body:c.body,confirmLabel:actionOf(p.f).primary,onCancel:p.onCancel,onConfirm:p.onConfirm});}
 function FindingRow(p){var f=p.f;var st=p.state;var _h=useState(false);var hv=_h[0],setHv=_h[1];var _bh=useState(false);var bh=_bh[0],setBh=_bh[1];var done=st&&st!=="open";
 var stLabel=st==="applied"?actionOf(f).done:st==="ignored"?"Ignored":st==="acknowledged"?"Resolved":null;
@@ -949,7 +1005,7 @@ else body=h(Table,{cols:[{label:"Date",k:"date",w:"92px"},{label:"Reference",k:"
 return h("div",{style:{flex:1,minWidth:0,minHeight:0,display:"flex",flexDirection:"column",background:"#FFFFFF",animation:"fadeIn .3s ease both"}},
 h("div",{style:{padding:"28px 32px 0",flexShrink:0}},
 h("div",{style:{display:"flex",alignItems:"center",gap:12}},h("span",{style:{fontSize:24,fontWeight:500,color:"#2A2A2A"}},f.contact),h(Tag,null,f.tag),h("div",{style:{flex:1}}),badge,
-h("div",{style:{display:"flex",alignItems:"center",gap:4,marginLeft:8}},
+h("div",{style:{display:"flex",alignItems:"center",gap:0,marginLeft:8}},
 h(Tooltip,{text:"Previous suggestion"},h(IconBtn,{"aria-label":"Previous suggestion",disabled:!(p.idx>0),onClick:p.onPrev,style:{opacity:p.idx>0?1:0.35}},h(Ic.chev,{up:true}))),
 h(Tooltip,{text:"Next suggestion"},h(IconBtn,{"aria-label":"Next suggestion",disabled:!(p.idx<p.count-1),onClick:p.onNext,style:{opacity:p.idx<p.count-1?1:0.35}},h(Ic.chev,null))),
 h(IconBtn,{title:"Close",onClick:p.onClose,hoverBg:"#E2E2E2",style:{borderRadius:"50%",background:"#F0F0F0",marginLeft:4}},h(Ic.close,{s:16})))),
@@ -994,6 +1050,33 @@ else if(mode==="hold"){mode="erase";tm=setTimeout(tick,35);}
 else if(mode==="erase"){n--;setTxt(t.slice(0,Math.max(0,n)));if(n<=0){i=(i+1)%list.length;n=0;mode="type";tm=setTimeout(tick,600);}else tm=setTimeout(tick,32);}}
 tm=setTimeout(tick,2800);return function(){clearTimeout(tm);};},[paused]);
 return txt;}
+/* saved workflows shown under "Your workflows" */
+var SAVED_META={"VAT readiness check":{d:"Scores the VAT return against weighted checks before filing.",live:true},
+"Combined prepayment schedule":{d:"One schedule for both prepayment accounts, with suggested additions.",live:true,prompt:"Create a combined prepayment schedule"},
+"Month-end bank reconciliation":{d:"Matches bank feeds to statements."},
+"Accruals sweep":{d:"Finds costs incurred in the month that haven't been invoiced yet."},
+"Director's loan review":{d:"Checks the DLA balance and s455 exposure."},
+"Supplier statement recs":{d:"Ties supplier statements to the ledger."},
+"Payroll control check":{d:"Checks payroll journals against PAYE and pension liabilities."},
+"Fixed asset additions":{d:"Spots capital items coded to expenses."},
+"Deferred income release":{d:"Releases income billed in advance by month."},
+"Aged debtors review":{d:"Flags overdue balances and likely bad debts."},
+"CIS deductions check":{d:"Checks subcontractor deductions against CIS returns."},
+"Intercompany balances":{d:"Ties intercompany accounts across group entities."},
+"Suspense account clear-down":{d:"Finds the right home for items in suspense."},
+"Management accounts pack":{d:"Builds the monthly P&L, balance sheet and KPIs."}};
+function savedCard(w){var m=SAVED_META[w.name]||{d:"Saved workflow."};return Object.assign({t:w.name,saved:true},m);}
+function SegTabs(p){return h("div",{role:"tablist",style:{display:"inline-flex",gap:4,padding:4,background:"#FFFFFF",border:"1px solid "+T.colorBorderDark,borderRadius:8}},p.items.map(function(it){var on=p.value===it.v;
+return h("button",Object.assign({key:it.v,type:"button",role:"tab","aria-selected":on,onClick:function(){p.onChange(it.v);},style:{minWidth:160,height:40,padding:"8px 16px",border:"none",borderRadius:on?4:8,background:on?"#F1F8F0":"transparent",color:on?T.colorBrandPrimary:"#2A2A2A",fontFamily:"inherit",fontSize:14,lineHeight:"22px",fontWeight:500,cursor:on?"default":"pointer",transition:"background .15s, color .15s"}},
+on?{}:hover({background:"transparent"},{background:"#F5F5F5"})),it.l);}));}
+function WfCard(p){var a=p.a;return h("button",Object.assign({type:"button",onClick:p.onClick,
+style:{minHeight:163,boxSizing:"border-box",textAlign:"left",display:"flex",flexDirection:"column",justifyContent:"space-between",alignItems:"flex-start",gap:24,padding:"16px 12px 16px 16px",border:"1px solid "+T.colorBorderDark,borderRadius:8,background:"#FFFFFF",cursor:"pointer",fontFamily:"inherit"}},
+hover({borderColor:T.colorBorderDark,boxShadow:"none"},{borderColor:T.colorBorderHover,boxShadow:"0 6px 16px rgba(0,0,0,0.05)"})),
+h("span",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,alignSelf:"stretch"}},(a.saved?h("span",{style:{display:"inline-flex",alignItems:"center",gap:4,height:25,boxSizing:"border-box",padding:"4px 8px 4px 6px",borderRadius:6,background:"#F1F8F0",color:T.colorBrandPrimary,fontSize:12,lineHeight:"17px",fontWeight:500,whiteSpace:"nowrap",flexShrink:0}},h("svg",{width:16,height:16,viewBox:"0 0 16 16",fill:"none",style:{display:"block"}},h("path",{d:"M3.3335 5.2C3.3335 4.0799 3.3335 3.51984 3.55148 3.09202C3.74323 2.71569 4.04919 2.40973 4.42552 2.21799C4.85334 2 5.41339 2 6.5335 2H9.46683C10.5869 2 11.147 2 11.5748 2.21799C11.9511 2.40973 12.2571 2.71569 12.4488 3.09202C12.6668 3.51984 12.6668 4.0799 12.6668 5.2V14L8.00016 11.3333L3.3335 14V5.2Z",stroke:"currentColor",strokeWidth:1.25,strokeLinecap:"round",strokeLinejoin:"round"})),"Saved")
+:h("span",{style:{display:"inline-flex",alignItems:"center",gap:4,height:21,boxSizing:"border-box",padding:"2px 6px 2px 4px",borderRadius:6,background:"#ECECEC",color:"#7C7C7C",fontSize:12,lineHeight:"17px",fontWeight:500,whiteSpace:"nowrap",flexShrink:0}},NI(CAT_ICON[a.cat],14),a.cat)),
+p.meta?h("span",{style:{fontSize:12,lineHeight:"17px",color:"#9D9D9E",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",minWidth:0}},p.meta):null),
+h("span",{style:{display:"flex",flexDirection:"column",gap:8}},h("span",{style:{fontSize:18,lineHeight:"26px",fontWeight:500,color:"#2A2A2A"}},a.t),
+h("span",{style:{fontSize:14,lineHeight:"22px",color:"#7C7C7C"}},a.d)));}
 function StartRecents(p){var _m=useState(false);var more=_m[0],setMore=_m[1];var vis=more?p.items:p.items.slice(0,3);
 function row(key,icon,label,onClick){return h("div",Object.assign({key:key,onClick:onClick,title:label,style:{display:"flex",alignItems:"center",gap:12,height:31,padding:"0 8px",margin:"0 -8px",borderRadius:8,cursor:"pointer",fontSize:14,color:"#4F4F4F"}},hover({background:"transparent"},{background:"rgba(0,0,0,0.04)"})),
 h("span",{style:{color:"#545453",display:"inline-flex"}},icon),h("span",{style:{minWidth:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}},label));}
@@ -1001,7 +1084,7 @@ return h("div",{style:{padding:"0 12px",marginTop:32,display:"flex",flexDirectio
 h("div",{style:{fontSize:14,lineHeight:"22px",fontWeight:600,color:"#2A2A2A",marginBottom:8}},"Recents"),
 vis.map(function(it,i){return row("r"+i,recentIcon(it),it.label,function(){if(it.id&&p.onPick)p.onPick(it.id);});}),
 p.items.length>3?row("more",NI("dots"),more?"View less":"View more",function(){setMore(!more);}):null);}
-function StartView(p){var ph=useTypedPlaceholder(START_PH,!!p.draft);var _t=useState(null);var toast=_t[0],setToast=_t[1];
+function StartView(p){var ph=useTypedPlaceholder(START_PH,!!p.draft);var _lt=useState("yours");var libTab=_lt[0],setLibTab=_lt[1];var mine=(p.lib||[]).map(savedCard);var _t=useState(null);var toast=_t[0],setToast=_t[1];
 return h("div",{style:{flex:1,overflowY:"auto",background:T.colorSurfaceSecondary}},
 h("div",{style:{maxWidth:CHAT_W,margin:"0 auto",padding:"112px 24px 64px"}},
 h("div",{style:{display:"flex",justifyContent:"center"}},h(MIMO_LOGO,{h:32})),
@@ -1009,16 +1092,10 @@ h("div",{style:{textAlign:"center",fontSize:36,lineHeight:"44px",fontWeight:500,
 h(Composer,{value:p.draft,onChange:p.setDraft,onSend:p.onSend,placeholder:ph,autoFocus:true,focusKey:p.focusKey}),
 (p.recents&&p.recents.length)?h(StartRecents,{items:p.recents,onPick:p.onPick}):null,
 h("div",{style:{height:1,background:T.colorBorderDark,margin:(p.recents&&p.recents.length?"32px":"48px")+" 0 56px"}}),
-h("div",{style:{display:"flex",alignItems:"center",justifyContent:"center",gap:10,fontSize:24,lineHeight:"32px",color:"#1F2024",marginBottom:32}},
-h("span",{title:"Built on Mimo's verified checks",style:{display:"inline-flex",alignItems:"center",gap:6,height:28,boxSizing:"border-box",padding:"0 10px",border:"1px solid #2A2A2A",borderRadius:6,background:"#FFFFFF",fontSize:15,lineHeight:"22px",fontWeight:400,color:"#2A2A2A"}},
-h("svg",{width:13,height:12,viewBox:"0 0 21.3 20",style:{display:"block",flexShrink:0}},h("path",{d:"M21.2948 0.316406H16.2686V19.8237H21.2948V0.316406Z",fill:"#1F2024"}),h("path",{d:"M3.55406 0L0 3.55406L10.9144 14.4685L14.4685 10.9144L3.55406 0Z",fill:"#1F2024"}),h("path",{d:"M5.56185 10.7422H0.535645V19.8197H5.56185V10.7422Z",fill:"#1F2024"})),"Verified workflows")),
-h("div",{style:{display:"grid",gridTemplateColumns:"repeat(3, minmax(0,1fr))",gap:16}},APPS.map(function(a){
-return h("button",Object.assign({key:a.t,type:"button",onClick:function(){if(a.live)p.onApp(a.prompt||"Run a VAT review");else{setToast(a.t);setTimeout(function(){setToast(null);},2200);}},
-style:{height:163,boxSizing:"border-box",textAlign:"left",display:"flex",flexDirection:"column",justifyContent:"space-between",alignItems:"flex-start",gap:8,padding:"16px 12px 16px 16px",border:"1px solid "+T.colorBorderDark,borderRadius:8,background:"#FFFFFF",cursor:"pointer",fontFamily:"inherit"}},
-hover({borderColor:T.colorBorderDark,boxShadow:"none"},{borderColor:T.colorBorderHover,boxShadow:"0 6px 16px rgba(0,0,0,0.05)"})),
-h("span",{style:{display:"inline-flex",alignItems:"center",gap:4,height:21,boxSizing:"border-box",padding:"2px 6px 2px 4px",borderRadius:6,background:"#ECECEC",color:"#7C7C7C",fontSize:12,lineHeight:"17px",fontWeight:500}},NI(CAT_ICON[a.cat],14),a.cat),
-h("span",{style:{display:"flex",flexDirection:"column",gap:8}},h("span",{style:{fontSize:18,lineHeight:"26px",fontWeight:500,color:"#2A2A2A"}},a.t),
-h("span",{style:{fontSize:14,lineHeight:"22px",color:"#7C7C7C"}},a.d)));}))),
+h("div",{style:{display:"flex",justifyContent:"center",marginBottom:32}},h(SegTabs,{value:libTab,onChange:setLibTab,items:[{v:"yours",l:"Your workflows"},{v:"verified",l:"Verified workflows"}]})),
+libTab==="verified"?h("div",{key:"v",style:{display:"grid",gridTemplateColumns:"repeat(3, minmax(0,1fr))",gap:16,animation:"fadeIn .25s ease both"}},APPS.map(function(a){return h(WfCard,{key:a.t,a:a,onClick:function(){if(a.live)p.onApp(a.prompt||"Run a VAT review");else{setToast(a.t);setTimeout(function(){setToast(null);},2200);}}});}))
+:(mine.length?h("div",{key:"y",style:{display:"grid",gridTemplateColumns:"repeat(3, minmax(0,1fr))",gap:16,animation:"fadeIn .25s ease both"}},mine.map(function(a){return h(WfCard,{key:a.t,a:a,onClick:function(){if(a.live)p.onApp(a.prompt||"Run a VAT review");else{setToast(a.t);setTimeout(function(){setToast(null);},2200);}}});}))
+:h("div",{style:{textAlign:"center",fontSize:14,lineHeight:"22px",color:"#7C7C7C",padding:"24px 0"}},"Workflows you save appear here. Browse the verified workflows to get started."))),
 toast?h("div",{style:{position:"fixed",left:"50%",bottom:32,transform:"translateX(-50%)",background:"#2A2A2A",color:"#FFF",fontSize:14,padding:"10px 16px",borderRadius:8,zIndex:50,animation:"fadeIn .2s ease both"}},toast+" isn't part of this prototype yet. Try VAT review."):null);}
 
 function ViewSwitch(p){var items=[{v:"chat",I:Ic.chat,l:"Chat view"},{v:"split",I:Ic.split,l:"Split view"},{v:"canvas",I:Ic.canvas,l:"Canvas view"}];
@@ -1101,9 +1178,13 @@ tm.later(450,function(){setStatus([TH]);});tm.later(1400,function(){thenStatus(A
 function answerQ1(o){if(SCN.current==="schedule")setA({accts:o.accts||["1400","1410"],acctLabel:o.label});else setA({period:o.period,periodLabel:o.label});setDock("busy");setStatus([TH]);
 tm.later(1000,function(){thenStatus(ASK);});tm.later(1900,function(){setDock("q2");});}
 /* 4 → 5, or straight to the proposal */
-function answerQ2(o){if(SCN.current==="schedule"){setA({fy:o.fy,period:o.period});push({type:"answered",pairs:[[SQ1.q,A.current.acctLabel],[SQ2.q,o.label]]});addLog("Scoped the schedule to "+acctsText(A.current)+", "+o.period);propose();return;}
+function answerQ2(o){if(SCN.current==="schedule"){setA({fy:o.fy,period:o.period,fyLabel:o.label});addLog("Scoped the schedule to "+acctsText(A.current)+", "+o.period);setDock("busy");setStatus([TH]);tm.later(1000,function(){thenStatus(ASK);});tm.later(1900,function(){setDock("q3s");});return;}
 setA({late:o.late,lateLabel:o.label});push({type:"answered",pairs:[[Q1.q,A.current.periodLabel],[Q2.q,o.label]]});addLog("Scoped the review to "+A.current.period+(o.late?", late claims included":""));
 if(o.late){setDock("busy");tm.later(250,function(){setStatus([TH]);});tm.later(1100,function(){thenStatus(ASK);});tm.later(1800,function(){setDock("free");});}else propose();}
+function answerSQ3(o){push({type:"answered",pairs:[[SQ1.q,A.current.acctLabel],[SQ2.q,A.current.fyLabel],[SQ3.q,o.label]]});
+if(o.own){setDock("upload");return;}setA({ownFile:null});propose();}
+function ownUploaded(name){setA({ownFile:name});push({type:"answered",pairs:[["Your prepayment schedule",name]]});addLog("Uploaded own schedule: "+name);propose();}
+function skipUpload(){setA({ownFile:null});push({type:"answered",pairs:[["Your prepayment schedule","Skipped, building it from the ledger"]]});propose();}
 /* 5 → 6 */
 function answerQ3(v){setA({filed:v});push({type:"answered",pairs:[[Q3.q,v]]});propose();}
 function skipLate(){setA({late:false,lateLabel:"No, skip for now"});push({type:"answered",pairs:[[Q3.q,"Skipped, late claims left out of this review"]]});addLog("Late claims skipped for "+A.current.period);propose();}
@@ -1129,7 +1210,7 @@ push({type:"note",text:"Stopped. Nothing has been changed in Xero."});setDock("d
 function sendDefault(){var t=draft.trim();if(!t)return;setDraft("");push({type:"user",text:t});meta({status:"active"});propose();}
 
 /* after the run: findings, chips and replies */
-function openF(id){setDetail(id);setItems(function(xs){var last=xs[xs.length-1];if(last&&last.type==="txdetails"&&last.fid===id)return xs;return xs.concat([{type:"txdetails",fid:id,k:++seq.current}]);});}
+function openF(id){setDetail(id);}
 function applyF(id){var f=findings.filter(function(x){return x.id===id;})[0];if(!f)return;setF(id,"applied");addLog(actionOf(f).done+": "+f.contact+" ("+f.ref+")");}
 function ackF(id){var f=findings.filter(function(x){return x.id===id;})[0];setF(id,"acknowledged");addLog("Resolved: "+f.contact+" ("+f.ref+")");}
 function reopenF(id){var f=findings.filter(function(x){return x.id===id;})[0];setF(id,"open");addLog("Re-opened: "+f.contact+" ("+f.ref+")");}
@@ -1208,13 +1289,15 @@ function dockEl(){switch(dock){
 case "busy":return h(Composer,{busy:true,onStop:stop});
 case "q1":return h(Questionnaire,{q:isS?SQ1:Q1,onAnswer:answerQ1});
 case "q2":return h(Questionnaire,{q:isS?SQ2:Q2,onAnswer:answerQ2});
-case "free":return h(FreeText,{q:Q3,onSubmit:answerQ3,onSkip:skipLate,skipLabel:"Skip late claims"});
+case "q3s":return h(Questionnaire,{q:SQ3,onAnswer:answerSQ3});
+case "upload":return h(UploadCard,{title:"Upload your prepayment schedule",hint:"Excel, CSV or PDF",sample:"Prepayment schedule FY26.xlsx",onFile:ownUploaded,onSkip:skipUpload,skipLabel:"Build it from the ledger instead"});
+case "free":return h(DateCard,{q:Q3,onSubmit:answerQ3,onSkip:skipLate});
 case "proposal":return h(ProposalCard,{answers:answers,onRun:runWf,onCancel:cancelWf,wf:isS?S_WF:null,steps:isS?sSteps(answers):null,desc:isS?sDescription(answers):null});
 case "default":return h(Composer,{value:draft,onChange:setDraft,onSend:sendDefault,placeholder:"Request changes or more info...",autoFocus:true});
 case "next":return h(Composer,{value:ctext,onChange:setCtext,onSend:sendNext,chips:chips,onRemoveChip:function(k){setChips(function(cs){return cs.filter(function(c){return c.key!==k;});});},
 placeholder:chips.length?(isS?"Add, ask for context or more...":"Recode, ask for context or more..."):"What action do you want to take next?",autoFocus:true,focusKey:focusKey});}
 return null;}
-var actionsDisclaimer=dock==="q1"||dock==="q2"||dock==="free"||dock==="proposal";
+var actionsDisclaimer=dock==="q1"||dock==="q2"||dock==="q3s"||dock==="upload"||dock==="free"||dock==="proposal";
 
 function chatPanel(narrow,title){var EASE="cubic-bezier(0.32,0.72,0,1)";var pad=narrow?"0 16px":"0 24px";
 return h("div",{style:{flex:1,minWidth:0,display:"flex",flexDirection:"column",minHeight:0,background:T.colorSurfaceSecondary,position:"relative"}},
@@ -1224,7 +1307,7 @@ h("div",{ref:contentRef,style:{maxWidth:CHAT_W,margin:"0 auto",padding:"24px 0 3
 dock!=="none"?h("div",{style:{flexShrink:0,padding:narrow?"0 16px 14px":"0 24px 14px",transition:"padding 0.44s "+EASE}},h("div",{style:{maxWidth:CHAT_W,margin:"0 auto"}},dockEl(),h(Disclaimer,{actions:actionsDisclaimer}))):null);}
 
 if(phase==="start")return h("div",{style:{flex:1,display:p.active?"flex":"none",flexDirection:"column",minHeight:0,position:"relative"}},
-h(StartView,{draft:draft,setDraft:setDraft,onSend:function(){var t=draft.trim();if(t){setDraft("");begin(t);}},onApp:function(t){setDraft("");begin(t);},focusKey:focusKey,recents:buildRecents(p.tabs),onPick:p.onSelect}));
+h(StartView,{draft:draft,setDraft:setDraft,onSend:function(){var t=draft.trim();if(t){setDraft("");begin(t);}},onApp:function(t){setDraft("");begin(t);},focusKey:focusKey,recents:buildRecents(p.tabs),onPick:p.onSelect,lib:p.lib}));
 
 var resultsProps={scen:scen,answers:answers,findings:findings,state:fstate,late:!!answers.late,filed:answers.filed,period:answers.period,log:log,tab:rtab,setTab:setRtab,
 onOpen:openF,onApply:function(id){setConfirmId(id);},onAdd:function(f){addChip({key:f.id,fid:f.id,label:f.contact});}};
@@ -1248,10 +1331,10 @@ return h("div",{style:{flex:1,display:p.active?"flex":"none",flexDirection:"colu
 h(TabHeader,{saved:(p.lib||[]).some(function(w){return w.name===(isS?S_WF.name:WF.name);}),onSave:function(){var n=isS?S_WF.name:WF.name;var was=(p.lib||[]).some(function(w){return w.name===n;});p.onToggleLib(n);addLog(was?"Removed "+n+" from the library":"Added "+n+" to the library");showToast(was?"Removed from your library":"Added to your library. Find it in the menu.");},title:isS?S_WF.name:WF.name,period:showPeriod?answers.period:null,ready:ready,view:view,setView:setView,marked:marked,allHandled:findings.length>0&&findings.every(function(f){var st=fstate[f.id];return st&&st!=="open";}),onMark:function(){var open=findings.filter(function(f){var st=fstate[f.id];return !st||st==="open";}).length;if(open>0){setMarkAsk(open);return;}doMark();}}),
 body,
 markAsk?h(ConfirmDialog,{title:"Mark as done?",body:markAsk+(markAsk===1?" suggestion is":" suggestions are")+" still open. You can mark the workflow as done anyway and come back to "+(markAsk===1?"it":"them")+" later.",confirmLabel:"Mark as done",onCancel:function(){setMarkAsk(0);},onConfirm:function(){setMarkAsk(0);doMark();}}):null,
-confirmId?(function(){var cf=findings.filter(function(x){return x.id===confirmId;})[0];return cf?h(ConfirmModal,{f:cf,onCancel:function(){setConfirmId(null);},onConfirm:function(){applyF(cf.id);setConfirmId(null);}}):null;})():null,
+confirmId?(function(){var cf=findings.filter(function(x){return x.id===confirmId;})[0];return cf?h(ConfirmModal,{f:cf,onCancel:function(){setConfirmId(null);},onConfirm:function(){applyF(cf.id);setConfirmId(null);showToast(doneToast(cf));}}):null;})():null,
 df?h("div",{key:"drawer",style:{position:"absolute",top:0,bottom:0,right:0,left:mode==="canvas"?"0px":"clamp(320px, 42%, "+SPLIT_W+"px)",zIndex:30,display:"flex",flexDirection:"column",minHeight:0,background:"#FFFFFF",
 boxShadow:"-8px 0 24px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.06)",borderLeft:"1px solid "+T.colorBorderDark,animation:"slideInRight .32s "+EASE+" both"}},
-h(Drawer,{f:df,state:fstate[df.id]||"open",onClose:function(){setDetail(null);},idx:findings.indexOf(df),count:findings.length,onPrev:function(){var i=findings.indexOf(df);if(i>0)openF(findings[i-1].id);},onNext:function(){var i=findings.indexOf(df);if(i<findings.length-1)openF(findings[i+1].id);},onApply:function(){applyF(df.id);},onAcknowledge:function(){ackF(df.id);},onIgnore:function(){ignoreF(df.id);},onReopen:function(){reopenF(df.id);},onFullscreen:function(){openInvoiceTab(df);}})):null,
+h(Drawer,{f:df,state:fstate[df.id]||"open",onClose:function(){setDetail(null);},idx:findings.indexOf(df),count:findings.length,onPrev:function(){var i=findings.indexOf(df);if(i>0)openF(findings[i-1].id);},onNext:function(){var i=findings.indexOf(df);if(i<findings.length-1)openF(findings[i+1].id);},onApply:function(){setConfirmId(df.id);},onAcknowledge:function(){ackF(df.id);},onIgnore:function(){ignoreF(df.id);},onReopen:function(){reopenF(df.id);},onFullscreen:function(){openInvoiceTab(df);}})):null,
 toast?h("div",{style:{position:"fixed",left:"50%",top:120,transform:"translateX(-50%)",background:"#2A2A2A",color:"#FFF",fontSize:14,padding:"10px 16px",borderRadius:8,zIndex:80,animation:"fadeIn .2s ease both",display:"flex",alignItems:"center",gap:8}},h(Ic.check,{s:16,c:"#FFFFFF"}),toast):null,
 selBtn?h("div",{style:{position:"fixed",left:selBtn.x,top:selBtn.y-44,transform:"translateX(-50%)",zIndex:60}},
 h(SecondaryBtn,{h:34,px:10,onClick:function(){var t=selBtn.text;addChip({key:"q"+Date.now(),label:"“"+(t.length>36?t.slice(0,36)+"…":t)+"”"});setSelBtn(null);if(window.getSelection)window.getSelection().removeAllRanges();},style:{boxShadow:"0 6px 16px rgba(0,0,0,0.10)"}},h(Ic.msgPlus,null),"Add to chat")):null,
@@ -1375,7 +1458,7 @@ var TAB_N=1;
 function newTab(){return{id:"t"+(TAB_N++),label:"New workflow",status:"idle"};}
 function App(){var first=useMemo(newTab,[]);var _t=useState([first]);var tabs=_t[0],setTabs=_t[1];var _a=useState(first.id);var active=_a[0],setActive=_a[1];
 var _o=useState({});var overlay=_o[0],setOverlay=_o[1];var _nv=useState(null);var panel=_nv[0],setPanel=_nv[1];
-var _lb=useState([{name:"Month-end bank reconciliation",sub:"Saved 12 Sep 26"},{name:"Accruals sweep",sub:"Saved 28 Aug 26"}]);var lib=_lb[0],setLib=_lb[1];
+var _lb=useState([{name:"Month-end bank reconciliation"},{name:"Accruals sweep"},{name:"Director\'s loan review"},{name:"Supplier statement recs"},{name:"Payroll control check"},{name:"Fixed asset additions"},{name:"Deferred income release"},{name:"Aged debtors review"},{name:"CIS deductions check"},{name:"Intercompany balances"},{name:"Suspense account clear-down"},{name:"Management accounts pack"}]);var lib=_lb[0],setLib=_lb[1];
 function toggleLib(n){setLib(function(l){return l.some(function(w){return w.name===n;})?l.filter(function(w){return w.name!==n;}):[{name:n,sub:"Saved "+TODAY,fresh:true}].concat(l);});}
 function onMeta(id,o){setTabs(function(ts){return ts.map(function(t){return t.id===id?Object.assign({},t,o):t;});});}
 function onOverlay(id,v){setOverlay(function(m){if(!!m[id]===v)return m;var n=Object.assign({},m);n[id]=v;return n;});}
