@@ -467,7 +467,7 @@ var Q2={step:2,total:2,q:"Include late claims in the review?",options:[{label:"Y
 var Q3={q:"When did you submit the previous VAT return for Apr 26 – Jun 26 to HMRC?",placeholder:"Type date of filing, e.g. 7 Aug 26"};
 
 var WF={name:"VAT readiness check",
-sub:"A custom workflow lets you run checks that are not yet defined.",
+sub:"A custom skill lets you run checks that are not yet defined.",
 steps:[
 {name:"Gather evidence",desc:"Transactions, VAT codes and documents behind every box",run:"Gathering evidence",result:"412 transactions across 9 boxes",chip:"23 excluded",ms:2000},
 {name:"Run weighted checks",verified:true,desc:"Each check scored by its risk to the filing",run:"Running weighted checks",result:"14 checks, 1 blocking failure",chip:"6 findings",ms:2600},
@@ -478,7 +478,7 @@ function wfDescription(a){return "When you run it, this will score the "+a.perio
 function wfSteps(a){return WF.steps.filter(function(s){return !s.late||a.late;});}
 
 var EXPLAIN=[
-"Here's a VAT readiness workflow I can run for you. **Nothing has been checked yet**, so this is a preview of what happens when you run it.",
+"Here's a VAT readiness skill I can run for you. **Nothing has been checked yet**, so this is a preview of what happens when you run it.",
 "I'll test every check on the return against the ledger, using the transactions, VAT codes and documents behind each box. Each check is weighted by its risk to the filing, which gives you a **readiness score out of 100**.",
 "## Two checks can block filing on their own\n- Box 1 not matching the VAT on sales\n- Reverse charge entries that don't net off",
 "If either fails, the return is marked **not ready to file** whatever the score. Nothing changes in Xero until you approve it."];
@@ -556,11 +556,11 @@ var SQ3={step:3,total:3,q:"Do you want to provide your own prepayment schedule?"
 {label:"No, build it from the ledger",own:false}]};
 
 var S_EXPLAIN=[
-"Here's a prepayment schedule workflow I can run for you. **Nothing has been built yet**, so this is a preview of what happens when you run it.",
+"Here's a prepayment schedule skill I can run for you. **Nothing has been built yet**, so this is a preview of what happens when you run it.",
 "## When you run it, I'll\n- Read the prepayment accounts and the schedules already on them\n- Scan this year's bills for costs that cover future months, like insurance, software and rent in advance\n- Give each prepayment a **straight-line monthly release**",
 "You'll get one schedule with additions and releases per account, tied back to the ledger. Likely prepayments are listed as **suggestions**, and nothing moves until you add them."];
 
-var S_WF={name:"Combined prepayment schedule",sub:"A custom workflow lets you run checks that are not yet defined."};
+var S_WF={name:"Combined prepayment schedule",sub:"A custom skill lets you run checks that are not yet defined."};
 function acctsText(a){return (a.accts||["1400","1410"]).map(function(k){return ACCTS[k];}).join(" and ");}
 function sDescription(a){return "When you run it, this will build one schedule for "+acctsText(a)+" covering "+a.period+(a.ownFile?", starting from your schedule ("+a.ownFile+")":"")+". Suggested invoices are only added once you approve them.";}
 
@@ -733,7 +733,7 @@ h("svg",{width:11,height:10,viewBox:"0 0 21.3 20",style:{display:"block",flexShr
 function ProposalCard(p){var a=p.answers;var W=p.wf||WF;var steps=p.steps||wfSteps(a);
 useEffect(function(){if(p.collapsed||!p.onRun)return;function k(e){if(e.key==="Enter"&&!(e.target&&/TEXTAREA|INPUT/.test(e.target.tagName))){e.preventDefault();p.onRun();}}
 window.addEventListener("keydown",k);return function(){window.removeEventListener("keydown",k);};},[p.collapsed]);
-var head=h("div",null,h("div",{style:{fontSize:16,lineHeight:"26px",fontWeight:500,color:"#2A2A2A"}},"Proposed workflow: "+W.name),
+var head=h("div",null,h("div",{style:{fontSize:16,lineHeight:"26px",fontWeight:500,color:"#2A2A2A"}},"Proposed skill: "+W.name),
 h("div",{style:{fontSize:16,lineHeight:"26px",color:"#9D9D9E"}},W.sub));
 if(p.collapsed)return h("div",{style:cardStyle({boxShadow:"none",animation:"fadeIn .3s ease both"})},head);
 return h("div",{style:cardStyle({animation:"dockIn .35s cubic-bezier(.16,1,.3,1) both"})},head,
@@ -744,7 +744,7 @@ h("span",{style:{width:24,height:24,marginTop:1,borderRadius:"50%",background:"#
 h("div",{style:{fontSize:16,lineHeight:"26px"}},h("span",{style:{fontWeight:500,color:"#2A2A2A"}},s.name),s.verified?h(VerifiedBadge,null):null,h("span",{style:{color:"#9D9D9E"}},"  "+s.desc))),
 i<steps.length-1?h("div",{style:{width:1,height:20,background:T.colorBorderMedium,margin:"6px 0 6px 12px"}}):null);})),
 h("div",{style:{display:"flex",gap:8,marginTop:24}},
-h(PrimaryBtn,{onClick:p.onRun},"Run workflow",h(Ic.enter,null)),h(SecondaryBtn,{onClick:p.onCancel},"Cancel")));}
+h(PrimaryBtn,{onClick:p.onRun},"Run skill",h(Ic.enter,null)),h(SecondaryBtn,{onClick:p.onCancel},"Cancel")));}
 
 /* Workflow progress (DS: Chat / Workflow progress) */
 function Progress(p){var steps=p.steps;var st=p.statuses;var allDone=st.length&&st.every(function(s){return s==="done";});
@@ -1027,6 +1027,80 @@ done?h(SecondaryBtn,{onClick:p.onReopen,style:{flex:1}},"Re-open suggestion"):h(
 h("button",{type:"button",onClick:p.onIgnore,style:{height:40,padding:"0 16px",border:"none",borderRadius:8,background:T.colorErrorBg,color:T.colorError,fontSize:14,fontWeight:500,fontFamily:"inherit",cursor:"pointer"}},"Ignore suggestion"),
 h(PrimaryBtn,{onClick:p.onApply,style:{flex:1}},act.primary))));}
 
+/* ══════════════ LANDING PAGES (main nav) ══════════════ */
+var RECENT_DATES=["04 Aug 26","01 Oct 26","28 Sep 26","05 Oct 26","03 Sep 26","30 Jul 26","22 Sep 26","05 Oct 26","02 Sep 26","26 Sep 26","07 May 26"];
+var STATUS_LABEL={done:"Done",running:"Running",stopped:"Stopped"};
+var ARTIFACTS=[
+{n:"VAT readiness canvas, Apr 26 – Jun 26",s:"VAT readiness check",d:"04 Aug 26"},
+{n:"Prepayment schedule canvas, FY 26/27",s:"Combined prepayment schedule",d:"28 Sep 26"},
+{n:"Bank reconciliation report, HSBC Business",s:"Month-end bank reconciliation",d:"01 Oct 26"},
+{n:"Accruals working paper, Aug 26",s:"Accruals sweep",d:"03 Sep 26"},
+{n:"Deferred income schedule, Aug 26",s:"Deferred income release",d:"02 Sep 26"},
+{n:"Payroll control check, Sep 26",s:"Payroll control check",d:"26 Sep 26"},
+{n:"VAT readiness canvas, Jan 26 – Mar 26",s:"VAT readiness check",d:"07 May 26"}];
+var FILES0={"Bank statements":[{n:"HSBC_Business_Sep_2026.pdf",k:"pdf",z:"412 KB",d:"02/10/2026"},{n:"HSBC_Business_Aug_2026.pdf",k:"pdf",z:"398 KB",d:"02/09/2026"},{n:"Barclays_Credit_Card_Sep_2026.pdf",k:"pdf",z:"156 KB",d:"03/10/2026"}],
+"Invoices":[{n:"EDF-20326.pdf",k:"pdf",z:"88 KB",d:"12/08/2026"},{n:"GG-2206184.pdf",k:"pdf",z:"64 KB",d:"01/09/2026"},{n:"HIS-77120.pdf",k:"pdf",z:"71 KB",d:"05/07/2026"},{n:"POS-88117.pdf",k:"pdf",z:"52 KB",d:"25/07/2026"}],
+"Prepayment schedules":[{n:"Prepayment schedule FY26.xlsx",k:"xlsx",z:"184 KB",d:"28/09/2026"}],
+"Reports":[{n:"Management accounts Sep 26.pdf",k:"pdf",z:"1.2 MB",d:"06/10/2026"},{n:"VAT return Apr 26 - Jun 26.pdf",k:"pdf",z:"96 KB",d:"07/08/2026"}],
+"Workbooks":[{n:"04_Prepayments_-_Accruals_25-26.xlsx",k:"xlsx",z:"239 KB",d:"02/11/2026"}]};
+var CONTEXT_FACTS=[["Company","Seabrook Foods Ltd, company no. 08812345"],["Industry","Food wholesale"],["Accounting software","Xero"],["VAT scheme","Standard rate, quarterly (Mar, Jun, Sep, Dec)"],["Financial year end","31 March"],["Prepayment threshold","£500"]];
+var CONTEXT_RULES=[
+{t:"Instantprint print work is zero-rated",by:"Laura Bennett",d:"29 Sep 26"},
+{t:"British Gas supplies the Pitfield depot, so standard rate 20% applies",by:"Owen Fairhurst",d:"29 Sep 26"},
+{t:"Airedale Estates bills rent a quarter in advance",by:"Laura Bennett",d:"22 Sep 26"},
+{t:"EDF Energy invoices often arrive late, so check late claims every quarter",by:"Owen Fairhurst",d:"02 Oct 26"}];
+
+function fileIcon(k){var c=k==="xlsx"?"#1D9E4B":"#E5484D";return h("span",{style:{width:20,height:20,display:"inline-flex",alignItems:"center",justifyContent:"center",flexShrink:0}},
+h("svg",{width:16,height:20,viewBox:"0 0 16 20",fill:"none",style:{display:"block"}},h("path",{d:"M2 1h8l5 5v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1Z",fill:"#FFFFFF",stroke:"#D4D4D4"}),h("path",{d:"M10 1v4a1 1 0 0 0 1 1h4",stroke:"#D4D4D4"}),
+k==="xlsx"?h("path",{d:"M4.5 10h7M4.5 13h7M4.5 16h7M8 10v6",stroke:c,strokeWidth:1.2}):h("rect",{x:3.5,y:11,width:9,height:5,rx:1,fill:c})));}
+
+function PageShell(p){return h("div",{style:{flex:1,overflowY:"auto",background:T.colorSurfaceSecondary,animation:"fadeIn .2s ease both"}},
+h("div",{style:{maxWidth:p.wide?1000:CHAT_W,margin:"0 auto",padding:"64px 24px 80px",boxSizing:"content-box"}},
+h("div",{style:{fontSize:32,lineHeight:"40px",fontWeight:600,color:"#1F2024"}},p.title),
+h("div",{style:{marginTop:8,fontSize:14,lineHeight:"22px",color:"#7C7C7C"}},p.desc),
+p.left||p.right?h("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",gap:16,minHeight:40,margin:"40px 0 16px"}},h("div",{style:{fontSize:14,lineHeight:"22px",fontWeight:600,color:"#2A2A2A",display:"flex",alignItems:"center",gap:8,minWidth:0}},p.left),h("div",{style:{display:"flex",gap:8}},p.right)):h("div",{style:{height:40}}),
+p.children));}
+function ListCard(p){return h("div",{style:{background:"#FFFFFF",border:"1px solid "+T.colorBorderDark,borderRadius:12,overflow:"hidden",marginBottom:p.mb||0}},p.children);}
+function ListRow(p){return h("div",Object.assign({onClick:p.onClick,style:{display:"flex",alignItems:"center",gap:12,minHeight:56,padding:"8px 12px 8px 20px",boxSizing:"border-box",borderTop:p.first?"none":"1px solid "+T.colorBorderLight,cursor:p.onClick?"pointer":"default",background:"#FFFFFF"}},hover({background:"#FFFFFF"},{background:"#FAFAFA"})),
+h("span",{style:{color:"#545453",display:"inline-flex",flexShrink:0}},p.icon),
+h("div",{style:{flex:1,minWidth:0}},h("div",{style:{fontSize:14,lineHeight:"22px",fontWeight:p.strong?500:400,color:"#2A2A2A",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}},p.label),p.sub?h("div",{style:{fontSize:13,lineHeight:"20px",color:"#9D9D9E"}},p.sub):null),
+p.meta?h("span",{style:{fontSize:14,lineHeight:"22px",color:"#7C7C7C",whiteSpace:"nowrap",paddingRight:p.actions?4:8}},p.meta):null,
+p.actions||null);}
+function rowActions(dl){return h("div",{style:{display:"flex",alignItems:"center",gap:0},onClick:function(e){e.stopPropagation();}},dl?h(IconBtn,{title:"Download"},svg(18,[P("M12 4v11M7 10l5 5 5-5M5 20h14",null,1.5)])):null,h(IconBtn,{title:"More"},h(Ic.kebab,null)));}
+
+function HistoryPage(p){var items=buildRecents(p.tabs);
+return h(PageShell,{title:"Recents",desc:"Every skill run for "+CLIENT+". Open one to pick up where you left off.",left:"All skill runs ("+items.length+")",right:h(PrimaryBtn,{onClick:p.onNew,style:{padding:"0 16px 0 12px"}},h(Ic.plus,{s:20}),"New chat")},
+h(ListCard,null,items.map(function(it,i){var past=it.id?null:RECENT_DATES[PAST_RECENTS.indexOf(it)]||"";var st=it.done?"Done":STATUS_LABEL[it.status]||"Open";
+return h(ListRow,{key:i,first:i===0,icon:recentIcon(it),label:it.label,meta:st+" · "+(it.id?"Today":past),onClick:it.id?function(){p.onPick(it.id);}:null,actions:rowActions(false)});})));}
+
+function SkillsPage(p){return h(PageShell,{wide:false,title:"Skills",desc:"Skills saved for this client and Mimo's verified skills. Pick one to run it."},
+h(SkillsLibrary,{lib:p.lib,onApp:p.onApp,onToast:p.onToast}));}
+
+function ArtifactsPage(p){return h(PageShell,{title:"Artifacts",desc:"Canvases, schedules and reports Mimo has made for "+CLIENT+". Each one stays linked to the skill that made it.",left:"All artifacts ("+ARTIFACTS.length+")"},
+h(ListCard,null,ARTIFACTS.map(function(a,i){return h(ListRow,{key:i,first:i===0,icon:NI("file07"),label:a.n,sub:a.s,meta:a.d,onClick:function(){},actions:rowActions(true)});})));}
+
+function FilesPage(p){var _f=useState(null);var folder=_f[0],setFolder=_f[1];var _d=useState(FILES0);var data=_d[0],setData=_d[1];var ref=useRef(null);
+function upload(e){var f=e.target.files&&e.target.files[0];if(!f)return;var tgt=folder||"Uploads";setData(function(d){var n=Object.assign({},d);n[tgt]=[{n:f.name,k:/xls|csv/i.test(f.name)?"xlsx":"pdf",z:Math.max(1,Math.round(f.size/1024))+" KB",d:"05/10/2026",fresh:true}].concat(d[tgt]||[]);return n;});e.target.value="";}
+function newFolder(){var i=1,name="New folder";while(data[name])name="New folder "+(++i);setData(function(d){var n=Object.assign({},d);n[name]=[];return n;});}
+var crumbs=folder?h(Fragment,null,h("span",{onClick:function(){setFolder(null);},style:{fontWeight:400,color:"#545453",cursor:"pointer"}},"All files"),h("span",{style:{color:"#9D9D9E",display:"inline-flex"}},svg(16,[P("m9 6 6 6-6 6",null,1.5)])),folder):"All files";
+var buttons=h(Fragment,null,folder?null:h(SecondaryBtn,{onClick:newFolder,style:{padding:"0 16px 0 12px"}},h(Ic.plus,{s:20}),"New folder"),
+h(PrimaryBtn,{onClick:function(){if(ref.current)ref.current.click();},style:{padding:"0 16px 0 12px"}},svg(20,[P("M12 15V4M7 9l5-5 5 5M5 20h14",null,1.5)]),"Upload"),h("input",{ref:ref,type:"file",style:{display:"none"},onChange:upload}));
+var body=folder?((data[folder]||[]).length?h(ListCard,null,data[folder].map(function(f,i){return h(ListRow,{key:f.n,first:i===0,icon:fileIcon(f.k),label:f.n,meta:f.z+" · "+f.d,actions:rowActions(true)});}))
+:h("div",{style:{padding:"40px 0",textAlign:"center",fontSize:14,color:"#7C7C7C"}},"This folder is empty. Upload a file to add it here."))
+:h(ListCard,null,Object.keys(data).map(function(k,i){var n=data[k].length;return h(ListRow,{key:k,first:i===0,strong:true,icon:NI("folder"),label:k,meta:n+(n===1?" file":" files"),onClick:function(){setFolder(k);}});}));
+return h(PageShell,{title:"Files",desc:"This client's files. Mimo can read everything here in a chat, and saves the files it makes for you here.",left:crumbs,right:buttons},body);}
+
+function ContextPage(p){return h(PageShell,{title:"Client context",desc:"What Mimo knows about "+CLIENT+". It's used in every chat and skill for this client.",left:"Business details",right:h(PrimaryBtn,{style:{padding:"0 16px 0 12px"}},h(Ic.plus,{s:20}),"Add context")},
+h(ListCard,{mb:32},CONTEXT_FACTS.map(function(r,i){return h("div",{key:r[0],style:{display:"grid",gridTemplateColumns:"200px 1fr",borderTop:i?"1px solid "+T.colorBorderLight:"none"}},
+h("div",{style:{padding:"16px 20px",fontSize:14,lineHeight:"22px",color:"#7C7C7C"}},r[0]),h("div",{style:{padding:"16px 20px",fontSize:14,lineHeight:"22px",color:"#2A2A2A",borderLeft:"1px solid "+T.colorBorderLight}},r[1]));})),
+h("div",{style:{fontSize:14,lineHeight:"22px",fontWeight:600,color:"#2A2A2A",margin:"0 0 16px"}},"Rules and notes"),
+h(ListCard,null,CONTEXT_RULES.map(function(r,i){return h(ListRow,{key:i,first:i===0,icon:NI("book"),label:r.t,sub:"Added by "+r.by+" · "+r.d,actions:rowActions(false)});})));}
+
+function PageView(p){var _t=useState(null);var toast=_t[0],setToast=_t[1];
+function onToast(t){setToast(t);setTimeout(function(){setToast(null);},2200);}
+var pg=p.page==="history"?h(HistoryPage,p):p.page==="skills"?h(SkillsPage,Object.assign({},p,{onToast:onToast})):p.page==="artifacts"?h(ArtifactsPage,p):p.page==="files"?h(FilesPage,p):h(ContextPage,p);
+return h(Fragment,null,pg,toast?h("div",{style:{position:"fixed",left:"50%",bottom:32,transform:"translateX(-50%)",background:"#2A2A2A",color:"#FFF",fontSize:14,padding:"10px 16px",borderRadius:8,zIndex:50,animation:"fadeIn .2s ease both"}},toast+" isn't part of this prototype yet. Try VAT review."):null);}
+
 /* Open in fullscreen: the invoice opens as its own page in a new browser tab */
 function openInvoiceTab(f){if(!f||!f.invoice)return;var w=window.open("","_blank");if(!w)return;
 var div=document.createElement("div");var root=ReactDOM.createRoot(div);ReactDOM.flushSync(function(){root.render(h(InvoiceDoc,{inv:f.invoice}));});var body=div.innerHTML;root.unmount();
@@ -1061,7 +1135,7 @@ else if(mode==="hold"){mode="erase";tm=setTimeout(tick,35);}
 else if(mode==="erase"){n--;setTxt(t.slice(0,Math.max(0,n)));if(n<=0){i=(i+1)%list.length;n=0;mode="type";tm=setTimeout(tick,600);}else tm=setTimeout(tick,32);}}
 tm=setTimeout(tick,2800);return function(){clearTimeout(tm);};},[paused]);
 return txt;}
-/* saved workflows shown under "Your workflows" */
+/* saved workflows shown under "Your skills" */
 var SAVED_META={"VAT readiness check":{d:"Scores the VAT return against weighted checks before filing.",live:true},
 "Combined prepayment schedule":{d:"One schedule for both prepayment accounts, with suggested additions.",live:true,prompt:"Create a combined prepayment schedule"},
 "Month-end bank reconciliation":{d:"Matches bank feeds to statements."},
@@ -1076,7 +1150,7 @@ var SAVED_META={"VAT readiness check":{d:"Scores the VAT return against weighted
 "Intercompany balances":{d:"Ties intercompany accounts across group entities."},
 "Suspense account clear-down":{d:"Finds the right home for items in suspense."},
 "Management accounts pack":{d:"Builds the monthly P&L, balance sheet and KPIs."}};
-function savedCard(w){var m=SAVED_META[w.name]||{d:"Saved workflow."};return Object.assign({t:w.name,saved:true},m);}
+function savedCard(w){var m=SAVED_META[w.name]||{d:"Saved skill."};return Object.assign({t:w.name,saved:true},m);}
 function SegTabs(p){return h("div",{role:"tablist",style:{display:"inline-flex",gap:4,padding:4,background:"#FFFFFF",border:"1px solid "+T.colorBorderDark,borderRadius:8}},p.items.map(function(it){var on=p.value===it.v;
 return h("button",Object.assign({key:it.v,type:"button",role:"tab","aria-selected":on,onClick:function(){p.onChange(it.v);},style:{minWidth:160,height:40,padding:"8px 16px",border:"none",borderRadius:on?4:8,background:on?"#F1F8F0":"transparent",color:on?T.colorBrandPrimary:"#2A2A2A",fontFamily:"inherit",fontSize:14,lineHeight:"22px",fontWeight:500,cursor:on?"default":"pointer",transition:"background .15s, color .15s"}},
 on?{}:hover({background:"transparent"},{background:"#F5F5F5"})),it.l);}));}
@@ -1088,25 +1162,27 @@ h("span",{style:{display:"flex",alignItems:"center",justifyContent:"space-betwee
 p.meta?h("span",{style:{fontSize:12,lineHeight:"17px",color:"#9D9D9E",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",minWidth:0}},p.meta):null),
 h("span",{style:{display:"flex",flexDirection:"column",gap:8}},h("span",{style:{fontSize:18,lineHeight:"26px",fontWeight:500,color:"#2A2A2A"}},a.t),
 h("span",{style:{fontSize:14,lineHeight:"22px",color:"#7C7C7C"}},a.d)));}
-function StartRecents(p){var _m=useState(false);var more=_m[0],setMore=_m[1];var vis=more?p.items:p.items.slice(0,3);
+function StartRecents(p){var vis=p.items.slice(0,3);
 function row(key,icon,label,onClick){return h("div",Object.assign({key:key,onClick:onClick,title:label,style:{display:"flex",alignItems:"center",gap:12,height:31,padding:"0 8px",margin:"0 -8px",borderRadius:8,cursor:"pointer",fontSize:14,color:"#4F4F4F"}},hover({background:"transparent"},{background:"rgba(0,0,0,0.04)"})),
 h("span",{style:{color:"#545453",display:"inline-flex"}},icon),h("span",{style:{minWidth:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}},label));}
 return h("div",{style:{padding:"0 12px",marginTop:32,display:"flex",flexDirection:"column",gap:0,animation:"fadeIn .3s ease both"}},
 h("div",{style:{fontSize:14,lineHeight:"22px",fontWeight:600,color:"#2A2A2A",marginBottom:8}},"Recents"),
 vis.map(function(it,i){return row("r"+i,recentIcon(it),it.label,function(){if(it.id&&p.onPick)p.onPick(it.id);});}),
-p.items.length>3?row("more",NI("dots"),more?"View less":"View more",function(){setMore(!more);}):null);}
-function StartView(p){var ph=useTypedPlaceholder(START_PH,!!p.draft);var _lt=useState("yours");var libTab=_lt[0],setLibTab=_lt[1];var mine=(p.lib||[]).map(savedCard);var _t=useState(null);var toast=_t[0],setToast=_t[1];
+p.items.length>3?row("more",NI("dots"),"View more",function(){if(p.onMore)p.onMore();}):null);}
+function SkillsLibrary(p){var _lt=useState(p.initial||"yours");var libTab=_lt[0],setLibTab=_lt[1];var mine=(p.lib||[]).map(savedCard);
+return h("div",null,h("div",{style:{display:"flex",justifyContent:"center",marginBottom:32}},h(SegTabs,{value:libTab,onChange:setLibTab,items:[{v:"yours",l:"Your skills"},{v:"verified",l:"Verified skills"}]})),
+libTab==="verified"?h("div",{key:"v",style:{display:"grid",gridTemplateColumns:"repeat(3, minmax(0,1fr))",gap:16,animation:"fadeIn .25s ease both"}},APPS.map(function(a){return h(WfCard,{key:a.t,a:a,onClick:function(){if(a.live)p.onApp(a.prompt||"Run a VAT review");else{p.onToast(a.t);}}});}))
+:(mine.length?h("div",{key:"y",style:{display:"grid",gridTemplateColumns:"repeat(3, minmax(0,1fr))",gap:16,animation:"fadeIn .25s ease both"}},mine.map(function(a){return h(WfCard,{key:a.t,a:a,onClick:function(){if(a.live)p.onApp(a.prompt||"Run a VAT review");else{p.onToast(a.t);}}});}))
+:h("div",{style:{textAlign:"center",fontSize:14,lineHeight:"22px",color:"#7C7C7C",padding:"24px 0"}},"Skills you save appear here. Browse the verified skills to get started.")));}
+function StartView(p){var ph=useTypedPlaceholder(START_PH,!!p.draft);var _t=useState(null);var toast=_t[0],setToast=_t[1];
 return h("div",{style:{flex:1,overflowY:"auto",background:T.colorSurfaceSecondary}},
 h("div",{style:{maxWidth:CHAT_W,margin:"0 auto",padding:"112px 24px 64px"}},
 h("div",{style:{display:"flex",justifyContent:"center"}},h(MIMO_LOGO,{h:32})),
 h("div",{style:{textAlign:"center",fontSize:36,lineHeight:"44px",fontWeight:500,letterSpacing:0,color:"#1F2024",margin:"48px 0 40px"}},"What should we tackle today?"),
 h(Composer,{value:p.draft,onChange:p.setDraft,onSend:p.onSend,placeholder:ph,autoFocus:true,focusKey:p.focusKey}),
-(p.recents&&p.recents.length)?h(StartRecents,{items:p.recents,onPick:p.onPick}):null,
+(p.recents&&p.recents.length)?h(StartRecents,{items:p.recents,onPick:p.onPick,onMore:p.onMore}):null,
 h("div",{style:{height:1,background:T.colorBorderDark,margin:(p.recents&&p.recents.length?"32px":"48px")+" 0 56px"}}),
-h("div",{style:{display:"flex",justifyContent:"center",marginBottom:32}},h(SegTabs,{value:libTab,onChange:setLibTab,items:[{v:"yours",l:"Your workflows"},{v:"verified",l:"Verified workflows"}]})),
-libTab==="verified"?h("div",{key:"v",style:{display:"grid",gridTemplateColumns:"repeat(3, minmax(0,1fr))",gap:16,animation:"fadeIn .25s ease both"}},APPS.map(function(a){return h(WfCard,{key:a.t,a:a,onClick:function(){if(a.live)p.onApp(a.prompt||"Run a VAT review");else{setToast(a.t);setTimeout(function(){setToast(null);},2200);}}});}))
-:(mine.length?h("div",{key:"y",style:{display:"grid",gridTemplateColumns:"repeat(3, minmax(0,1fr))",gap:16,animation:"fadeIn .25s ease both"}},mine.map(function(a){return h(WfCard,{key:a.t,a:a,onClick:function(){if(a.live)p.onApp(a.prompt||"Run a VAT review");else{setToast(a.t);setTimeout(function(){setToast(null);},2200);}}});}))
-:h("div",{style:{textAlign:"center",fontSize:14,lineHeight:"22px",color:"#7C7C7C",padding:"24px 0"}},"Workflows you save appear here. Browse the verified workflows to get started."))),
+h(SkillsLibrary,{lib:p.lib,onApp:p.onApp,onToast:function(t){setToast(t);setTimeout(function(){setToast(null);},2200);}})),
 toast?h("div",{style:{position:"fixed",left:"50%",bottom:32,transform:"translateX(-50%)",background:"#2A2A2A",color:"#FFF",fontSize:14,padding:"10px 16px",borderRadius:8,zIndex:50,animation:"fadeIn .2s ease both"}},toast+" isn't part of this prototype yet. Try VAT review."):null);}
 
 function ViewSwitch(p){var items=[{v:"chat",I:Ic.chat,l:"Chat view"},{v:"split",I:Ic.split,l:"Split view"},{v:"canvas",I:Ic.canvas,l:"Canvas view"}];
@@ -1118,7 +1194,7 @@ function TabHeader(p){return h("div",{style:{height:56,flexShrink:0,display:"fle
 h("span",{style:{fontSize:18,fontWeight:500,color:"#1F2024"}},p.title),p.period?h("span",{style:{fontSize:16,color:T.colorTextSecondary,animation:"fadeIn .3s ease both"}},p.period):null,
 h("div",{style:{flex:1}}),
 p.ready?h(Fragment,null,h("div",{style:{display:"flex",alignItems:"center",gap:8}},p.marked?h(Badge,{v:"success",h:36},h(Ic.check,{s:16}),"Marked as done"):p.allHandled?h(PrimaryBtn,{h:36,onClick:p.onMark,style:{animation:"fadeIn .3s ease both"}},"Mark as done"):h(SecondaryBtn,{h:36,onClick:p.onMark},"Mark as done"),
-h(Tooltip,{text:p.saved?"Saved to your library":"Add workflow to library"},h(IconBtn,{size:36,onClick:p.onSave,color:p.saved?T.colorBrandPrimary:"#2A2A2A","aria-label":p.saved?"Remove from library":"Add to library"},p.saved?h(Ic.libAdded,null):h(Ic.libAdd,null))),
+h(Tooltip,{text:p.saved?"Saved to your library":"Add skill to library"},h(IconBtn,{size:36,onClick:p.onSave,color:p.saved?T.colorBrandPrimary:"#2A2A2A","aria-label":p.saved?"Remove from library":"Add to library"},p.saved?h(Ic.libAdded,null):h(Ic.libAdd,null))),
 h(IconBtn,{title:"More",size:36},h(Ic.kebab,null))),h("div",{style:{width:1,height:28,background:T.colorBorderDark,margin:"0 4px"}}),
 h(ViewSwitch,{view:p.view,setView:p.setView})):null);}
 
@@ -1178,6 +1254,7 @@ var ro=new ResizeObserver(function(){var sc=scrollRef.current;if(sc&&stick.curre
 ro.observe(el);return function(){ro.disconnect();};},[phase]);
 
 /* steps 1–2 → 3 */
+useEffect(function(){if(p.startPrompt)begin(p.startPrompt);},[]);
 /* demo shortcut "1": run the VAT review with late claims straight through */
 useEffect(function(){if(!p.auto)return;FAST.on=true;begin("Run a VAT review");},[]);
 useEffect(function(){if(!p.auto||!FAST.on)return;if(dock==="q1")answerQ1(Q1.options[0]);else if(dock==="q2")answerQ2(Q2.options[0]);else if(dock==="free")answerQ3("7 Aug 26");else if(dock==="proposal")runWf();},[dock]);
@@ -1201,12 +1278,12 @@ function answerQ3(v){setA({filed:v});push({type:"answered",pairs:[[Q3.q,v]]});pr
 function skipLate(){setA({late:false,lateLabel:"No, skip for now"});push({type:"answered",pairs:[[Q3.q,"Skipped, late claims left out of this review"]]});addLog("Late claims skipped for "+A.current.period);propose();}
 /* 6 → 7 */
 function propose(){setDock("busy");tm.later(250,function(){setStatus([TH]);});
-tm.later(1200,function(){thenStatus({kind:"creating",label:"Creating workflow proposal"});});
+tm.later(1200,function(){thenStatus({kind:"creating",label:"Creating skill proposal"});});
 tm.later(3000,function(){push({type:"stream",key:p.id+"-x"+seq.current,paras:SCN.current==="schedule"?S_EXPLAIN:EXPLAIN,after:"proposal"});setDock("busy");});}
 function onStreamDone(item){if(doneStreams.current[item.key])return;doneStreams.current[item.key]=true;if(item.thenItem){setItems(function(xs){return xs.concat([{type:item.thenItem,k:++seq.current}]);});}if(item.after)setDock(item.after);}
 /* 7 → 8 → 9 → 10 */
-function runWf(){var isSch=SCN.current==="schedule";var steps=isSch?sSteps(A.current):wfSteps(A.current);setDock("busy");push({type:"wfcard"},{type:"user",text:"Run workflow"});meta({status:"running"});addLog("Ran "+(isSch?S_WF.name:WF.name)+" for "+A.current.period);
-tm.later(60,function(){setStatus([TH]);});tm.later(1000,function(){thenStatus({kind:"initiating",label:"Initiating workflow"});});
+function runWf(){var isSch=SCN.current==="schedule";var steps=isSch?sSteps(A.current):wfSteps(A.current);setDock("busy");push({type:"wfcard"},{type:"user",text:"Run skill"});meta({status:"running"});addLog("Ran "+(isSch?S_WF.name:WF.name)+" for "+A.current.period);
+tm.later(60,function(){setStatus([TH]);});tm.later(1000,function(){thenStatus({kind:"initiating",label:"Initiating skill"});});
 tm.later(2500,function(){setShowPeriod(true);push({type:"progress"});setRun({statuses:steps.map(function(){return "pending";}),results:[],collapsed:false});
 var t=350;steps.forEach(function(s,i){
 tm.later(t,function(){setRun(function(r){var st=r.statuses.slice();st[i]="active";return Object.assign({},r,{statuses:st});});});t+=s.ms;
@@ -1214,8 +1291,8 @@ tm.later(t,function(){setRun(function(r){var st=r.statuses.slice();st[i]="done";
 tm.later(t+700,function(){setRun(function(r){return Object.assign({},r,{collapsed:true});});push({type:"summary"});});});}
 /* the split view opens once the summary has finished writing itself */
 function finishRun(){if(doneStreams.current.summary)return;doneStreams.current.summary=true;
-tm.later(500,function(){setReady(true);setView("split");setDock("next");meta({status:"done"});addLog(SCN.current==="schedule"?"Workflow completed: schedule built, "+scheduleFindings(A.current).length+" suggestions":"Workflow completed: 72 / 100, not ready to file","Mimo");});}
-function cancelWf(){setDock("busy");push({type:"stream",key:p.id+"-c"+seq.current,paras:["No problem, nothing has been run. Tell me what you'd like to change and I'll update the workflow."],after:"default"});}
+tm.later(500,function(){setReady(true);setView("split");setDock("next");meta({status:"done"});addLog(SCN.current==="schedule"?"Skill completed: schedule built, "+scheduleFindings(A.current).length+" suggestions":"Skill completed: 72 / 100, not ready to file","Mimo");});}
+function cancelWf(){setDock("busy");push({type:"stream",key:p.id+"-c"+seq.current,paras:["No problem, nothing has been run. Tell me what you'd like to change and I'll update the skill."],after:"default"});}
 function stop(){tm.clear();items.forEach(function(x){if(x.type==="stream")doneStreams.current[x.key]=true;});setRun(function(r){return Object.assign({},r,{statuses:r.statuses.map(function(s){return s==="active"||s==="pending"?"stopped":s;})});});
 push({type:"note",text:"Stopped. Nothing has been changed in Xero."});setDock("default");meta({status:"stopped"});addLog("Stopped the run");}
 function sendDefault(){var t=draft.trim();if(!t)return;setDraft("");push({type:"user",text:t});meta({status:"active"});propose();}
@@ -1321,7 +1398,7 @@ h("div",{ref:contentRef,style:{maxWidth:CHAT_W,margin:"0 auto",padding:"24px 0 3
 dock!=="none"?h("div",{style:{flexShrink:0,padding:narrow?"0 16px 14px":"0 24px 14px",transition:"padding 0.44s "+EASE}},h("div",{style:{maxWidth:CHAT_W,margin:"0 auto"}},dockEl(),h(Disclaimer,{actions:actionsDisclaimer}))):null);}
 
 if(phase==="start")return h("div",{style:{flex:1,display:p.active?"flex":"none",flexDirection:"column",minHeight:0,position:"relative"}},
-h(StartView,{draft:draft,setDraft:setDraft,onSend:function(){var t=draft.trim();if(t){setDraft("");begin(t);}},onApp:function(t){setDraft("");begin(t);},focusKey:focusKey,recents:buildRecents(p.tabs),onPick:p.onSelect,lib:p.lib}));
+h(StartView,{draft:draft,setDraft:setDraft,onSend:function(){var t=draft.trim();if(t){setDraft("");begin(t);}},onApp:function(t){setDraft("");begin(t);},focusKey:focusKey,recents:buildRecents(p.tabs),onPick:p.onSelect,onMore:function(){p.onPage("history");},lib:p.lib}));
 
 var resultsProps={scen:scen,answers:answers,findings:findings,state:fstate,late:!!answers.late,filed:answers.filed,period:answers.period,log:log,tab:rtab,setTab:setRtab,
 onOpen:openF,onApply:function(id){setConfirmId(id);},onAdd:function(f){addChip({key:f.id,fid:f.id,label:f.contact});}};
@@ -1344,7 +1421,7 @@ ready?h("div",{onMouseUp:onMouseUp,onScrollCapture:function(){if(selBtn)setSelBt
 return h("div",{style:{flex:1,display:p.active?"flex":"none",flexDirection:"column",minHeight:0}},
 h(TabHeader,{saved:(p.lib||[]).some(function(w){return w.name===(isS?S_WF.name:WF.name);}),onSave:function(){var n=isS?S_WF.name:WF.name;var was=(p.lib||[]).some(function(w){return w.name===n;});p.onToggleLib(n);addLog(was?"Removed "+n+" from the library":"Added "+n+" to the library");showToast(was?"Removed from your library":"Added to your library. Find it in the menu.");},title:isS?S_WF.name:WF.name,period:showPeriod?answers.period:null,ready:ready,view:view,setView:setView,marked:marked,allHandled:findings.length>0&&findings.every(function(f){var st=fstate[f.id];return st&&st!=="open";}),onMark:function(){var open=findings.filter(function(f){var st=fstate[f.id];return !st||st==="open";}).length;if(open>0){setMarkAsk(open);return;}doMark();}}),
 body,
-markAsk?h(ConfirmDialog,{title:"Mark as done?",body:markAsk+(markAsk===1?" suggestion is":" suggestions are")+" still open. You can mark the workflow as done anyway and come back to "+(markAsk===1?"it":"them")+" later.",confirmLabel:"Mark as done",onCancel:function(){setMarkAsk(0);},onConfirm:function(){setMarkAsk(0);doMark();}}):null,
+markAsk?h(ConfirmDialog,{title:"Mark as done?",body:markAsk+(markAsk===1?" suggestion is":" suggestions are")+" still open. You can mark the skill as done anyway and come back to "+(markAsk===1?"it":"them")+" later.",confirmLabel:"Mark as done",onCancel:function(){setMarkAsk(0);},onConfirm:function(){setMarkAsk(0);doMark();}}):null,
 confirmId?(function(){var cf=findings.filter(function(x){return x.id===confirmId;})[0];return cf?h(ConfirmModal,{f:cf,onCancel:function(){setConfirmId(null);},onConfirm:function(){applyF(cf.id);setConfirmId(null);showToast(doneToast(cf));}}):null;})():null,
 df?h("div",{key:"drawer",style:{position:"absolute",top:0,bottom:0,right:0,left:mode==="canvas"?"0px":"clamp(320px, 42%, "+SPLIT_W+"px)",zIndex:30,display:"flex",flexDirection:"column",minHeight:0,background:"#FFFFFF",
 boxShadow:"-8px 0 24px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.06)",borderLeft:"1px solid "+T.colorBorderDark,animation:"slideInRight .32s "+EASE+" both"}},
@@ -1369,9 +1446,11 @@ var NAV=["Home","Collect documents","Inbox","Bank reconciliation","VAT review","
 /* ══════════════ MAIN MENU (Figma Rebuild VAT 14:9721) ══════════════
    Opens from the hamburger as a panel under the top bar and pushes the workspace aside.
    Recents moved here from the top bar. The user stays pinned to the bottom. */
+var DSI={"clock": ["M18.9166 11.25L17.2505 9.58333L15.5833 11.25M17.5 10C17.5 14.1421 14.1421 17.5 10 17.5C5.85786 17.5 2.5 14.1421 2.5 10C2.5 5.85786 5.85786 2.5 10 2.5C12.7516 2.5 15.1571 3.98178 16.4621 6.19091M10 5.83333V10L12.5 11.6667"], "star03": ["M9.4082 2.80527C9.5996 2.43685 9.69531 2.25265 9.82358 2.19278C9.93527 2.14065 10.0643 2.14065 10.176 2.19278C10.3043 2.25265 10.4 2.43685 10.5914 2.80527L11.8522 5.23217C11.9348 5.39108 11.9761 5.47053 12.038 5.52332C12.0927 5.56991 12.1584 5.60159 12.2289 5.61527C12.3088 5.63077 12.3967 5.6135 12.5724 5.57897L15.2559 5.0516C15.6633 4.97154 15.867 4.93151 15.9938 4.99447C16.1042 5.0493 16.1846 5.15019 16.2135 5.27001C16.2467 5.40762 16.1623 5.5973 15.9936 5.97665L14.8823 8.47557C14.8096 8.63919 14.7732 8.721 14.7705 8.80233C14.7682 8.87411 14.7844 8.94529 14.8177 9.00894C14.8554 9.08106 14.9236 9.13898 15.0602 9.25483L17.1457 11.0241C17.4623 11.2927 17.6206 11.427 17.6504 11.5654C17.6764 11.6859 17.6476 11.8117 17.572 11.9089C17.4851 12.0207 17.2842 12.073 16.8824 12.1776L14.2358 12.8668C14.0625 12.912 13.9758 12.9345 13.9106 12.9831C13.853 13.0261 13.8075 13.0831 13.7785 13.1488C13.7456 13.2233 13.7429 13.3128 13.7374 13.4917L13.6544 16.2254C13.6418 16.6403 13.6355 16.8478 13.5459 16.9574C13.4679 17.0529 13.3517 17.1088 13.2284 17.1103C13.0869 17.1121 12.9207 16.9876 12.5884 16.7387L10.3994 15.0992C10.2561 14.9919 10.1844 14.9382 10.1058 14.9175C10.0363 14.8993 9.96329 14.8993 9.89383 14.9175C9.81514 14.9382 9.74347 14.9919 9.60014 15.0992L7.41116 16.7387C7.07886 16.9876 6.91271 17.1121 6.77117 17.1103C6.64792 17.1088 6.53166 17.0529 6.45364 16.9574C6.36405 16.8478 6.35775 16.6403 6.34515 16.2254L6.26215 13.4917C6.25672 13.3128 6.254 13.2233 6.22112 13.1488C6.19209 13.0831 6.14657 13.0261 6.08898 12.9831C6.02374 12.9345 5.93709 12.912 5.7638 12.8668L3.11718 12.1776C2.71541 12.073 2.51453 12.0207 2.42762 11.9089C2.35195 11.8117 2.32323 11.6859 2.3492 11.5654C2.37902 11.427 2.53731 11.2927 2.8539 11.0241L4.93938 9.25483C5.07594 9.13898 5.14421 9.08106 5.1819 9.00894C5.21516 8.94529 5.23141 8.87411 5.22906 8.80233C5.22639 8.721 5.19001 8.63919 5.11724 8.47557L4.00595 5.97665C3.83725 5.5973 3.7529 5.40762 3.78607 5.27001C3.81495 5.15019 3.89541 5.0493 4.0058 4.99447C4.13258 4.93151 4.33627 4.97154 4.74365 5.0516L7.4272 5.57897C7.60292 5.6135 7.69077 5.63077 7.77065 5.61527C7.84116 5.60159 7.90693 5.56991 7.96159 5.52332C8.02351 5.47053 8.06479 5.39108 8.14735 5.23217L9.4082 2.80527Z"], "file07": ["M11.6668 1.89124V5.33335C11.6668 5.80006 11.6668 6.03342 11.7577 6.21168C11.8376 6.36848 11.965 6.49596 12.1218 6.57586C12.3001 6.66669 12.5335 6.66669 13.0002 6.66669H16.4423M6.66683 12.5V15M13.3335 10.8333V15M10.0002 8.74996V15M16.6668 8.32348V14.3333C16.6668 15.7334 16.6668 16.4335 16.3943 16.9683C16.1547 17.4387 15.7722 17.8211 15.3018 18.0608C14.767 18.3333 14.067 18.3333 12.6668 18.3333H7.3335C5.93336 18.3333 5.2333 18.3333 4.69852 18.0608C4.22811 17.8211 3.84566 17.4387 3.60598 16.9683C3.3335 16.4335 3.3335 15.7334 3.3335 14.3333V5.66663C3.3335 4.26649 3.3335 3.56643 3.60598 3.03165C3.84566 2.56124 4.22811 2.17879 4.69852 1.93911C5.2333 1.66663 5.93336 1.66663 7.3335 1.66663H10.01C10.6215 1.66663 10.9272 1.66663 11.2149 1.7357C11.47 1.79694 11.7139 1.89795 11.9375 2.03503C12.1898 2.18963 12.406 2.40582 12.8384 2.8382L15.4953 5.49505C15.9276 5.92743 16.1438 6.14362 16.2984 6.39591C16.4355 6.61959 16.5365 6.86346 16.5978 7.11855C16.6668 7.40627 16.6668 7.712 16.6668 8.32348Z"], "folder": ["M10.8332 5.83333L9.90355 3.9741C9.63601 3.439 9.50222 3.17144 9.30265 2.97597C9.12615 2.80311 8.91344 2.67164 8.6799 2.59109C8.41581 2.5 8.11668 2.5 7.51841 2.5H4.33317C3.39975 2.5 2.93304 2.5 2.57652 2.68166C2.26292 2.84144 2.00795 3.09641 1.84816 3.41002C1.6665 3.76654 1.6665 4.23325 1.6665 5.16667V5.83333M1.6665 5.83333H14.3332C15.7333 5.83333 16.4334 5.83333 16.9681 6.10582C17.4386 6.3455 17.821 6.72795 18.0607 7.19836C18.3332 7.73314 18.3332 8.4332 18.3332 9.83333V13.5C18.3332 14.9001 18.3332 15.6002 18.0607 16.135C17.821 16.6054 17.4386 16.9878 16.9681 17.2275C16.4334 17.5 15.7333 17.5 14.3332 17.5H5.6665C4.26637 17.5 3.56631 17.5 3.03153 17.2275C2.56112 16.9878 2.17867 16.6054 1.93899 16.135C1.6665 15.6002 1.6665 14.9001 1.6665 13.5V5.83333Z"], "data": ["M17.6665 18.3333C17.8999 18.3333 18.0165 18.3333 18.1057 18.2879C18.1841 18.2479 18.2478 18.1842 18.2878 18.1058C18.3332 18.0167 18.3332 17.9 18.3332 17.6666V8.99996C18.3332 8.7666 18.3332 8.64993 18.2878 8.5608C18.2478 8.4824 18.1841 8.41866 18.1057 8.37871C18.0165 8.33329 17.8999 8.33329 17.6665 8.33329L15.6665 8.33329C15.4331 8.33329 15.3165 8.33329 15.2273 8.37871C15.1489 8.41865 15.0852 8.4824 15.0453 8.5608C14.9998 8.64993 14.9998 8.7666 14.9998 8.99996V11C14.9998 11.2333 14.9998 11.35 14.9544 11.4391C14.9145 11.5175 14.8507 11.5813 14.7723 11.6212C14.6832 11.6666 14.5665 11.6666 14.3332 11.6666H12.3332C12.0998 11.6666 11.9831 11.6666 11.894 11.712C11.8156 11.752 11.7519 11.8157 11.7119 11.8941C11.6665 11.9833 11.6665 12.0999 11.6665 12.3333V14.3333C11.6665 14.5666 11.6665 14.6833 11.6211 14.7725C11.5811 14.8509 11.5174 14.9146 11.439 14.9545C11.3499 15 11.2332 15 10.9998 15H8.99984C8.76648 15 8.6498 15 8.56067 15.0454C8.48227 15.0853 8.41853 15.1491 8.37858 15.2275C8.33317 15.3166 8.33317 15.4333 8.33317 15.6666V17.6666C8.33317 17.9 8.33317 18.0167 8.37858 18.1058C8.41853 18.1842 8.48227 18.2479 8.56067 18.2879C8.6498 18.3333 8.76648 18.3333 8.99984 18.3333L17.6665 18.3333Z", "M8.33317 5.66663C8.33317 5.43327 8.33317 5.31659 8.37858 5.22746C8.41853 5.14906 8.48227 5.08532 8.56067 5.04537C8.6498 4.99996 8.76648 4.99996 8.99984 4.99996H10.9998C11.2332 4.99996 11.3499 4.99996 11.439 5.04537C11.5174 5.08532 11.5811 5.14906 11.6211 5.22746C11.6665 5.31659 11.6665 5.43327 11.6665 5.66663V7.66663C11.6665 7.89998 11.6665 8.01666 11.6211 8.10579C11.5811 8.18419 11.5174 8.24793 11.439 8.28788C11.3499 8.33329 11.2332 8.33329 10.9998 8.33329H8.99984C8.76648 8.33329 8.6498 8.33329 8.56067 8.28788C8.48227 8.24793 8.41853 8.18419 8.37858 8.10579C8.33317 8.01666 8.33317 7.89998 8.33317 7.66663V5.66663Z", "M2.49984 10.6666C2.49984 10.4333 2.49984 10.3166 2.54525 10.2275C2.5852 10.1491 2.64894 10.0853 2.72734 10.0454C2.81647 9.99996 2.93315 9.99996 3.1665 9.99996H5.1665C5.39986 9.99996 5.51654 9.99996 5.60567 10.0454C5.68407 10.0853 5.74781 10.1491 5.78776 10.2275C5.83317 10.3166 5.83317 10.4333 5.83317 10.6666V12.6666C5.83317 12.9 5.83317 13.0167 5.78776 13.1058C5.74781 13.1842 5.68407 13.2479 5.60567 13.2879C5.51654 13.3333 5.39986 13.3333 5.1665 13.3333H3.1665C2.93315 13.3333 2.81647 13.3333 2.72734 13.2879C2.64894 13.2479 2.5852 13.1842 2.54525 13.1058C2.49984 13.0167 2.49984 12.9 2.49984 12.6666V10.6666Z", "M1.6665 2.33329C1.6665 2.09994 1.6665 1.98326 1.71192 1.89413C1.75187 1.81573 1.81561 1.75199 1.89401 1.71204C1.98314 1.66663 2.09982 1.66663 2.33317 1.66663H4.33317C4.56653 1.66663 4.6832 1.66663 4.77233 1.71204C4.85073 1.75199 4.91448 1.81573 4.95442 1.89413C4.99984 1.98326 4.99984 2.09994 4.99984 2.33329V4.33329C4.99984 4.56665 4.99984 4.68333 4.95442 4.77246C4.91448 4.85086 4.85073 4.9146 4.77233 4.95455C4.6832 4.99996 4.56653 4.99996 4.33317 4.99996H2.33317C2.09982 4.99996 1.98314 4.99996 1.89401 4.95455C1.81561 4.9146 1.75187 4.85086 1.71192 4.77246C1.6665 4.68333 1.6665 4.56665 1.6665 4.33329V2.33329Z"], "settings02": ["M7.82936 16.1426L8.3164 17.2379C8.46118 17.564 8.69747 17.841 8.99659 18.0355C9.29571 18.2299 9.64483 18.3334 10.0016 18.3333C10.3583 18.3334 10.7075 18.2299 11.0066 18.0355C11.3057 17.841 11.542 17.564 11.6868 17.2379L12.1738 16.1426C12.3472 15.7539 12.6388 15.4298 13.0071 15.2166C13.3778 15.0028 13.8066 14.9117 14.2321 14.9564L15.4238 15.0833C15.7785 15.1208 16.1365 15.0546 16.4544 14.8927C16.7722 14.7308 17.0363 14.4802 17.2145 14.1713C17.393 13.8625 17.4781 13.5085 17.4593 13.1524C17.4406 12.7962 17.3189 12.4531 17.109 12.1648L16.4034 11.1953C16.1522 10.8476 16.018 10.429 16.0201 9.99996C16.02 9.57212 16.1555 9.15525 16.4071 8.80922L17.1127 7.83977C17.3226 7.55142 17.4443 7.20835 17.463 6.85219C17.4818 6.49602 17.3967 6.14208 17.2183 5.83329C17.04 5.52432 16.7759 5.2737 16.4581 5.11182C16.1402 4.94993 15.7822 4.88373 15.4275 4.92126L14.2358 5.04811C13.8103 5.0928 13.3815 5.00173 13.0108 4.78792C12.6418 4.5735 12.3501 4.24776 12.1775 3.85737L11.6868 2.762C11.542 2.43594 11.3057 2.15889 11.0066 1.96446C10.7075 1.77003 10.3583 1.66657 10.0016 1.66663C9.64483 1.66657 9.29571 1.77003 8.99659 1.96446C8.69747 2.15889 8.46118 2.43594 8.3164 2.762L7.82936 3.85737C7.6568 4.24776 7.36509 4.5735 6.99603 4.78792C6.62538 5.00173 6.19659 5.0928 5.77103 5.04811L4.57566 4.92126C4.22094 4.88373 3.86294 4.94993 3.54509 5.11182C3.22724 5.2737 2.96317 5.52432 2.78492 5.83329C2.60644 6.14208 2.52141 6.49602 2.54014 6.85219C2.55888 7.20835 2.68058 7.55142 2.89048 7.83977L3.59603 8.80922C3.84765 9.15525 3.98315 9.57212 3.98307 9.99996C3.98315 10.4278 3.84765 10.8447 3.59603 11.1907L2.89048 12.1601C2.68058 12.4485 2.55888 12.7916 2.54014 13.1477C2.52141 13.5039 2.60644 13.8578 2.78492 14.1666C2.96335 14.4754 3.22744 14.7259 3.54525 14.8878C3.86306 15.0496 4.22096 15.1159 4.57566 15.0787L5.76733 14.9518C6.19289 14.9071 6.62167 14.9982 6.99233 15.212C7.36277 15.4258 7.65583 15.7516 7.82936 16.1426Z", "M10.0001 12.5C11.3808 12.5 12.5001 11.3807 12.5001 9.99996C12.5001 8.61925 11.3808 7.49996 10.0001 7.49996C8.61939 7.49996 7.5001 8.61925 7.5001 9.99996C7.5001 11.3807 8.61939 12.5 10.0001 12.5Z"], "grad": ["M14.1665 12.0833V9.57866C14.1665 9.4291 14.1665 9.35431 14.1437 9.28829C14.1236 9.22991 14.0907 9.17673 14.0475 9.1326C13.9986 9.08271 13.9318 9.04926 13.798 8.98238L9.99984 7.08331M3.33317 7.91664V13.5888C3.33317 13.8987 3.33317 14.0537 3.38152 14.1894C3.42426 14.3093 3.49392 14.4179 3.58515 14.5067C3.68835 14.6072 3.82923 14.6718 4.11096 14.8009L9.4443 17.2454C9.64866 17.339 9.75084 17.3859 9.85729 17.4043C9.95161 17.4207 10.0481 17.4207 10.1424 17.4043C10.2488 17.3859 10.351 17.339 10.5554 17.2454L15.8887 14.8009C16.1704 14.6718 16.3113 14.6072 16.4145 14.5067C16.5058 14.4179 16.5754 14.3093 16.6182 14.1894C16.6665 14.0537 16.6665 13.8987 16.6665 13.5888V7.91664M1.6665 7.08331L9.70169 3.06571C9.81101 3.01105 9.86567 2.98372 9.923 2.97297C9.97378 2.96344 10.0259 2.96344 10.0767 2.97297C10.134 2.98372 10.1887 3.01105 10.298 3.06571L18.3332 7.08331L10.298 11.1009C10.1887 11.1556 10.134 11.1829 10.0767 11.1936C10.0259 11.2032 9.97378 11.2032 9.923 11.1936C9.86567 11.1829 9.81101 11.1556 9.70169 11.1009L1.6665 7.08331Z"]};
 function NI(name,size){var sz=size||20;var sp={stroke:"currentColor",strokeWidth:1.25*20/sz,strokeLinecap:"round",strokeLinejoin:"round",fill:"none"};
 if(name==="book")return h("svg",{width:sz,height:sz,viewBox:"0 0 24 24",fill:"none",style:{flexShrink:0,display:"block"}},h("path",Object.assign({},sp,{strokeWidth:1.25*24/sz,d:"M12 9.4C12 7.15979 12 6.03968 12.436 5.18404C12.8195 4.43139 13.4314 3.81947 14.184 3.43597C15.0397 3 16.1598 3 18.4 3H18.8C19.9201 3 20.4802 3 20.908 3.21799C21.2843 3.40973 21.5903 3.71569 21.782 4.09202C22 4.51984 22 5.07989 22 6.2V14.8C22 15.9201 22 16.4802 21.782 16.908C21.5903 17.2843 21.2843 17.5903 20.908 17.782C20.4802 18 19.9201 18 18.8 18H17.4252C16.1729 18 15.5467 18 14.9784 18.1726C14.4752 18.3254 14.0071 18.5759 13.6009 18.9098C13.142 19.287 12.7947 19.808 12.1001 20.8499L12 21L11.8999 20.8499C11.2053 19.808 10.858 19.287 10.3991 18.9098C9.99286 18.5759 9.52476 18.3254 9.02161 18.1726C8.45325 18 7.82711 18 6.57482 18H5.2C4.07989 18 3.51984 18 3.09202 17.782C2.71569 17.5903 2.40973 17.2843 2.21799 16.908C2 16.4802 2 15.9201 2 14.8V6.2C2 5.07989 2 4.51984 2.21799 4.09202C2.40973 3.71569 2.71569 3.40973 3.09202 3.21799C3.51984 3 4.07989 3 5.2 3H5.6C7.84021 3 8.96031 3 9.81596 3.43597C10.5686 3.81947 11.1805 4.43139 11.564 5.18404C12 6.03968 12 7.15979 12 9.4ZM12 21V9.4"})));
 var v=function(kids){return h("svg",{width:sz,height:sz,viewBox:"0 0 20 20",fill:"none",style:{flexShrink:0,display:"block"}},kids);};
+if(DSI[name])return v(DSI[name].map(function(d,k){return h("path",Object.assign({key:k,d:d},sp));}));
 if(name==="checkVerified")return v([h("path",Object.assign({key:1,d:NAVP.checkVerifiedBadge},sp)),h("path",Object.assign({key:2,d:NAVP.checkVerifiedMark},sp))]);
 if(name==="rows")return v([h("path",Object.assign({key:1,d:NAVP.rowsTop},sp)),h("path",Object.assign({key:2,d:NAVP.rowsBottom},sp))]);
 if(name==="settings")return v([h("path",Object.assign({key:1,d:NAVP.settingsGear},sp)),h("path",Object.assign({key:2,d:NAVP.settingsCircle},sp))]);
@@ -1390,41 +1469,37 @@ var PAST_RECENTS=[{label:"VAT readiness check, Apr 26 – Jun 26",done:true},{la
 /* status icon for a recent workflow: done tick, running spinner, stopped alert, otherwise history */
 function recentIcon(it){var box=function(c){return h("span",{style:{width:20,height:20,display:"inline-flex",alignItems:"center",justifyContent:"center",flexShrink:0}},c);};
 if(it.done)return NI("tick");if(it.status==="running")return box(h(Ic.spinner,{s:16}));if(it.status==="stopped")return box(Ic.info(T.colorError));return NI("clock");}
-function buildRecents(tabs){return(tabs||[]).filter(function(t){return t.label!=="New workflow";}).map(function(t){return{label:t.label,id:t.id,done:t.done,status:t.status==="running"||t.status==="stopped"?t.status:null};}).concat(PAST_RECENTS);}
-function MenuRow(p){var on=p.active;return h("div",Object.assign({onClick:p.onClick,title:p.label,style:{height:40,display:"flex",alignItems:"center",gap:12,padding:"0 16px",borderRadius:8,cursor:"pointer",background:on?"#F0F0F0":"transparent",color:"#2A2A2A",fontSize:14,fontWeight:on?600:400}},
+function buildRecents(tabs){return(tabs||[]).filter(function(t){return t.label!=="New chat";}).map(function(t){return{label:t.label,id:t.id,done:t.done,status:t.status==="running"||t.status==="stopped"?t.status:null};}).concat(PAST_RECENTS);}
+function MenuRow(p){var on=p.active;return h("div",Object.assign({onClick:p.onClick,title:p.label,style:{height:40,display:"flex",alignItems:"center",gap:12,padding:"0 16px",borderRadius:8,cursor:"pointer",background:on?"#F5F5F5":"transparent",color:on?"#2A2A2A":"#4F4F4F",fontSize:14,fontWeight:on?600:400}},
 on?{}:hover({background:"transparent"},{background:"#F5F5F5"})),p.icon?h("span",{style:{color:p.iconColor||"#545453",display:"inline-flex"}},p.icon):null,
 h("span",{style:{flex:1,minWidth:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}},p.label),p.right||null);}
 function MenuHead(p){return h("div",Object.assign({onClick:p.onToggle,style:{height:p.big?48:40,display:"flex",alignItems:"center",padding:"0 16px",cursor:"pointer",borderRadius:8,fontSize:14,fontWeight:p.open?600:400,color:"#2A2A2A",userSelect:"none"}},hover({background:"transparent"},{background:"#F5F5F5"})),
 h("span",{style:{flex:1}},p.label),h("span",{style:{color:"#2A2A2A"}},h(Ic.chev,{up:p.open})));}
-function MenuRule(){return h("div",{style:{height:1,background:T.colorBorderDark,margin:"12px 0"}});}
+function MenuRule(){return h("div",{style:{height:1,background:"#ECECEC",margin:"16px 0"}});}
 function MainMenu(p){var _o=useState({recents:true,saved:true,assoc:true,pay:false});var open=_o[0],setOpen=_o[1];var _m=useState({});var more=_m[0],setMore=_m[1];
 function tog(k){setOpen(function(o){var n=Object.assign({},o);n[k]=!n[k];return n;});}
 var recents=buildRecents(p.tabs);
 var saved=(p.lib||[]).map(function(w){return{label:w.name,fresh:w.fresh};});
-function list(items,key,icon){var all=!!more[key];var vis=all?items:items.slice(0,3);
+function list(items,key,icon){var vis=items.slice(0,3);
 return h(Fragment,null,vis.map(function(it,i){return h(MenuRow,{key:key+i,label:it.label,icon:key==="r"?recentIcon(it):NI(icon),onClick:function(){if(it.id)p.onSelect(it.id);},right:it.fresh?h("span",{style:{fontSize:11,fontWeight:600,color:T.colorBrandPrimary}},"New"):null});}),
-items.length>3?h(MenuRow,{key:key+"more",label:all?"View less":"View more",icon:NI("dots"),onClick:function(){setMore(function(m){var n=Object.assign({},m);n[key]=!all;return n;});}}):null);}
+items.length>3?h(MenuRow,{key:key+"more",label:"View more",icon:NI("dots"),active:p.page==="history",onClick:function(){p.onPage("history");}}):null);}
 return h("div",{style:{width:p.open?320:0,flexShrink:0,overflow:"hidden",transition:"width .32s cubic-bezier(0.32,0.72,0,1)",borderRight:p.open?"1px solid "+T.colorBorderDark:"none",background:"#FFFFFF"}},
 h("div",{style:{width:320,height:"100%",display:"flex",flexDirection:"column"}},
 h("div",{style:{flex:1,minHeight:0,overflowY:"auto"}},
-h("div",{style:{display:"flex",alignItems:"flex-start",padding:"38px 32px 23px",flexShrink:0}},h(MIMO_LOGO,null)),
-h("div",{style:{padding:"0 16px"}},h("div",Object.assign({style:{height:44,display:"flex",alignItems:"center",gap:8,padding:"0 8px",border:"1px solid "+T.colorBorderDark,borderRadius:8,fontSize:14,fontWeight:500,color:"#1F2024",cursor:"pointer",background:"#FFFFFF"}},hover({background:"#FFFFFF"},{background:"#FAFAFA"})),
-h("span",{style:{width:28,height:28,borderRadius:6,background:"#F5F5F5",display:"inline-flex",alignItems:"center",justifyContent:"center",color:"#545453"}},svg(16,[P("M15 18l-6-6 6-6",null,1.6)])),CLIENT+".")),
-h("div",{style:{height:1,background:T.colorBorderDark,margin:"24px 0 12px"}}),
-h("div",{style:{padding:"0 16px 16px"}},
-h(MenuRow,{label:"New workflow",icon:h("span",{style:{width:20,height:20,borderRadius:5,background:T.colorBrandPrimary,color:"#FFFFFF",display:"inline-flex",alignItems:"center",justifyContent:"center"}},h(Ic.plus,{s:16})),onClick:p.onNew}),
+h("div",{style:{height:72,boxSizing:"border-box",display:"flex",alignItems:"center",padding:"16px 24px",borderBottom:"1px solid #ECECEC"}},h(MIMO_LOGO,{h:20})),
+h("div",{style:{padding:"16px 16px 0"}},h("div",Object.assign({style:{height:44,boxSizing:"border-box",display:"flex",alignItems:"center",gap:8,padding:"8px 16px 8px 8px",border:"1px solid #ECECEC",borderRadius:8,fontSize:14,lineHeight:"22px",fontWeight:600,color:"#2A2A2A",cursor:"pointer",background:"#FFFFFF"}},hover({background:"#FFFFFF"},{background:"#FAFAFA"})),
+h("span",{style:{width:28,height:28,borderRadius:6,background:"#F5F5F5",display:"inline-flex",alignItems:"center",justifyContent:"center",color:"#7C7C7C"}},svg(20,[P("M12.5 15l-5-5 5-5",null,1.5)])),CLIENT)),
+h("div",{style:{height:1,background:"#ECECEC",margin:"16px 0 24px"}}),
+h("div",{style:{padding:"0 16px 24px"}},
+h(MenuRow,{label:"New chat",icon:h("span",{style:{width:20,height:20,borderRadius:4,background:T.colorBrandPrimary,color:"#FFFFFF",display:"inline-flex",alignItems:"center",justifyContent:"center"}},h(Ic.plus,{s:16})),onClick:p.onNew}),
 MenuRule(),
 h(MenuHead,{label:"Recents",open:open.recents,onToggle:function(){tog("recents");}}),open.recents?list(recents,"r","clock"):null,
 MenuRule(),
-h(MenuHead,{label:"Saved",open:open.saved,onToggle:function(){tog("saved");}}),open.saved?(saved.length?list(saved,"s","bookmark"):h("div",{style:{fontSize:13,color:T.colorTextSecondary,padding:"6px 16px 8px"}},"Workflows you save appear here.")):null,
+h(MenuHead,{label:"Associate",open:open.assoc,onToggle:function(){tog("assoc");}}),open.assoc?[{l:"Skills",i:"star03",k:"skills"},{l:"Artifacts",i:"file07",k:"artifacts"},{l:"Files",i:"folder",k:"files"},{l:"Client context",i:"data",k:"context"}].map(function(a){return h(MenuRow,{key:a.l,label:a.l,icon:NI(a.i),active:p.page===a.k,onClick:function(){p.onPage(a.k);}});}):null,
 MenuRule(),
-h(MenuHead,{label:"Associate",open:open.assoc,onToggle:function(){tog("assoc");}}),open.assoc?ASSOC.map(function(a){return h(MenuRow,{key:a.l,label:a.l,icon:NI(a.i)});}):null,
-MenuRule(),
-h(MenuHead,{label:"Payments",quiet:true,open:open.pay,onToggle:function(){tog("pay");}}),open.pay?["Pay","Get paid","Suppliers"].map(function(l){return h(MenuRow,{key:l,label:l});}):null,
-MenuRule(),
-h(MenuRow,{label:"Settings",icon:NI("settings")}),h(MenuRow,{label:"Training material",icon:NI("training")}))),
+h(MenuRow,{label:"Settings",icon:NI("settings02")}),h(MenuRow,{label:"Training material",icon:NI("grad")}))),
 /* pinned to the bottom */
-h("div",{style:{flexShrink:0,height:76,borderTop:"1px solid "+T.colorBorderDark,display:"flex",alignItems:"center",gap:12,padding:"0 16px 0 24px",background:"#FFFFFF"}},
+h("div",{style:{flexShrink:0,height:76,borderTop:"1px solid #ECECEC",display:"flex",alignItems:"center",gap:12,padding:"0 16px 0 24px",background:"#FFFFFF"}},
 h(Avatar,{initials:"LB",s:40}),h("div",{style:{flex:1,minWidth:0}},h("div",{style:{fontSize:14,fontWeight:600,color:"#1F2024"}},USER.name),h("div",{style:{fontSize:14,color:T.colorTextSecondary}},"Clifton & Harrow")),
 h(IconBtn,{title:"Account"},h(Ic.kebab,null)))));}
 
@@ -1462,22 +1537,24 @@ h(IconBtn,{title:"Menu",onClick:p.onMenu,style:p.menuOpen?{background:"rgba(0,0,
 h(IconBtn,{title:"Notifications",onClick:p.onBell,style:Object.assign({position:"relative"},p.bellOpen?{background:"rgba(0,0,0,0.06)"}:{})},h(Ic.bell,null),h("span",{style:{position:"absolute",top:6,right:7,width:7,height:7,borderRadius:4,background:T.colorBrandPrimary,border:"1.5px solid #F5F5F5"}})),
 h("span",{style:{fontSize:14,lineHeight:"22px",fontWeight:500,color:"#2A2A2A",whiteSpace:"nowrap",marginLeft:2}},CLIENT),h("div",{style:{width:1,height:24,background:T.colorBorderHover,margin:"0 8px"}}),
 h("div",{style:{display:"flex",alignItems:"center",gap:8,minWidth:0,overflow:"hidden"}},p.tabs.map(function(t){return h(TabPill,{key:t.id,t:t,active:t.id===p.active,onSelect:function(){p.onSelect(t.id);},onClose:function(){p.onClose(t.id);}});})),
-h(IconBtn,{title:"New workflow",onClick:p.onNew,style:{marginLeft:4}},h(Ic.plus,{s:20})),
+h(IconBtn,{title:"New chat",onClick:p.onNew,style:{marginLeft:4}},h(Ic.plus,{s:20})),
 h("div",{style:{flex:1}}),
 h(Tooltip,{text:syncAgo()},h("button",Object.assign({type:"button",onClick:doSync,style:{display:"inline-flex",alignItems:"center",gap:8,height:32,padding:"0 10px",border:"none",borderRadius:8,background:"transparent",fontFamily:"inherit",fontSize:14,fontWeight:500,color:"#2A2A2A",cursor:"pointer"}},hover({background:"transparent"},{background:"rgba(0,0,0,0.06)"})),
 sync==="busy"?h(Ic.sync,{spin:true}):sync==="done"?h("span",{style:{color:T.colorBrandPrimary}},h(Ic.check,{s:16})):null,sync==="busy"?"Syncing…":sync==="done"?"Synced just now":"Sync with Xero")));}
 
 /* ══════════════ APP ══════════════ */
 var TAB_N=1;
-function newTab(){return{id:"t"+(TAB_N++),label:"New workflow",status:"idle"};}
+function newTab(){return{id:"t"+(TAB_N++),label:"New chat",status:"idle"};}
 function App(){var first=useMemo(newTab,[]);var _t=useState([first]);var tabs=_t[0],setTabs=_t[1];var _a=useState(first.id);var active=_a[0],setActive=_a[1];
-var _o=useState({});var overlay=_o[0],setOverlay=_o[1];var _nv=useState(null);var panel=_nv[0],setPanel=_nv[1];
+var _pg=useState(null);var page=_pg[0],setPage=_pg[1];var _o=useState({});var overlay=_o[0],setOverlay=_o[1];var _nv=useState(null);var panel=_nv[0],setPanel=_nv[1];
 var _lb=useState([{name:"Month-end bank reconciliation"},{name:"Accruals sweep"},{name:"Director\'s loan review"},{name:"Supplier statement recs"},{name:"Payroll control check"},{name:"Fixed asset additions"},{name:"Deferred income release"},{name:"Aged debtors review"},{name:"CIS deductions check"},{name:"Intercompany balances"},{name:"Suspense account clear-down"},{name:"Management accounts pack"}]);var lib=_lb[0],setLib=_lb[1];
 function toggleLib(n){setLib(function(l){return l.some(function(w){return w.name===n;})?l.filter(function(w){return w.name!==n;}):[{name:n,sub:"Saved "+TODAY,fresh:true}].concat(l);});}
 function onMeta(id,o){setTabs(function(ts){return ts.map(function(t){return t.id===id?Object.assign({},t,o):t;});});}
 function onOverlay(id,v){setOverlay(function(m){if(!!m[id]===v)return m;var n=Object.assign({},m);n[id]=v;return n;});}
-function add(){var t=newTab();setTabs(function(ts){return ts.concat([t]);});setActive(t.id);}
-function demo(){var t=Object.assign(newTab(),{auto:true});setPanel(null);setTabs(function(ts){var cur=ts.filter(function(x){return x.id===active;})[0];var keep=ts.filter(function(x){return !(x.id===active&&x.label==="New workflow"&&x.status==="idle");});return keep.concat([t]);});setActive(t.id);}
+function add(){var t=newTab();setTabs(function(ts){return ts.concat([t]);});setActive(t.id);setPage(null);}
+function pick(id){setActive(id);setPage(null);}
+function startSkill(prompt){var t=Object.assign(newTab(),{startPrompt:prompt});setTabs(function(ts){return ts.concat([t]);});setActive(t.id);setPage(null);}
+function demo(){var t=Object.assign(newTab(),{auto:true});setPanel(null);setTabs(function(ts){var cur=ts.filter(function(x){return x.id===active;})[0];var keep=ts.filter(function(x){return !(x.id===active&&x.label==="New chat"&&x.status==="idle");});return keep.concat([t]);});setActive(t.id);}
 var demoRef=useRef(demo);demoRef.current=demo;
 useEffect(function(){function k(e){if(e.key!=="1"||e.metaKey||e.ctrlKey||e.altKey||e.repeat)return;var a=document.activeElement;
 if(a&&(a.tagName==="INPUT"||a.tagName==="TEXTAREA")&&a.value)return;if(a&&a.isContentEditable)return;if(FAST.on)return;e.preventDefault();e.stopPropagation();demoRef.current();}
@@ -1485,11 +1562,12 @@ window.addEventListener("keydown",k,true);return function(){window.removeEventLi
 function close(id){setTabs(function(ts){var rest=ts.filter(function(t){return t.id!==id;});if(!rest.length){var t=newTab();setActive(t.id);return[t];}
 if(id===active)setActive(rest[rest.length-1].id);return rest;});}
 return h("div",{style:{height:"100vh",display:"flex",flexDirection:"column",background:T.colorSurfaceSecondary,overflow:"hidden"}},
-h(TopBar,{tabs:tabs,active:active,onSelect:setActive,onClose:close,onNew:add,lib:lib,menuOpen:panel==="menu",onMenu:function(){setPanel(panel==="menu"?null:"menu");},bellOpen:panel==="bell",onBell:function(){setPanel(panel==="bell"?null:"bell");}}),
+h(TopBar,{tabs:tabs,active:page?null:active,onSelect:pick,onClose:close,onNew:add,lib:lib,menuOpen:panel==="menu",onMenu:function(){setPanel(panel==="menu"?null:"menu");},bellOpen:panel==="bell",onBell:function(){setPanel(panel==="bell"?null:"bell");}}),
 h("div",{style:{flex:1,minHeight:0,display:"flex"}},
-h(MainMenu,{open:panel==="menu",tabs:tabs,lib:lib,onSelect:setActive,onNew:add}),h(NotifPanel,{open:panel==="bell"}),
-h("div",{style:{flex:1,minWidth:0,minHeight:0,display:"flex",flexDirection:"column"}},
-tabs.map(function(t){return h(Conversation,{key:t.id,id:t.id,auto:!!t.auto,active:t.id===active,tabs:tabs,onSelect:setActive,onBegin:function(){setPanel(null);},onMeta:onMeta,onOverlay:onOverlay,lib:lib,onToggleLib:toggleLib});}))));}
+h(MainMenu,{open:panel==="menu",tabs:tabs,lib:lib,onSelect:pick,onNew:add,page:page,onPage:setPage}),h(NotifPanel,{open:panel==="bell"}),
+page?h("div",{key:"pg-"+page,style:{flex:1,minWidth:0,minHeight:0,display:"flex",flexDirection:"column"}},h(PageView,{page:page,tabs:tabs,lib:lib,onPick:pick,onNew:add,onApp:startSkill})):null,
+h("div",{style:{flex:1,minWidth:0,minHeight:0,display:page?"none":"flex",flexDirection:"column"}},
+tabs.map(function(t){return h(Conversation,{key:t.id,id:t.id,auto:!!t.auto,startPrompt:t.startPrompt,active:t.id===active,tabs:tabs,onSelect:pick,onPage:setPage,onBegin:function(){setPanel(null);},onMeta:onMeta,onOverlay:onOverlay,lib:lib,onToggleLib:toggleLib});}))));}
 
 ReactDOM.createRoot(document.getElementById("root")).render(h(App,null));
 })();
