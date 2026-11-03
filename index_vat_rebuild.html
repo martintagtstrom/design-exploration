@@ -371,6 +371,7 @@ var TODAY="05 Oct 26";
 /* the Mimo star, as used across index_orchestration.html (PATHS.starAi) */
 var STAR_AI="M9.99984 1.66669L11.6765 6.02592C11.9115 6.63695 12.029 6.94246 12.2117 7.19944C12.3737 7.4272 12.5727 7.6262 12.8004 7.78815C13.0574 7.97088 13.3629 8.08838 13.9739 8.32339L18.3332 10L13.9739 11.6767C13.3629 11.9117 13.0574 12.0292 12.8004 12.2119C12.5727 12.3738 12.3737 12.5728 12.2117 12.8006C12.029 13.0576 11.9115 13.3631 11.6765 13.9741L9.99984 18.3334L8.32321 13.9741C8.0882 13.3631 7.97069 13.0576 7.78796 12.8006C7.62601 12.5728 7.42702 12.3738 7.19926 12.2119C6.94228 12.0292 6.63677 11.9117 6.02574 11.6767L1.6665 10L6.02574 8.32339C6.63677 8.08838 6.94228 7.97088 7.19926 7.78815C7.42702 7.6262 7.62601 7.4272 7.78796 7.19944C7.97069 6.94246 8.0882 6.63695 8.32321 6.02592L9.99984 1.66669Z";
 /* ── Icons ───────────────────────────────────────────────────────────────── */
+function VI20(d){return h("svg",{width:20,height:20,viewBox:"0 0 20 20",fill:"none",style:{flexShrink:0,display:"block"}},h("path",{d:d,stroke:"currentColor",strokeWidth:1.25,strokeLinecap:"round",strokeLinejoin:"round"}));}
 function svg(size,children,extra){return h("svg",Object.assign({width:size,height:size,viewBox:"0 0 24 24",fill:"none",style:{flexShrink:0,display:"block"}},extra||{}),children);}
 function P(d,c,w){return h("path",{d:d,stroke:c||"currentColor",strokeWidth:w||1.5,strokeLinecap:"round",strokeLinejoin:"round"});}
 var Ic={
@@ -401,9 +402,9 @@ chev:function(p){var up=p&&p.up;return svg(16,[P(up?"m6 15 6-6 6 6":"m6 9 6 6 6-
 check:function(p){return svg((p&&p.s)||18,[P("M20 6 9 17l-5-5",(p&&p.c)||"currentColor",1.8)]);},
 msgPlus:function(){/* DS "icon / message-plus-square" (Figma 8190:3357) */return h("svg",{width:20,height:20,viewBox:"0 0 20 20",fill:"none",style:{display:"block",flexShrink:0}},h("path",{d:"M10 11.25V6.25M7.5 8.75H12.5M5.83333 15V16.9463C5.83333 17.3903 5.83333 17.6123 5.92436 17.7263C6.00352 17.8255 6.12356 17.8832 6.25045 17.8831C6.39636 17.8829 6.56973 17.7442 6.91646 17.4668L8.90434 15.8765C9.31043 15.5517 9.51347 15.3892 9.73957 15.2737C9.94017 15.1712 10.1537 15.0963 10.3743 15.051C10.6231 15 10.8831 15 11.4031 15H13.5C14.9001 15 15.6002 15 16.135 14.7275C16.6054 14.4878 16.9878 14.1054 17.2275 13.635C17.5 13.1002 17.5 12.4001 17.5 11V6.5C17.5 5.09987 17.5 4.3998 17.2275 3.86502C16.9878 3.39462 16.6054 3.01217 16.135 2.77248C15.6002 2.5 14.9001 2.5 13.5 2.5H6.5C5.09987 2.5 4.3998 2.5 3.86502 2.77248C3.39462 3.01217 3.01217 3.39462 2.77248 3.86502C2.5 4.3998 2.5 5.09987 2.5 6.5V11.6667C2.5 12.4416 2.5 12.8291 2.58519 13.147C2.81635 14.0098 3.49022 14.6836 4.35295 14.9148C4.67087 15 5.05836 15 5.83333 15Z",stroke:"currentColor",strokeWidth:1.25,strokeLinecap:"round",strokeLinejoin:"round"}));},
 kebab:function(){return h("svg",{width:20,height:20,viewBox:"0 0 20 20",style:{display:"block"}},[4.5,10,15.5].map(function(x){return h("circle",{key:x,cx:x,cy:10,r:1.4,fill:"#2A2A2A"});}));},
-chat:function(){return svg(20,[P("M4.5 5h15A1.5 1.5 0 0 1 21 6.5v9a1.5 1.5 0 0 1-1.5 1.5H11l-4.5 3.5V17h-2A1.5 1.5 0 0 1 3 15.5v-9A1.5 1.5 0 0 1 4.5 5Z",null,1.4)]);},
-split:function(){return svg(20,[h("rect",{key:"r",x:3.5,y:4.5,width:17,height:15,rx:2.5,stroke:"currentColor",strokeWidth:1.4}),P("M10 4.5v15",null,1.4)]);},
-canvas:function(){return Ic.file();},
+chat:function(){return VI20("M2.5 6.5C2.5 5.09987 2.5 4.3998 2.77248 3.86502C3.01217 3.39462 3.39462 3.01217 3.86502 2.77248C4.3998 2.5 5.09987 2.5 6.5 2.5H13.5C14.9001 2.5 15.6002 2.5 16.135 2.77248C16.6054 3.01217 16.9878 3.39462 17.2275 3.86502C17.5 4.3998 17.5 5.09987 17.5 6.5V11C17.5 12.4001 17.5 13.1002 17.2275 13.635C16.9878 14.1054 16.6054 14.4878 16.135 14.7275C15.6002 15 14.9001 15 13.5 15H11.4031C10.8831 15 10.6231 15 10.3743 15.051C10.1537 15.0963 9.94017 15.1712 9.73957 15.2737C9.51347 15.3892 9.31043 15.5517 8.90434 15.8765L6.91646 17.4668C6.56973 17.7442 6.39636 17.8829 6.25045 17.8831C6.12356 17.8832 6.00352 17.8255 5.92436 17.7263C5.83333 17.6123 5.83333 17.3903 5.83333 16.9463V15C5.05836 15 4.67087 15 4.35295 14.9148C3.49022 14.6836 2.81635 14.0098 2.58519 13.147C2.5 12.8291 2.5 12.4416 2.5 11.6667V6.5Z");},
+split:function(){return VI20("M7.5 2.5V17.5M6.5 2.5H13.5C14.9001 2.5 15.6002 2.5 16.135 2.77248C16.6054 3.01217 16.9878 3.39462 17.2275 3.86502C17.5 4.3998 17.5 5.09987 17.5 6.5V13.5C17.5 14.9001 17.5 15.6002 17.2275 16.135C16.9878 16.6054 16.6054 16.9878 16.135 17.2275C15.6002 17.5 14.9001 17.5 13.5 17.5H6.5C5.09987 17.5 4.3998 17.5 3.86502 17.2275C3.39462 16.9878 3.01217 16.6054 2.77248 16.135C2.5 15.6002 2.5 14.9001 2.5 13.5V6.5C2.5 5.09987 2.5 4.3998 2.77248 3.86502C3.01217 3.39462 3.39462 3.01217 3.86502 2.77248C4.3998 2.5 5.09987 2.5 6.5 2.5Z");},
+canvas:function(){return VI20("M11.6663 1.89111V5.33323C11.6663 5.79994 11.6663 6.0333 11.7572 6.21156C11.8371 6.36836 11.9645 6.49584 12.1213 6.57574C12.2996 6.66656 12.533 6.66656 12.9997 6.66656H16.4418M6.66634 12.4998V14.9998M13.333 10.8332V14.9998M9.99967 8.74984V14.9998M16.6663 8.32336V14.3332C16.6663 15.7333 16.6663 16.4334 16.3939 16.9681C16.1542 17.4386 15.7717 17.821 15.3013 18.0607C14.7665 18.3332 14.0665 18.3332 12.6663 18.3332H7.33301C5.93288 18.3332 5.23281 18.3332 4.69803 18.0607C4.22763 17.821 3.84517 17.4386 3.60549 16.9681C3.33301 16.4334 3.33301 15.7333 3.33301 14.3332V5.6665C3.33301 4.26637 3.33301 3.56631 3.60549 3.03153C3.84517 2.56112 4.22763 2.17867 4.69803 1.93899C5.23281 1.6665 5.93288 1.6665 7.33301 1.6665H10.0095C10.621 1.6665 10.9267 1.6665 11.2144 1.73558C11.4695 1.79682 11.7134 1.89783 11.9371 2.0349C12.1893 2.18951 12.4055 2.4057 12.8379 2.83808L15.4948 5.49493C15.9271 5.92731 16.1433 6.1435 16.2979 6.39579C16.435 6.61947 16.536 6.86333 16.5973 7.11842C16.6663 7.40614 16.6663 7.71188 16.6663 8.32336Z");},
 external:function(){return svg(16,[P("M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3",null,1.5)]);},
 file:function(){return svg(20,[P("M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z",null,1.4),P("M14 2v6h6M9 17v-2M12 17v-4M15 17v-3",null,1.4)]);},
 info:function(c){return svg(16,[h("circle",{key:"c",cx:12,cy:12,r:9,stroke:c||"currentColor",strokeWidth:1.6}),P("M12 16v-4M12 8h.01",c,1.8)]);},
@@ -466,19 +467,19 @@ var Q1={step:1,total:2,q:"Which period do you want to review?",other:true,option
 var Q2={step:2,total:2,q:"Include late claims in the review?",options:[{label:"Yes, include late claims",late:true},{label:"No, skip for now",late:false}]};
 var Q3={q:"When did you submit the previous VAT return for Apr 26 – Jun 26 to HMRC?",placeholder:"Type date of filing, e.g. 7 Aug 26"};
 
-var WF={name:"VAT readiness check",
-sub:"A custom skill lets you run checks that are not yet defined.",
+var WF={name:"VAT review",
+sub:"Verified by Mimo and saved in your skills.",verified:true,
 steps:[
 {name:"Gather evidence",desc:"Transactions, VAT codes and documents behind every box",run:"Gathering evidence",result:"412 transactions across 9 boxes",chip:"23 excluded",ms:2000},
-{name:"Run weighted checks",verified:true,desc:"Each check scored by its risk to the filing",run:"Running weighted checks",result:"14 checks, 1 blocking failure",chip:"6 findings",ms:2600},
-{name:"Check late claims",verified:true,desc:"Bills dated in earlier periods that missed their return",run:"Checking late claims",result:null,chip:"1 late claim",ms:1700,late:true},
+{name:"Run weighted checks",desc:"Each check scored by its risk to the filing",run:"Running weighted checks",result:"14 checks, 1 blocking failure",chip:"6 findings",ms:2600},
+{name:"Check late claims",desc:"Bills dated in earlier periods that missed their return",run:"Checking late claims",result:null,chip:"1 late claim",ms:1700,late:true},
 {name:"Score and flag",desc:"Readiness score, blocking checks and anomalies",run:"Scoring the return",result:"72 / 100",chip:"Not ready to file",ms:1500}]};
 
 function wfDescription(a){return "When you run it, this will score the "+a.period+" return out of 100 against weighted checks"+(a.late?", including late claims received since "+a.filed+".":", without late claims.");}
 function wfSteps(a){return WF.steps.filter(function(s){return !s.late||a.late;});}
 
 var EXPLAIN=[
-"Here's a VAT readiness skill I can run for you. **Nothing has been checked yet**, so this is a preview of what happens when you run it.",
+"I'll use your **VAT review** skill for this. **Nothing has been checked yet**, so here's what happens when you run it.",
 "I'll test every check on the return against the ledger, using the transactions, VAT codes and documents behind each box. Each check is weighted by its risk to the filing, which gives you a **readiness score out of 100**.",
 "## Two checks can block filing on their own\n- Box 1 not matching the VAT on sales\n- Reverse charge entries that don't net off",
 "If either fails, the return is marked **not ready to file** whatever the score. Nothing changes in Xero until you approve it."];
@@ -733,7 +734,7 @@ h("svg",{width:11,height:10,viewBox:"0 0 21.3 20",style:{display:"block",flexShr
 function ProposalCard(p){var a=p.answers;var W=p.wf||WF;var steps=p.steps||wfSteps(a);
 useEffect(function(){if(p.collapsed||!p.onRun)return;function k(e){if(e.key==="Enter"&&!(e.target&&/TEXTAREA|INPUT/.test(e.target.tagName))){e.preventDefault();p.onRun();}}
 window.addEventListener("keydown",k);return function(){window.removeEventListener("keydown",k);};},[p.collapsed]);
-var head=h("div",null,h("div",{style:{fontSize:16,lineHeight:"26px",fontWeight:500,color:"#2A2A2A"}},"Proposed skill: "+W.name),
+var head=h("div",null,h("div",{style:{fontSize:16,lineHeight:"26px",fontWeight:500,color:"#2A2A2A"}},W.verified?W.name:"Proposed skill: "+W.name,W.verified?h(VerifiedBadge,null):null),
 h("div",{style:{fontSize:16,lineHeight:"26px",color:"#9D9D9E"}},W.sub));
 if(p.collapsed)return h("div",{style:cardStyle({boxShadow:"none",animation:"fadeIn .3s ease both"})},head);
 return h("div",{style:cardStyle({animation:"dockIn .35s cubic-bezier(.16,1,.3,1) both"})},head,
@@ -743,8 +744,9 @@ h("div",{style:{display:"flex",alignItems:"flex-start",gap:12}},
 h("span",{style:{width:24,height:24,marginTop:1,borderRadius:"50%",background:"#ECECEC",color:"#545453",fontSize:13,fontWeight:500,display:"inline-flex",alignItems:"center",justifyContent:"center",flexShrink:0}},i+1),
 h("div",{style:{fontSize:16,lineHeight:"26px"}},h("span",{style:{fontWeight:500,color:"#2A2A2A"}},s.name),s.verified?h(VerifiedBadge,null):null,h("span",{style:{color:"#9D9D9E"}},"  "+s.desc))),
 i<steps.length-1?h("div",{style:{width:1,height:20,background:T.colorBorderMedium,margin:"6px 0 6px 12px"}}):null);})),
-h("div",{style:{display:"flex",gap:8,marginTop:24}},
-h(PrimaryBtn,{onClick:p.onRun},"Run skill",h(Ic.enter,null)),h(SecondaryBtn,{onClick:p.onCancel},"Cancel")));}
+h("div",{style:{display:"flex",alignItems:"center",gap:8,marginTop:24}},
+h(PrimaryBtn,{onClick:p.onRun},"Run skill",h(Ic.enter,null)),h(SecondaryBtn,{onClick:p.onEdit},"Edit"),h("div",{style:{flex:1}}),
+h("button",Object.assign({type:"button",onClick:p.onCancel,style:{height:40,padding:"0 16px",border:"none",borderRadius:8,background:T.colorErrorBg,color:T.colorError,fontSize:14,fontWeight:500,fontFamily:"inherit",cursor:"pointer"}},hover({filter:"none"},{filter:"brightness(0.97)"})),"Cancel")));}
 
 /* Workflow progress (DS: Chat / Workflow progress) */
 function Progress(p){var steps=p.steps;var st=p.statuses;var allDone=st.length&&st.every(function(s){return s==="done";});
@@ -1031,13 +1033,13 @@ h(PrimaryBtn,{onClick:p.onApply,style:{flex:1}},act.primary))));}
 var RECENT_DATES=["04 Aug 26","01 Oct 26","28 Sep 26","05 Oct 26","03 Sep 26","30 Jul 26","22 Sep 26","05 Oct 26","02 Sep 26","26 Sep 26","07 May 26"];
 var STATUS_LABEL={done:"Done",running:"Running",stopped:"Stopped"};
 var ARTIFACTS=[
-{n:"VAT readiness canvas, Apr 26 – Jun 26",s:"VAT readiness check",d:"04 Aug 26"},
+{n:"VAT review canvas, Apr 26 – Jun 26",s:"VAT review",d:"04 Aug 26"},
 {n:"Prepayment schedule canvas, FY 26/27",s:"Combined prepayment schedule",d:"28 Sep 26"},
 {n:"Bank reconciliation report, HSBC Business",s:"Month-end bank reconciliation",d:"01 Oct 26"},
 {n:"Accruals working paper, Aug 26",s:"Accruals sweep",d:"03 Sep 26"},
 {n:"Deferred income schedule, Aug 26",s:"Deferred income release",d:"02 Sep 26"},
 {n:"Payroll control check, Sep 26",s:"Payroll control check",d:"26 Sep 26"},
-{n:"VAT readiness canvas, Jan 26 – Mar 26",s:"VAT readiness check",d:"07 May 26"}];
+{n:"VAT review canvas, Jan 26 – Mar 26",s:"VAT review",d:"07 May 26"}];
 var FILES0={"Bank statements":[{n:"HSBC_Business_Sep_2026.pdf",k:"pdf",z:"412 KB",d:"02/10/2026"},{n:"HSBC_Business_Aug_2026.pdf",k:"pdf",z:"398 KB",d:"02/09/2026"},{n:"Barclays_Credit_Card_Sep_2026.pdf",k:"pdf",z:"156 KB",d:"03/10/2026"}],
 "Invoices":[{n:"EDF-20326.pdf",k:"pdf",z:"88 KB",d:"12/08/2026"},{n:"GG-2206184.pdf",k:"pdf",z:"64 KB",d:"01/09/2026"},{n:"HIS-77120.pdf",k:"pdf",z:"71 KB",d:"05/07/2026"},{n:"POS-88117.pdf",k:"pdf",z:"52 KB",d:"25/07/2026"}],
 "Prepayment schedules":[{n:"Prepayment schedule FY26.xlsx",k:"xlsx",z:"184 KB",d:"28/09/2026"}],
@@ -1101,6 +1103,111 @@ function onToast(t){setToast(t);setTimeout(function(){setToast(null);},2200);}
 var pg=p.page==="history"?h(HistoryPage,p):p.page==="skills"?h(SkillsPage,Object.assign({},p,{onToast:onToast})):p.page==="artifacts"?h(ArtifactsPage,p):p.page==="files"?h(FilesPage,p):h(ContextPage,p);
 return h(Fragment,null,pg,toast?h("div",{style:{position:"fixed",left:"50%",bottom:32,transform:"translateX(-50%)",background:"#2A2A2A",color:"#FFF",fontSize:14,padding:"10px 16px",borderRadius:8,zIndex:50,animation:"fadeIn .2s ease both"}},toast+" isn't part of this prototype yet. Try VAT review."):null);}
 
+/* ══════════════ LEDGER (account transactions data grid + chat) ══════════════ */
+function ledgerData(){var rows=[];var id=0;
+function add(acct,date,desc,contact,ref,net,vatRate,doc,flags){var v=Math.round(net*vatRate*100)/100;rows.push({id:"l"+(id++),acct:acct,date:date,desc:desc,contact:contact,ref:ref||"—",net:net,vat:v,doc:doc!==false,flags:flags||0});}
+var cust=[["Northern Wholesale Foods","Wholesale order"],["Cravendale Retail Group","Store supply, weekly"],["Booths Supermarkets","Chilled range"],["Harrogate Fine Foods","Deli supply"],["Dales Deli Group","Deli supply"]];
+var sd=["03/07/2026","08/07/2026","15/07/2026","24/07/2026","30/07/2026","06/08/2026","14/08/2026","22/08/2026","29/08/2026","05/09/2026","12/09/2026","19/09/2026","26/09/2026"];
+sd.forEach(function(d,i){var c=cust[i%cust.length];add("200 – Sales",d,c[1]+" "+(i+1),c[0],"INV-"+(3104+i),[48533.33,8420,6233.5,4180,1872][i%5]+i*37.5,0.2,true,0);});
+add("5000 – Cost of sales","02/07/2026","Frozen stock","Pennine Cold Store","PC-2210",12840,0.2,true,0);
+add("5000 – Cost of sales","16/07/2026","Packaging","Yorkshire Packaging Co","YP-8841",3420,0.2,true,0);
+add("5000 – Cost of sales","13/08/2026","Zero-rated ingredients","Dalefoot Ingredients","DF-0912",620,0,true,0);
+add("5000 – Cost of sales","27/08/2026","Frozen stock","Pennine Cold Store","PC-2291",11960,0.2,true,0);
+add("6020 – Light, heat & power","08/07/2026","Depot gas","British Gas Business","BG-55120",2038.10,0.05,true,1);
+add("6020 – Light, heat & power","14/08/2026","Depot electricity","EDF Energy Customers","EDF-20412",2611.30,0.2,true,0);
+add("6110 – Advertising & marketing","01/09/2026","Google Ads, Aug","Google Ireland Ltd","GG-2206184",1041.67,0.2,true,2);
+add("6110 – Advertising & marketing","18/09/2026","Trade show stand","Harrogate Trade Show","HTS-118",1650,0.2,true,0);
+add("6300 – Insurance","05/07/2026","Commercial insurance","Hiscox Insurance","HIS-77120",2450,0.2,true,1);
+add("6420 – General expenses","25/07/2026","Office supplies","Premier Office Supplies","POS-88117",412,0.2,true,1);
+add("6420 – General expenses","25/07/2026","Office supplies","Premier Office Supplies","POS-88117-A",412,0.2,true,1);
+add("6420 – General expenses","05/09/2026","Printed training manuals","Instantprint Ltd","IP-338204",416.67,0.2,true,3);
+add("6500 – Repairs & maintenance","09/09/2026","Chiller repair","Pennine Refrigeration Ltd","PR-4471",3600,0.2,false,1);
+add("6220 – Subscriptions","30/08/2026","Sales Cloud annual licence","Salesforce UK","SF-55091",4800,0.2,true,0);
+return rows;}
+var LEDGER=ledgerData();
+function dkey(d){var p=d.split("/");return p[2]+p[1]+p[0];}
+
+function LChip(p){var on=p.on;return h("button",Object.assign({type:"button",onClick:p.onClick,style:{display:"inline-flex",alignItems:"center",gap:4,height:28,padding:"0 8px 0 10px",border:"none",borderRadius:6,background:on?"#F1F8F0":"#F0F0F0",color:on?T.colorBrandPrimary:"#7C7C7C",fontFamily:"inherit",fontSize:14,fontWeight:500,cursor:"pointer",whiteSpace:"nowrap"}},hover({filter:"none"},{filter:"brightness(0.97)"})),
+p.label?h("span",{style:{fontWeight:400,opacity:on?0.85:1}},p.label+":"):null,p.value,p.onClear?h("span",{onClick:function(e){e.stopPropagation();p.onClear();},style:{display:"inline-flex",marginLeft:2}},h(Ic.close,{s:14})):svg(14,[P("m6 9 6 6 6-6",null,1.5)]));}
+function FlagBadge(p){return h("span",{style:{display:"inline-flex",alignItems:"center",gap:4,height:25,boxSizing:"border-box",padding:"4px 8px 4px 6px",borderRadius:6,background:"#FCEFEC",color:"#C8543A",fontSize:12,lineHeight:"17px",fontWeight:500}},NI("flag",16),p.n);}
+
+function LedgerGrid(p){var _s=useState(true);var asc=_s[0],setAsc=_s[1];var _c=useState({});var closed=_c[0],setClosed=_c[1];var _x=useState({});var sel=_x[0],setSel=_x[1];
+var rows=LEDGER.filter(function(r){if(p.filter&&p.filter.contact&&r.contact!==p.filter.contact)return false;if(p.filter&&p.filter.flagged&&!r.flags)return false;return true;}).slice().sort(function(a,b){var x=dkey(a.date),y=dkey(b.date);return asc?(x<y?-1:x>y?1:0):(x<y?1:x>y?-1:0);});
+var groups=[];rows.forEach(function(r){var g=groups.filter(function(x){return x.k===r.acct;})[0];if(!g){g={k:r.acct,rows:[]};groups.push(g);}g.rows.push(r);});
+groups.sort(function(a,b){return a.k<b.k?-1:1;});
+var COLS="44px 64px 200px 128px 220px 220px 132px 128px 120px 124px";var minW=1384;
+var B="1px solid "+T.colorBorderLight;
+var cellS=function(o){return Object.assign({padding:"9px 16px",fontSize:14,lineHeight:"22px",color:"#2A2A2A",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",borderLeft:B,minWidth:0},o||{});};
+var head=["","F…","Account","Date","Description","Contact","Reference","Net amount","VAT amount","Document"];
+var cb=function(on,fn){return h("span",{onClick:fn,style:{width:16,height:16,borderRadius:4,border:"1px solid "+(on?T.colorBrandPrimary:"#D4D4D4"),background:on?T.colorBrandPrimary:"#FFFFFF",display:"inline-flex",alignItems:"center",justifyContent:"center",cursor:"pointer",color:"#FFFFFF"}},on?h(Ic.check,{s:12}):null);};
+return h("div",{style:{border:"1px solid "+T.colorBorderDark,borderRadius:8,background:"#FFFFFF",display:"flex",flexDirection:"column",minHeight:0,flex:1,overflow:"hidden"}},
+h("div",{style:{display:"flex",alignItems:"center",gap:8,height:52,padding:"0 20px",borderBottom:B,flexShrink:0}},h("span",{style:{fontSize:14,fontWeight:500,color:"#2A2A2A"}},p.filter&&(p.filter.contact||p.filter.flagged)?"Filtered transactions":"All transactions"),h("span",{style:{width:6,height:6,borderRadius:3,background:T.colorBrandPrimary}}),svg(16,[P("m6 9 6 6 6-6",null,1.5)]),
+h("span",{style:{flex:1}}),h("span",{style:{fontSize:13,color:"#7C7C7C"}},rows.length+" of "+LEDGER.length+" transactions")),
+h("div",{style:{display:"flex",alignItems:"center",gap:8,padding:"8px 14px",borderBottom:B,flexWrap:"wrap",flexShrink:0}},
+h(LChip,{on:true,label:"Sort",value:"Date, "+(asc?"ascending":"descending"),onClick:function(){setAsc(!asc);}}),h(LChip,{on:true,label:"Group",value:"Account"}),
+p.filter&&p.filter.contact?h(LChip,{on:true,label:"Contact",value:p.filter.contact,onClear:p.onClear}):null,
+p.filter&&p.filter.flagged?h(LChip,{on:true,label:"Findings",value:"Open",onClear:p.onClear}):null,
+h(LChip,{value:"Severity"}),h(LChip,{value:"Status"}),
+h("button",{type:"button",style:{display:"inline-flex",alignItems:"center",gap:4,height:28,padding:"0 8px",border:"none",background:"transparent",fontFamily:"inherit",fontSize:14,fontWeight:500,color:"#2A2A2A",cursor:"pointer"}},h(Ic.plus,{s:16}),"Filter")),
+h("div",{style:{flex:1,minHeight:0,overflow:"auto"}},h("div",{style:{minWidth:minW}},
+h("div",{style:{display:"grid",gridTemplateColumns:COLS,borderBottom:B,position:"sticky",top:0,background:"#FFFFFF",zIndex:2}},head.map(function(c,i){
+var right=i===7||i===8;return h("div",{key:i,onClick:i===3?function(){setAsc(!asc);}:undefined,style:cellS({borderLeft:i?B:"none",color:i===3?"#2A2A2A":"#7C7C7C",fontWeight:i===3?500:400,textAlign:right?"right":"left",cursor:i===3?"pointer":"default",padding:i===0?"9px 14px":"9px 16px",display:i===0?"flex":"block",alignItems:"center"})},
+i===0?cb(rows.length&&rows.every(function(r){return sel[r.id];}),function(){var all=rows.every(function(r){return sel[r.id];});var n={};if(!all)rows.forEach(function(r){n[r.id]=true;});setSel(n);}):i===3?h("span",{style:{display:"inline-flex",alignItems:"center",gap:6}},c,svg(14,[P(asc?"M12 19V5M6 11l6-6 6 6":"M12 5v14M6 13l6 6 6-6",null,1.6)])):c);})),
+groups.map(function(g){var net=0,vat=0;g.rows.forEach(function(r){net+=r.net;vat+=r.vat;});var shut=!!closed[g.k];
+return h(Fragment,{key:g.k},
+h("div",{onClick:function(){var n=Object.assign({},closed);n[g.k]=!shut;setClosed(n);},style:{display:"flex",alignItems:"center",gap:12,height:38,padding:"0 16px",background:"#F5F5F5",borderBottom:B,cursor:"pointer",fontSize:14,position:"sticky",left:0}},
+h("span",{style:{display:"inline-flex",color:"#545453",transform:shut?"rotate(-90deg)":"none",transition:"transform .15s"}},svg(16,[P("m6 9 6 6 6-6",null,1.5)])),
+h("span",{style:{fontWeight:500,color:"#2A2A2A"}},g.k),h("span",{style:{color:"#7C7C7C"}},g.rows.length+(g.rows.length===1?" transaction":" transactions")),h("span",{style:{color:"#7C7C7C"}},"Net "+fmt(net)+" · VAT "+fmt(vat))),
+shut?null:g.rows.map(function(r){var on=!!sel[r.id];return h("div",Object.assign({key:r.id,style:{display:"grid",gridTemplateColumns:COLS,borderBottom:B,background:on?"#F7FBF6":"#FFFFFF"}},hover({filter:"none"},{filter:"brightness(0.985)"})),
+h("div",{style:cellS({borderLeft:"none",padding:"9px 14px",display:"flex",alignItems:"center"})},cb(on,function(){var n=Object.assign({},sel);if(on)delete n[r.id];else n[r.id]=true;setSel(n);})),
+h("div",{style:cellS({padding:"7px 8px",display:"flex",alignItems:"center",justifyContent:"center"})},r.flags?h(FlagBadge,{n:r.flags}):null),
+h("div",{style:cellS()},r.acct),h("div",{style:cellS({fontVariantNumeric:"tabular-nums"})},r.date),h("div",{style:cellS(),title:r.desc},r.desc),h("div",{style:cellS(),title:r.contact},r.contact),
+h("div",{style:cellS({color:r.ref==="—"?"#9D9D9E":"#2A2A2A"})},r.ref),h("div",{style:cellS({textAlign:"right",fontVariantNumeric:"tabular-nums"})},fmt(r.net)),h("div",{style:cellS({textAlign:"right",fontVariantNumeric:"tabular-nums"})},fmt(r.vat)),
+h("div",{style:cellS({color:r.doc?T.colorBrandPrimary:"#9D9D9E"})},r.doc?h("span",{style:{display:"inline-flex",alignItems:"center",gap:4}},NI("file07",16),"Attached"):"Missing"));}));}))));}
+
+/* ledger chat: asks about the ledger and drives the grid's filters */
+var LEDGER_PROMPTS=["Show all transactions with Google Ireland Ltd","Which transactions have open findings?","What's the VAT total by account this quarter?"];
+function ledgerReply(t){var q=t.toLowerCase();var contacts=[];LEDGER.forEach(function(r){if(contacts.indexOf(r.contact)<0)contacts.push(r.contact);});
+var hit=contacts.filter(function(c){var first=c.toLowerCase().split(" ")[0];return q.indexOf(c.toLowerCase())>=0||(first.length>3&&q.indexOf(first)>=0);})[0];
+if(hit){var rs=LEDGER.filter(function(r){return r.contact===hit;});var net=0,vat=0;rs.forEach(function(r){net+=r.net;vat+=r.vat;});
+return{filter:{contact:hit},paras:["I've filtered the ledger to **"+hit+"**: "+rs.length+(rs.length===1?" transaction":" transactions")+", net **"+fmt(net)+"** and VAT **"+fmt(vat)+"**."].concat(rs.some(function(r){return r.flags;})?["Flagged rows have open findings from the VAT review. Open the review to resolve them."]:[])};}
+if(/finding|flag|issue|problem/.test(q)){var fr=LEDGER.filter(function(r){return r.flags;});return{filter:{flagged:true},paras:["**"+fr.length+" transactions** have open findings. I've filtered the grid to show only those.","## Most flags\n- Instantprint Ltd (3): zero-rated print work coded at 20%\n- Google Ireland Ltd (2): reverse charge missing"]};}
+if(/vat|total|account/.test(q)){var by={};LEDGER.forEach(function(r){by[r.acct]=(by[r.acct]||0)+r.vat;});var lines=Object.keys(by).sort().map(function(k){return "- "+k+": **"+fmt(by[k])+"**";});
+return{filter:null,paras:["Here's the VAT by account for Jul 26 – Sep 26, based on the synced ledger.","## VAT by account\n"+lines.join("\n")]};}
+return{filter:null,paras:["I can filter, group and total the ledger for you. Try asking for a contact, an account or the transactions with open findings."]};}
+
+function LedgerChat(p){var _d=useState("");var draft=_d[0],setDraft=_d[1];var _i=useState([]);var items=_i[0],setItems=_i[1];var _b=useState(false);var busy=_b[0],setBusy=_b[1];var sc=useRef(null);var k=useRef(0);
+useEffect(function(){if(sc.current)sc.current.scrollTop=sc.current.scrollHeight;},[items,busy]);
+function send(text){var t=(text||draft).trim();if(!t||busy)return;setDraft("");setItems(function(x){return x.concat([{type:"user",text:t,k:++k.current}]);});setBusy(true);
+setTimeout(function(){var r=ledgerReply(t);if(r.filter!==undefined)p.onFilter(r.filter);setBusy(false);setItems(function(x){return x.concat([{type:"bot",paras:r.paras,k:++k.current}]);});},1100);}
+return h("div",{style:{height:"100%",display:"flex",flexDirection:"column",minHeight:0}},
+h("div",{ref:sc,style:{flex:1,minHeight:0,overflowY:"auto",padding:"24px 16px 16px"}},
+items.length?null:h("div",{style:{display:"flex",flexDirection:"column",gap:12,paddingTop:24,animation:"fadeIn .3s ease both"}},
+h("div",{style:{fontSize:16,lineHeight:"26px",color:"#2A2A2A"}},"Ask anything about the ledger. I'll filter and total the grid as we go."),
+h("div",{style:{display:"flex",flexDirection:"column",alignItems:"flex-start",gap:4,marginLeft:-16}},LEDGER_PROMPTS.map(function(t){return h(PromptBtn,{key:t,onClick:function(){send(t);}},"“"+t+"”");}))),
+h("div",{style:{display:"flex",flexDirection:"column",gap:24}},items.map(function(it){return it.type==="user"?h(UserBubble,{key:it.k,text:it.text}):h(StreamText,{key:it.k,k:"lg"+it.k,paras:it.paras});}),
+busy?h(StatusLines,{lines:[{kind:"thinking",label:"Reading the ledger"}]}):null)),
+h("div",{style:{padding:"0 16px 8px",flexShrink:0}},h(Composer,{value:draft,onChange:setDraft,onSend:function(){send();},placeholder:"Ask about the ledger...",busy:busy}),
+h("div",{style:{textAlign:"center",fontSize:13,color:"#9D9D9E",marginTop:8}},"Mimo can make mistakes, use your own judgement.")));}
+
+function LedgerView(p){var _v=useState("split");var view=_v[0],setView=_v[1];var _t=useState("tx");var tab=_t[0],setTab=_t[1];var _f=useState(null);var filter=_f[0],setFilter=_f[1];
+var _s=useState("idle");var sync=_s[0],setSync=_s[1];var _l=useState("05 Oct 2026, 09:12");var last=_l[0],setLast=_l[1];
+function doSync(){if(sync!=="idle")return;setSync("busy");setTimeout(function(){setSync("done");var d=new Date();setLast("05 Oct 2026, "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"));setTimeout(function(){setSync("idle");},2000);},1500);}
+var EASE="cubic-bezier(0.32,0.72,0,1)";var split=view==="split";
+var vbtn=function(v,icon,label){var on=view===v;return h(Tooltip,{key:v,text:label},h("button",{type:"button","aria-label":label,onClick:function(){setView(v);},style:{width:28,height:24,padding:0,border:"none",borderRadius:4,display:"inline-flex",alignItems:"center",justifyContent:"center",cursor:"pointer",background:on?"#F1F8F0":"transparent",color:on?T.colorBrandPrimary:"#2A2A2A"}},icon));};
+return h("div",{style:{flex:1,minHeight:0,display:"flex",flexDirection:"column",animation:"fadeIn .2s ease both"}},
+h("div",{style:{height:56,flexShrink:0,display:"flex",alignItems:"center",gap:12,padding:"0 16px",background:"#FFFFFF",boxShadow:"0 1px 0 "+T.colorBorderDark+", 0 4px 12px rgba(0,0,0,0.04)",position:"relative",zIndex:4}},
+h("span",{style:{fontSize:18,fontWeight:500,color:"#2A2A2A"}},"Ledger"),h("span",{style:{fontSize:16,color:"#7C7C7C"}},sync==="busy"?"Syncing with Xero…":"Synced with Xero "+last),h("div",{style:{flex:1}}),
+h("button",Object.assign({type:"button",onClick:doSync,style:{display:"inline-flex",alignItems:"center",gap:8,height:32,padding:"0 12px",border:"none",borderRadius:8,background:"transparent",fontFamily:"inherit",fontSize:14,fontWeight:500,color:"#2A2A2A",cursor:"pointer"}},hover({background:"transparent"},{background:"rgba(0,0,0,0.05)"})),
+sync==="busy"?h(Ic.sync,{spin:true}):sync==="done"?h("span",{style:{color:T.colorBrandPrimary,display:"inline-flex"}},h(Ic.check,{s:16})):null,sync==="busy"?"Syncing…":sync==="done"?"Synced":"Sync now"),
+h("div",{style:{width:1,height:32,background:T.colorBorderDark,margin:"0 4px"}}),
+h("div",{style:{display:"flex",alignItems:"center",gap:4,height:32,boxSizing:"border-box",padding:"0 4px",border:"1px solid "+T.colorBorderDark,borderRadius:8,background:"#FFFFFF"}},vbtn("split",h(Ic.split,null),"Split view"),vbtn("full",NI("file07",20),"Full screen"))),
+h("div",{style:{flex:1,minHeight:0,display:"flex"}},
+h("div",{style:{flexGrow:0,flexShrink:0,flexBasis:split?"clamp(320px, 42%, "+SPLIT_W+"px)":"0px",minWidth:0,overflow:"hidden",borderRight:"1px solid "+(split?T.colorBorderDark:"transparent"),opacity:split?1:0,transition:"flex-basis 0.44s "+EASE+", opacity 0.3s ease",background:T.colorSurfaceSecondary}},h(LedgerChat,{onFilter:setFilter})),
+h("div",{style:{flex:1,minWidth:0,minHeight:0,display:"flex",flexDirection:"column",background:"#FFFFFF",padding:"24px 40px 24px",gap:24}},
+h(Tabs,{value:tab,onChange:setTab,tabs:[{v:"tx",label:"Account transactions"},{v:"tb",label:"Trial balance"},{v:"docs",label:"Documents"}]}),
+tab==="tx"?h(LedgerGrid,{filter:filter,onClear:function(){setFilter(null);}}):h("div",{style:{padding:"40px 0",textAlign:"center",fontSize:14,color:"#7C7C7C"}},(tab==="tb"?"Trial balance":"Documents")+" isn't part of this prototype yet."))));}
+
 /* Open in fullscreen: the invoice opens as its own page in a new browser tab */
 function openInvoiceTab(f){if(!f||!f.invoice)return;var w=window.open("","_blank");if(!w)return;
 var div=document.createElement("div");var root=ReactDOM.createRoot(div);ReactDOM.flushSync(function(){root.render(h(InvoiceDoc,{inv:f.invoice}));});var body=div.innerHTML;root.unmount();
@@ -1117,9 +1224,26 @@ function useTimers(){var ref=useRef([]);useEffect(function(){return function(){r
 return{later:function(ms,fn){ref.current.push(setTimeout(fn,FAST.on?Math.max(1,ms*0.02):ms));},clear:function(){ref.current.forEach(clearTimeout);ref.current=[];}};}
 
 var CAT_ICON={"VAT":"flag","Adjustments":"switchHorizontal","P&L":"calculator","Balance sheet":"rows","Bookkeeping":"book"};
-var APPS=[{t:"VAT review",cat:"VAT",d:"Checks journals and invoices for VAT anomalies.",live:true},{t:"Prepayments",cat:"Adjustments",d:"Checks and creates working paper for prepaid expenses.",live:true,prompt:"Create a combined prepayment schedule"},{t:"Accruals",cat:"Adjustments",d:"Analyses patterns to detect accrued expenses."},
-{t:"P&L review",cat:"P&L",d:"Surfaces unexpected variances in the P&L."},{t:"Miscodings",cat:"Bookkeeping",d:"Checks account codes and detects potential miscodings."},{t:"Bank recs",cat:"Bookkeeping",d:"Reconciles any bank account or credit cards."},
-{t:"Payroll",cat:"Balance sheet",d:"Ties payroll journals to the payroll report."},{t:"Deferred revenue",cat:"Adjustments",d:"Builds release schedules for income billed in advance."},{t:"Fixed assets",cat:"Adjustments",d:"Rolls forward the register and checks depreciation."}];
+var APPS=[
+{t:"VAT review",cat:"VAT",d:"Checks journals and invoices for VAT anomalies.",live:true},
+{t:"Turnover reconciliation",cat:"VAT",d:"Ties box 6 turnover to sales in the ledger."},
+{t:"VAT control account",cat:"VAT",d:"Reconciles the VAT control account to returns and payments."},
+{t:"Debtors & creditors",cat:"VAT",d:"Checks VAT on old balances and bad debt relief."},
+{t:"Collect missing docs",cat:"Bookkeeping",d:"Finds transactions without receipts or invoices and requests them."},
+{t:"Bank reconciliation",cat:"Bookkeeping",d:"Reconciles any bank account or credit card."},
+{t:"Prepayments",cat:"Adjustments",d:"Checks and creates working paper for prepaid expenses.",live:true,prompt:"Create a combined prepayment schedule"},
+{t:"Accruals",cat:"Adjustments",d:"Analyses patterns to detect accrued expenses."},
+{t:"Deferred revenue",cat:"Adjustments",d:"Builds release schedules for income billed in advance."},
+{t:"Accrued revenue",cat:"Adjustments",d:"Finds income earned but not yet invoiced."},
+{t:"Loan amortisation",cat:"Adjustments",d:"Splits loan repayments into interest and capital."},
+{t:"Depreciation/FAR",cat:"Adjustments",d:"Rolls forward the fixed asset register and posts depreciation."},
+{t:"P&L review",cat:"P&L",d:"Surfaces unexpected variances in the P&L."},
+{t:"Payroll",cat:"Balance sheet",d:"Ties payroll journals to the payroll report."},
+{t:"Director's loan",cat:"Balance sheet",d:"Checks the DLA balance and s455 exposure."},
+{t:"Fixed assets",cat:"Balance sheet",d:"Checks additions, disposals and the asset register."},
+{t:"Stock/Inventory",cat:"Balance sheet",d:"Reconciles stock counts to the balance sheet."},
+{t:"Aged debtors",cat:"Balance sheet",d:"Flags overdue balances and likely bad debts."},
+{t:"Aged creditors",cat:"Balance sheet",d:"Ties supplier balances to statements and ageing."}];
 
 function ClientMark(){return h("div",{style:{display:"flex",alignItems:"center",justifyContent:"center",gap:10}},
 h("svg",{width:28,height:28,viewBox:"0 0 28 28"},h("rect",{width:28,height:28,rx:7,fill:"#1B2A4A"}),h("path",{d:"M5 17c3-3 6-3 9 0s6 3 9 0M5 12c3-3 6-3 9 0s6 3 9 0",stroke:"#7FC4E8",strokeWidth:2,fill:"none",strokeLinecap:"round"})),
@@ -1136,7 +1260,7 @@ else if(mode==="erase"){n--;setTxt(t.slice(0,Math.max(0,n)));if(n<=0){i=(i+1)%li
 tm=setTimeout(tick,2800);return function(){clearTimeout(tm);};},[paused]);
 return txt;}
 /* saved workflows shown under "Your skills" */
-var SAVED_META={"VAT readiness check":{d:"Scores the VAT return against weighted checks before filing.",live:true},
+var SAVED_META={
 "Combined prepayment schedule":{d:"One schedule for both prepayment accounts, with suggested additions.",live:true,prompt:"Create a combined prepayment schedule"},
 "Month-end bank reconciliation":{d:"Matches bank feeds to statements."},
 "Accruals sweep":{d:"Finds costs incurred in the month that haven't been invoiced yet."},
@@ -1150,29 +1274,30 @@ var SAVED_META={"VAT readiness check":{d:"Scores the VAT return against weighted
 "Intercompany balances":{d:"Ties intercompany accounts across group entities."},
 "Suspense account clear-down":{d:"Finds the right home for items in suspense."},
 "Management accounts pack":{d:"Builds the monthly P&L, balance sheet and KPIs."}};
-function savedCard(w){var m=SAVED_META[w.name]||{d:"Saved skill."};return Object.assign({t:w.name,saved:true},m);}
+function savedCard(w){var ap=APPS.filter(function(a){return a.t===w.name;})[0];var m=SAVED_META[w.name]||(ap?{d:ap.d,live:ap.live,prompt:ap.prompt}:{d:"Saved skill."});return Object.assign({t:w.name,saved:true},m);}
 function SegTabs(p){return h("div",{role:"tablist",style:{display:"inline-flex",gap:4,padding:4,background:"#FFFFFF",border:"1px solid "+T.colorBorderDark,borderRadius:8}},p.items.map(function(it){var on=p.value===it.v;
 return h("button",Object.assign({key:it.v,type:"button",role:"tab","aria-selected":on,onClick:function(){p.onChange(it.v);},style:{minWidth:160,height:40,padding:"8px 16px",border:"none",borderRadius:on?4:8,background:on?"#F1F8F0":"transparent",color:on?T.colorBrandPrimary:"#2A2A2A",fontFamily:"inherit",fontSize:14,lineHeight:"22px",fontWeight:500,cursor:on?"default":"pointer",transition:"background .15s, color .15s"}},
 on?{}:hover({background:"transparent"},{background:"#F5F5F5"})),it.l);}));}
 function WfCard(p){var a=p.a;return h("button",Object.assign({type:"button",onClick:p.onClick,
-style:{minHeight:163,boxSizing:"border-box",textAlign:"left",display:"flex",flexDirection:"column",justifyContent:"space-between",alignItems:"flex-start",gap:24,padding:"16px 12px 16px 16px",border:"1px solid "+T.colorBorderDark,borderRadius:8,background:"#FFFFFF",cursor:"pointer",fontFamily:"inherit"}},
+style:{height:180,boxSizing:"border-box",textAlign:"left",display:"flex",flexDirection:"column",justifyContent:"space-between",alignItems:"flex-start",gap:8,padding:"16px 12px 16px 16px",border:"1px solid "+T.colorBorderDark,borderRadius:8,background:"#FFFFFF",cursor:"pointer",fontFamily:"inherit"}},
 hover({borderColor:T.colorBorderDark,boxShadow:"none"},{borderColor:T.colorBorderHover,boxShadow:"0 6px 16px rgba(0,0,0,0.05)"})),
 h("span",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,alignSelf:"stretch"}},(a.saved?h("span",{style:{display:"inline-flex",alignItems:"center",gap:4,height:25,boxSizing:"border-box",padding:"4px 8px 4px 6px",borderRadius:6,background:"#F1F8F0",color:T.colorBrandPrimary,fontSize:12,lineHeight:"17px",fontWeight:500,whiteSpace:"nowrap",flexShrink:0}},h("svg",{width:16,height:16,viewBox:"0 0 16 16",fill:"none",style:{display:"block"}},h("path",{d:"M3.3335 5.2C3.3335 4.0799 3.3335 3.51984 3.55148 3.09202C3.74323 2.71569 4.04919 2.40973 4.42552 2.21799C4.85334 2 5.41339 2 6.5335 2H9.46683C10.5869 2 11.147 2 11.5748 2.21799C11.9511 2.40973 12.2571 2.71569 12.4488 3.09202C12.6668 3.51984 12.6668 4.0799 12.6668 5.2V14L8.00016 11.3333L3.3335 14V5.2Z",stroke:"currentColor",strokeWidth:1.25,strokeLinecap:"round",strokeLinejoin:"round"})),"Saved")
 :h("span",{style:{display:"inline-flex",alignItems:"center",gap:4,height:21,boxSizing:"border-box",padding:"2px 6px 2px 4px",borderRadius:6,background:"#ECECEC",color:"#7C7C7C",fontSize:12,lineHeight:"17px",fontWeight:500,whiteSpace:"nowrap",flexShrink:0}},NI(CAT_ICON[a.cat],14),a.cat)),
 p.meta?h("span",{style:{fontSize:12,lineHeight:"17px",color:"#9D9D9E",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",minWidth:0}},p.meta):null),
-h("span",{style:{display:"flex",flexDirection:"column",gap:8}},h("span",{style:{fontSize:18,lineHeight:"26px",fontWeight:500,color:"#2A2A2A"}},a.t),
-h("span",{style:{fontSize:14,lineHeight:"22px",color:"#7C7C7C"}},a.d)));}
-function StartRecents(p){var vis=p.items.slice(0,3);
+h("span",{style:{display:"flex",flexDirection:"column",gap:8,alignSelf:"stretch"}},
+h("span",{style:{height:52,display:"flex",flexDirection:"column",justifyContent:"flex-end"}},h("span",{title:a.t,style:{fontSize:18,lineHeight:"26px",fontWeight:500,color:"#2A2A2A",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}},a.t)),
+h("span",{title:a.d,style:{height:44,fontSize:14,lineHeight:"22px",color:"#7C7C7C",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}},a.d)));}
+function StartRecents(p){var vis=p.items.slice(0,5);
 function row(key,icon,label,onClick){return h("div",Object.assign({key:key,onClick:onClick,title:label,style:{display:"flex",alignItems:"center",gap:12,height:31,padding:"0 8px",margin:"0 -8px",borderRadius:8,cursor:"pointer",fontSize:14,color:"#4F4F4F"}},hover({background:"transparent"},{background:"rgba(0,0,0,0.04)"})),
 h("span",{style:{color:"#545453",display:"inline-flex"}},icon),h("span",{style:{minWidth:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}},label));}
 return h("div",{style:{padding:"0 12px",marginTop:32,display:"flex",flexDirection:"column",gap:0,animation:"fadeIn .3s ease both"}},
 h("div",{style:{fontSize:14,lineHeight:"22px",fontWeight:600,color:"#2A2A2A",marginBottom:8}},"Recents"),
 vis.map(function(it,i){return row("r"+i,recentIcon(it),it.label,function(){if(it.id&&p.onPick)p.onPick(it.id);});}),
-p.items.length>3?row("more",NI("dots"),"View more",function(){if(p.onMore)p.onMore();}):null);}
+p.items.length>5?row("more",NI("dots"),"View more",function(){if(p.onMore)p.onMore();}):null);}
 function SkillsLibrary(p){var _lt=useState(p.initial||"yours");var libTab=_lt[0],setLibTab=_lt[1];var mine=(p.lib||[]).map(savedCard);
 return h("div",null,h("div",{style:{display:"flex",justifyContent:"center",marginBottom:32}},h(SegTabs,{value:libTab,onChange:setLibTab,items:[{v:"yours",l:"Your skills"},{v:"verified",l:"Verified skills"}]})),
-libTab==="verified"?h("div",{key:"v",style:{display:"grid",gridTemplateColumns:"repeat(3, minmax(0,1fr))",gap:16,animation:"fadeIn .25s ease both"}},APPS.map(function(a){return h(WfCard,{key:a.t,a:a,onClick:function(){if(a.live)p.onApp(a.prompt||"Run a VAT review");else{p.onToast(a.t);}}});}))
-:(mine.length?h("div",{key:"y",style:{display:"grid",gridTemplateColumns:"repeat(3, minmax(0,1fr))",gap:16,animation:"fadeIn .25s ease both"}},mine.map(function(a){return h(WfCard,{key:a.t,a:a,onClick:function(){if(a.live)p.onApp(a.prompt||"Run a VAT review");else{p.onToast(a.t);}}});}))
+libTab==="verified"?h("div",{key:"v",style:{display:"grid",gridTemplateColumns:"repeat(3, minmax(0,1fr))",gap:16,animation:"fadeIn .25s ease both"}},APPS.map(function(a){return h(WfCard,{key:a.t,a:a,onClick:function(){p.onApp(a.prompt||"Run a VAT review");}});}))
+:(mine.length?h("div",{key:"y",style:{display:"grid",gridTemplateColumns:"repeat(3, minmax(0,1fr))",gap:16,animation:"fadeIn .25s ease both"}},mine.map(function(a){return h(WfCard,{key:a.t,a:a,onClick:function(){p.onApp(a.prompt||"Run a VAT review");}});}))
 :h("div",{style:{textAlign:"center",fontSize:14,lineHeight:"22px",color:"#7C7C7C",padding:"24px 0"}},"Skills you save appear here. Browse the verified skills to get started.")));}
 function StartView(p){var ph=useTypedPlaceholder(START_PH,!!p.draft);var _t=useState(null);var toast=_t[0],setToast=_t[1];
 return h("div",{style:{flex:1,overflowY:"auto",background:T.colorSurfaceSecondary}},
@@ -1186,9 +1311,9 @@ h(SkillsLibrary,{lib:p.lib,onApp:p.onApp,onToast:function(t){setToast(t);setTime
 toast?h("div",{style:{position:"fixed",left:"50%",bottom:32,transform:"translateX(-50%)",background:"#2A2A2A",color:"#FFF",fontSize:14,padding:"10px 16px",borderRadius:8,zIndex:50,animation:"fadeIn .2s ease both"}},toast+" isn't part of this prototype yet. Try VAT review."):null);}
 
 function ViewSwitch(p){var items=[{v:"chat",I:Ic.chat,l:"Chat view"},{v:"split",I:Ic.split,l:"Split view"},{v:"canvas",I:Ic.canvas,l:"Canvas view"}];
-return h("div",{style:{display:"flex",gap:2,padding:3,border:"1px solid "+T.colorBorderDark,borderRadius:8,background:"#FFFFFF"}},items.map(function(it){var on=p.view===it.v;var dis=p.disabled&&it.v!=="chat";
+return h("div",{style:{display:"flex",alignItems:"center",gap:4,height:32,boxSizing:"border-box",padding:"0 4px",border:"1px solid "+T.colorBorderDark,borderRadius:8,background:"#FFFFFF"}},items.map(function(it){var on=p.view===it.v;var dis=p.disabled&&it.v!=="chat";
 return h(Tooltip,{key:it.v,text:it.l},h("button",{type:"button","aria-label":it.l,disabled:dis,onClick:dis?undefined:function(){p.setView(it.v);},
-style:{width:34,height:30,border:"none",borderRadius:6,display:"inline-flex",alignItems:"center",justifyContent:"center",cursor:dis?"default":"pointer",background:on?T.colorSuccessBg:"transparent",color:on?T.colorBrandPrimary:dis?"#C4C4C4":"#2A2A2A"}},h(it.I,null)));}));}
+style:{width:28,height:24,padding:0,border:"none",borderRadius:4,display:"inline-flex",alignItems:"center",justifyContent:"center",cursor:dis?"default":"pointer",background:on?T.colorSuccessBg:"transparent",color:on?T.colorBrandPrimary:dis?"#C4C4C4":"#2A2A2A"}},h(it.I,null)));}));}
 
 function TabHeader(p){return h("div",{style:{height:56,flexShrink:0,display:"flex",alignItems:"center",gap:12,padding:"0 16px 0 24px",background:"#FFFFFF",boxShadow:"0 1px 0 "+T.colorBorderDark+", 0 4px 12px rgba(0,0,0,0.04)",position:"relative",zIndex:4}},
 h("span",{style:{fontSize:18,fontWeight:500,color:"#1F2024"}},p.title),p.period?h("span",{style:{fontSize:16,color:T.colorTextSecondary,animation:"fadeIn .3s ease both"}},p.period):null,
@@ -1278,7 +1403,7 @@ function answerQ3(v){setA({filed:v});push({type:"answered",pairs:[[Q3.q,v]]});pr
 function skipLate(){setA({late:false,lateLabel:"No, skip for now"});push({type:"answered",pairs:[[Q3.q,"Skipped, late claims left out of this review"]]});addLog("Late claims skipped for "+A.current.period);propose();}
 /* 6 → 7 */
 function propose(){setDock("busy");tm.later(250,function(){setStatus([TH]);});
-tm.later(1200,function(){thenStatus({kind:"creating",label:"Creating skill proposal"});});
+tm.later(1200,function(){thenStatus({kind:"creating",label:SCN.current==="schedule"?"Creating skill proposal":"Loading VAT review"});});
 tm.later(3000,function(){push({type:"stream",key:p.id+"-x"+seq.current,paras:SCN.current==="schedule"?S_EXPLAIN:EXPLAIN,after:"proposal"});setDock("busy");});}
 function onStreamDone(item){if(doneStreams.current[item.key])return;doneStreams.current[item.key]=true;if(item.thenItem){setItems(function(xs){return xs.concat([{type:item.thenItem,k:++seq.current}]);});}if(item.after)setDock(item.after);}
 /* 7 → 8 → 9 → 10 */
@@ -1292,7 +1417,8 @@ tm.later(t+700,function(){setRun(function(r){return Object.assign({},r,{collapse
 /* the split view opens once the summary has finished writing itself */
 function finishRun(){if(doneStreams.current.summary)return;doneStreams.current.summary=true;
 tm.later(500,function(){setReady(true);setView("split");setDock("next");meta({status:"done"});addLog(SCN.current==="schedule"?"Skill completed: schedule built, "+scheduleFindings(A.current).length+" suggestions":"Skill completed: 72 / 100, not ready to file","Mimo");});}
-function cancelWf(){setDock("busy");push({type:"stream",key:p.id+"-c"+seq.current,paras:["No problem, nothing has been run. Tell me what you'd like to change and I'll update the skill."],after:"default"});}
+function cancelWf(){setDock("busy");push({type:"stream",key:p.id+"-c"+seq.current,paras:SCN.current==="schedule"?["No problem, nothing has been run. Tell me what you'd like to change and I'll update the skill."]:["No problem, nothing has been run."],after:"default"});}
+function editWf(){setDock("busy");push({type:"stream",key:p.id+"-e"+seq.current,paras:["Sure. What would you like to change? You can adjust the period, add or drop checks, or change how findings are weighted. Your changes only apply to this run unless you save them to the skill."],after:"default"});}
 function stop(){tm.clear();items.forEach(function(x){if(x.type==="stream")doneStreams.current[x.key]=true;});setRun(function(r){return Object.assign({},r,{statuses:r.statuses.map(function(s){return s==="active"||s==="pending"?"stopped":s;})});});
 push({type:"note",text:"Stopped. Nothing has been changed in Xero."});setDock("default");meta({status:"stopped"});addLog("Stopped the run");}
 function sendDefault(){var t=draft.trim();if(!t)return;setDraft("");push({type:"user",text:t});meta({status:"active"});propose();}
@@ -1371,7 +1497,7 @@ h(Table,{cols:[{label:"Check",k:0,w:"1.6fr"},{label:"Result",k:1,w:"1fr"}],rows:
 h("p",{style:{margin:0,fontSize:16,lineHeight:"26px"}},h("b",{style:{fontWeight:600}},n+" findings")," need a decision. Resolving the 4 recodes and the duplicate lifts the score to ",h("b",{style:{fontWeight:600}},"97")," and clears the blocking check."),
 h(SubHead,null,"To confirm with the client"),
 h(Bullets,{muted:true,items:["One-off zero-rated purchase from Dalefoot Ingredients (£620.00)","£0.04 rounding difference on box 4","Neither counts as an anomaly"]}),
-h("div",null,h(ArtifactChip,{label:"VAT readiness canvas",open:view!=="chat",onToggle:function(){setView(view==="chat"?"split":"chat");}})),
+h("div",null,h(ArtifactChip,{label:"VAT review canvas",open:view!=="chat",onToggle:function(){setView(view==="chat"?"split":"chat");}})),
 promptsUsed?null:h("div",null,h("div",{style:{fontSize:16,lineHeight:"26px",color:"#2A2A2A",marginBottom:12}},"What do you want to do next?"),
 h("div",{style:{display:"flex",flexDirection:"column",alignItems:"flex-start",gap:4,marginLeft:-16}},["Show 10 largest transactions","Recode all suggested transactions"].map(function(t){
 return h(PromptBtn,{key:t,onClick:function(){setPromptsUsed(true);setCtext(t);setFocusKey(function(n){return n+1;});}},"\u201C"+t+"\u201D");})))];}
@@ -1383,7 +1509,7 @@ case "q2":return h(Questionnaire,{q:isS?SQ2:Q2,onAnswer:answerQ2});
 case "q3s":return h(Questionnaire,{q:SQ3,onAnswer:answerSQ3});
 case "upload":return h(UploadCard,{title:"Upload your prepayment schedule",hint:"Excel, CSV or PDF",sample:"Prepayment schedule FY26.xlsx",onFile:ownUploaded,onSkip:skipUpload,skipLabel:"Build it from the ledger instead"});
 case "free":return h(DateCard,{q:Q3,onSubmit:answerQ3,onSkip:skipLate});
-case "proposal":return h(ProposalCard,{answers:answers,onRun:runWf,onCancel:cancelWf,wf:isS?S_WF:null,steps:isS?sSteps(answers):null,desc:isS?sDescription(answers):null});
+case "proposal":return h(ProposalCard,{answers:answers,onRun:runWf,onEdit:editWf,onCancel:cancelWf,wf:isS?S_WF:null,steps:isS?sSteps(answers):null,desc:isS?sDescription(answers):null});
 case "default":return h(Composer,{value:draft,onChange:setDraft,onSend:sendDefault,placeholder:"Request changes or more info...",autoFocus:true});
 case "next":return h(Composer,{value:ctext,onChange:setCtext,onSend:sendNext,chips:chips,onRemoveChip:function(k){setChips(function(cs){return cs.filter(function(c){return c.key!==k;});});},
 placeholder:chips.length?(isS?"Add, ask for context or more...":"Recode, ask for context or more..."):"What action do you want to take next?",autoFocus:true,focusKey:focusKey});}
@@ -1462,10 +1588,10 @@ if(name==="dots")return v([2.5,10,17.5].map(function(x,k){return h("circle",{key
 if(name==="calculator")return v([h("path",Object.assign({key:1,d:"M30.5833 15.4167L21.4167 24.5833M23.0833 18.75V15.4167M21.4167 17.0833H24.75M27.25 22.9167H30.5833M22.5 27.5H29.5C30.9001 27.5 31.6002 27.5 32.135 27.2275C32.6054 26.9878 32.9878 26.6054 33.2275 26.135C33.5 25.6002 33.5 24.9001 33.5 23.5V16.5C33.5 15.0999 33.5 14.3998 33.2275 13.865C32.9878 13.3946 32.6054 13.0122 32.135 12.7725C31.6002 12.5 30.9001 12.5 29.5 12.5H22.5C21.0999 12.5 20.3998 12.5 19.865 12.7725C19.3946 13.0122 19.0122 13.3946 18.7725 13.865C18.5 14.3998 18.5 15.0999 18.5 16.5V23.5C18.5 24.9001 18.5 25.6002 18.7725 26.135C19.0122 26.6054 19.3946 26.9878 19.865 27.2275C20.3998 27.5 21.0999 27.5 22.5 27.5Z",transform:"translate(-16 -10)"},sp))]);
 return v([h("path",Object.assign({key:1,d:NAVP[name]},sp))]);}
 var ASSOC=[{l:"Collect documents",i:"fileQuestion"},{l:"Inbox",i:"inbox"},{l:"Reconcile",i:"checkVerified"},{l:"VAT review",i:"flag"},{l:"Adjustments",i:"switchHorizontal"},{l:"Profit & Loss",i:"calculator"},{l:"Balance sheet",i:"rows"}];
-var PAST_RECENTS=[{label:"VAT readiness check, Apr 26 – Jun 26",done:true},{label:"Bank reconciliation, HSBC Business"},{label:"Prepayments, Sep 26",done:true},
-{label:"Payroll control, Sep 26",status:"running"},{label:"Accruals sweep, Aug 26",done:true},{label:"Miscodings, Q2 26",status:"stopped"},
+var PAST_RECENTS=[{label:"VAT review, Apr 26 – Jun 26",done:true},{label:"Bank reconciliation, HSBC Business"},{label:"Prepayments, Sep 26",done:true},
+{label:"Payroll control, Sep 26",status:"stopped"},{label:"Accruals sweep, Aug 26",done:true},{label:"Miscodings, Q2 26",status:"stopped"},
 {label:"Fixed asset register, FY 26"},{label:"P&L review, Sep 26",status:"running"},{label:"Deferred revenue, Aug 26",done:true},
-{label:"Bank reconciliation, Barclays Credit Card",status:"stopped"},{label:"VAT readiness check, Jan 26 – Mar 26",done:true}];
+{label:"Bank reconciliation, Barclays Credit Card",status:"stopped"},{label:"VAT review, Jan 26 – Mar 26",done:true}];
 /* status icon for a recent workflow: done tick, running spinner, stopped alert, otherwise history */
 function recentIcon(it){var box=function(c){return h("span",{style:{width:20,height:20,display:"inline-flex",alignItems:"center",justifyContent:"center",flexShrink:0}},c);};
 if(it.done)return NI("tick");if(it.status==="running")return box(h(Ic.spinner,{s:16}));if(it.status==="stopped")return box(Ic.info(T.colorError));return NI("clock");}
@@ -1480,9 +1606,9 @@ function MainMenu(p){var _o=useState({recents:true,saved:true,assoc:true,pay:fal
 function tog(k){setOpen(function(o){var n=Object.assign({},o);n[k]=!n[k];return n;});}
 var recents=buildRecents(p.tabs);
 var saved=(p.lib||[]).map(function(w){return{label:w.name,fresh:w.fresh};});
-function list(items,key,icon){var vis=items.slice(0,3);
+function list(items,key,icon){var vis=items.slice(0,5);
 return h(Fragment,null,vis.map(function(it,i){return h(MenuRow,{key:key+i,label:it.label,icon:key==="r"?recentIcon(it):NI(icon),onClick:function(){if(it.id)p.onSelect(it.id);},right:it.fresh?h("span",{style:{fontSize:11,fontWeight:600,color:T.colorBrandPrimary}},"New"):null});}),
-items.length>3?h(MenuRow,{key:key+"more",label:"View more",icon:NI("dots"),active:p.page==="history",onClick:function(){p.onPage("history");}}):null);}
+items.length>5?h(MenuRow,{key:key+"more",label:"View more",icon:NI("dots"),active:p.page==="history",onClick:function(){p.onPage("history");}}):null);}
 return h("div",{style:{width:p.open?320:0,flexShrink:0,overflow:"hidden",transition:"width .32s cubic-bezier(0.32,0.72,0,1)",borderRight:p.open?"1px solid "+T.colorBorderDark:"none",background:"#FFFFFF"}},
 h("div",{style:{width:320,height:"100%",display:"flex",flexDirection:"column"}},
 h("div",{style:{flex:1,minHeight:0,overflowY:"auto"}},
@@ -1492,10 +1618,9 @@ h("span",{style:{width:28,height:28,borderRadius:6,background:"#F5F5F5",display:
 h("div",{style:{height:1,background:"#ECECEC",margin:"16px 0 24px"}}),
 h("div",{style:{padding:"0 16px 24px"}},
 h(MenuRow,{label:"New chat",icon:h("span",{style:{width:20,height:20,borderRadius:4,background:T.colorBrandPrimary,color:"#FFFFFF",display:"inline-flex",alignItems:"center",justifyContent:"center"}},h(Ic.plus,{s:16})),onClick:p.onNew}),
+[{l:"Skills",i:"star03",k:"skills"},{l:"Artifacts",i:"file07",k:"artifacts"},{l:"Files",i:"folder",k:"files"},{l:"Client context",i:"data",k:"context"}].map(function(a){return h(MenuRow,{key:a.l,label:a.l,icon:NI(a.i),active:p.page===a.k,onClick:function(){p.onPage(a.k);}});}),
 MenuRule(),
 h(MenuHead,{label:"Recents",open:open.recents,onToggle:function(){tog("recents");}}),open.recents?list(recents,"r","clock"):null,
-MenuRule(),
-h(MenuHead,{label:"Associate",open:open.assoc,onToggle:function(){tog("assoc");}}),open.assoc?[{l:"Skills",i:"star03",k:"skills"},{l:"Artifacts",i:"file07",k:"artifacts"},{l:"Files",i:"folder",k:"files"},{l:"Client context",i:"data",k:"context"}].map(function(a){return h(MenuRow,{key:a.l,label:a.l,icon:NI(a.i),active:p.page===a.k,onClick:function(){p.onPage(a.k);}});}):null,
 MenuRule(),
 h(MenuRow,{label:"Settings",icon:NI("settings02")}),h(MenuRow,{label:"Training material",icon:NI("grad")}))),
 /* pinned to the bottom */
@@ -1539,20 +1664,20 @@ h("span",{style:{fontSize:14,lineHeight:"22px",fontWeight:500,color:"#2A2A2A",wh
 h("div",{style:{display:"flex",alignItems:"center",gap:8,minWidth:0,overflow:"hidden"}},p.tabs.map(function(t){return h(TabPill,{key:t.id,t:t,active:t.id===p.active,onSelect:function(){p.onSelect(t.id);},onClose:function(){p.onClose(t.id);}});})),
 h(IconBtn,{title:"New chat",onClick:p.onNew,style:{marginLeft:4}},h(Ic.plus,{s:20})),
 h("div",{style:{flex:1}}),
-h(Tooltip,{text:syncAgo()},h("button",Object.assign({type:"button",onClick:doSync,style:{display:"inline-flex",alignItems:"center",gap:8,height:32,padding:"0 10px",border:"none",borderRadius:8,background:"transparent",fontFamily:"inherit",fontSize:14,fontWeight:500,color:"#2A2A2A",cursor:"pointer"}},hover({background:"transparent"},{background:"rgba(0,0,0,0.06)"})),
-sync==="busy"?h(Ic.sync,{spin:true}):sync==="done"?h("span",{style:{color:T.colorBrandPrimary}},h(Ic.check,{s:16})):null,sync==="busy"?"Syncing…":sync==="done"?"Synced just now":"Sync with Xero")));}
+h("button",Object.assign({type:"button",onClick:p.onLedger,"aria-pressed":!!p.ledgerOpen,style:{display:"inline-flex",alignItems:"center",gap:8,height:32,boxSizing:"border-box",padding:"0 16px 0 12px",border:"1px solid "+(p.ledgerOpen?T.colorBrandPrimary:T.colorBorderMedium),borderRadius:8,background:"#FFFFFF",fontFamily:"inherit",fontSize:14,fontWeight:500,color:"#2A2A2A",cursor:"pointer",transition:"border-color .15s"}},p.ledgerOpen?{}:hover({background:"#FFFFFF"},{background:"#FAFAFA"})),NI("book",20),"Ledger"));}
 
 /* ══════════════ APP ══════════════ */
 var TAB_N=1;
 function newTab(){return{id:"t"+(TAB_N++),label:"New chat",status:"idle"};}
 function App(){var first=useMemo(newTab,[]);var _t=useState([first]);var tabs=_t[0],setTabs=_t[1];var _a=useState(first.id);var active=_a[0],setActive=_a[1];
-var _pg=useState(null);var page=_pg[0],setPage=_pg[1];var _o=useState({});var overlay=_o[0],setOverlay=_o[1];var _nv=useState(null);var panel=_nv[0],setPanel=_nv[1];
-var _lb=useState([{name:"Month-end bank reconciliation"},{name:"Accruals sweep"},{name:"Director\'s loan review"},{name:"Supplier statement recs"},{name:"Payroll control check"},{name:"Fixed asset additions"},{name:"Deferred income release"},{name:"Aged debtors review"},{name:"CIS deductions check"},{name:"Intercompany balances"},{name:"Suspense account clear-down"},{name:"Management accounts pack"}]);var lib=_lb[0],setLib=_lb[1];
+var _pg=useState(null);var page=_pg[0],setPageRaw=_pg[1];var _lg=useState(false);var ledger=_lg[0],setLedger=_lg[1];function setPage(v){setPageRaw(v);setLedger(false);}var _o=useState({});var overlay=_o[0],setOverlay=_o[1];var _nv=useState(null);var panel=_nv[0],setPanel=_nv[1];
+var _lb=useState([{name:"VAT review"},{name:"Prepayments"},{name:"P&L review"},{name:"Month-end bank reconciliation"},{name:"Accruals sweep"},{name:"Director\'s loan review"},{name:"Supplier statement recs"},{name:"Payroll control check"},{name:"Fixed asset additions"},{name:"Deferred income release"},{name:"Aged debtors review"},{name:"CIS deductions check"}]);var lib=_lb[0],setLib=_lb[1];
 function toggleLib(n){setLib(function(l){return l.some(function(w){return w.name===n;})?l.filter(function(w){return w.name!==n;}):[{name:n,sub:"Saved "+TODAY,fresh:true}].concat(l);});}
 function onMeta(id,o){setTabs(function(ts){return ts.map(function(t){return t.id===id?Object.assign({},t,o):t;});});}
 function onOverlay(id,v){setOverlay(function(m){if(!!m[id]===v)return m;var n=Object.assign({},m);n[id]=v;return n;});}
 function add(){var t=newTab();setTabs(function(ts){return ts.concat([t]);});setActive(t.id);setPage(null);}
 function pick(id){setActive(id);setPage(null);}
+function toggleLedger(){if(ledger){setLedger(false);}else{setPageRaw(null);setLedger(true);}}
 function startSkill(prompt){var t=Object.assign(newTab(),{startPrompt:prompt});setTabs(function(ts){return ts.concat([t]);});setActive(t.id);setPage(null);}
 function demo(){var t=Object.assign(newTab(),{auto:true});setPanel(null);setTabs(function(ts){var cur=ts.filter(function(x){return x.id===active;})[0];var keep=ts.filter(function(x){return !(x.id===active&&x.label==="New chat"&&x.status==="idle");});return keep.concat([t]);});setActive(t.id);}
 var demoRef=useRef(demo);demoRef.current=demo;
@@ -1562,11 +1687,12 @@ window.addEventListener("keydown",k,true);return function(){window.removeEventLi
 function close(id){setTabs(function(ts){var rest=ts.filter(function(t){return t.id!==id;});if(!rest.length){var t=newTab();setActive(t.id);return[t];}
 if(id===active)setActive(rest[rest.length-1].id);return rest;});}
 return h("div",{style:{height:"100vh",display:"flex",flexDirection:"column",background:T.colorSurfaceSecondary,overflow:"hidden"}},
-h(TopBar,{tabs:tabs,active:page?null:active,onSelect:pick,onClose:close,onNew:add,lib:lib,menuOpen:panel==="menu",onMenu:function(){setPanel(panel==="menu"?null:"menu");},bellOpen:panel==="bell",onBell:function(){setPanel(panel==="bell"?null:"bell");}}),
+h(TopBar,{tabs:tabs,active:(page||ledger)?null:active,onSelect:pick,ledgerOpen:ledger,onLedger:toggleLedger,onClose:close,onNew:add,lib:lib,menuOpen:panel==="menu",onMenu:function(){setPanel(panel==="menu"?null:"menu");},bellOpen:panel==="bell",onBell:function(){setPanel(panel==="bell"?null:"bell");}}),
 h("div",{style:{flex:1,minHeight:0,display:"flex"}},
 h(MainMenu,{open:panel==="menu",tabs:tabs,lib:lib,onSelect:pick,onNew:add,page:page,onPage:setPage}),h(NotifPanel,{open:panel==="bell"}),
+ledger?h("div",{key:"ledger",style:{flex:1,minWidth:0,minHeight:0,display:"flex",flexDirection:"column"}},h(LedgerView,null)):null,
 page?h("div",{key:"pg-"+page,style:{flex:1,minWidth:0,minHeight:0,display:"flex",flexDirection:"column"}},h(PageView,{page:page,tabs:tabs,lib:lib,onPick:pick,onNew:add,onApp:startSkill})):null,
-h("div",{style:{flex:1,minWidth:0,minHeight:0,display:page?"none":"flex",flexDirection:"column"}},
+h("div",{style:{flex:1,minWidth:0,minHeight:0,display:(page||ledger)?"none":"flex",flexDirection:"column"}},
 tabs.map(function(t){return h(Conversation,{key:t.id,id:t.id,auto:!!t.auto,startPrompt:t.startPrompt,active:t.id===active,tabs:tabs,onSelect:pick,onPage:setPage,onBegin:function(){setPanel(null);},onMeta:onMeta,onOverlay:onOverlay,lib:lib,onToggleLib:toggleLib});}))));}
 
 ReactDOM.createRoot(document.getElementById("root")).render(h(App,null));
