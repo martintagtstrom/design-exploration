@@ -1092,11 +1092,35 @@ var body=folder?((data[folder]||[]).length?h(ListCard,null,data[folder].map(func
 :h(ListCard,null,Object.keys(data).map(function(k,i){var n=data[k].length;return h(ListRow,{key:k,first:i===0,strong:true,icon:NI("folder"),label:k,meta:n+(n===1?" file":" files"),onClick:function(){setFolder(k);}});}));
 return h(PageShell,{title:"Files",desc:"This client's files. Mimo can read everything here in a chat, and saves the files it makes for you here.",left:crumbs,right:buttons},body);}
 
-function ContextPage(p){return h(PageShell,{title:"Client context",desc:"What Mimo knows about "+CLIENT+". It's used in every chat and skill for this client.",left:"Business details",right:h(PrimaryBtn,{style:{padding:"0 16px 0 12px"}},h(Ic.plus,{s:20}),"Add context")},
-h(ListCard,{mb:32},CONTEXT_FACTS.map(function(r,i){return h("div",{key:r[0],style:{display:"grid",gridTemplateColumns:"200px 1fr",borderTop:i?"1px solid "+T.colorBorderLight:"none"}},
-h("div",{style:{padding:"16px 20px",fontSize:14,lineHeight:"22px",color:"#7C7C7C"}},r[0]),h("div",{style:{padding:"16px 20px",fontSize:14,lineHeight:"22px",color:"#2A2A2A",borderLeft:"1px solid "+T.colorBorderLight}},r[1]));})),
-h("div",{style:{fontSize:14,lineHeight:"22px",fontWeight:600,color:"#2A2A2A",margin:"0 0 16px"}},"Rules and notes"),
-h(ListCard,null,CONTEXT_RULES.map(function(r,i){return h(ListRow,{key:i,first:i===0,icon:NI("book"),label:r.t,sub:"Added by "+r.by+" · "+r.d,actions:rowActions(false)});})));}
+var PRACTICE_CTX=[
+{t:"Prepayments under £250 are expensed in full",by:"Clifton & Harrow",d:"12 Jan 26"},
+{t:"Ask before posting any journal over £10,000",by:"Clifton & Harrow",d:"12 Jan 26"},
+{t:"Reconcile supplier statements every quarter",by:"Clifton & Harrow",d:"03 Mar 26"}];
+var CLIENT_CTX0=[
+{t:"Prepayment threshold is £500",by:"Laura Bennett",d:"14 Apr 26",over:true},
+{t:"Food wholesale on Xero, VAT filed quarterly (Mar, Jun, Sep, Dec), year end 31 March",by:"Laura Bennett",d:"14 Apr 26"}].concat(CONTEXT_RULES);
+function CtxSection(p){return h("div",{style:{marginTop:p.first?8:48}},
+h("div",{style:{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:24,marginBottom:16}},
+h("div",{style:{minWidth:0}},h("div",{style:{fontSize:18,lineHeight:"26px",fontWeight:500,color:"#2A2A2A"}},p.title),h("div",{style:{marginTop:4,fontSize:14,lineHeight:"22px",color:"#7C7C7C"}},p.desc)),
+p.action||null),
+p.children);}
+function CtxEmpty(p){return h("div",{style:{padding:"16px 16px",border:"1px dashed "+T.colorBorderDark,borderRadius:12,background:"#FFFFFF",fontSize:14,lineHeight:"22px",color:"#7C7C7C"}},p.children);}
+function CtxRow(p){var r=p.r;return h("div",{style:{display:"flex",alignItems:"center",gap:12,minHeight:64,padding:"10px 12px 10px 16px",boxSizing:"border-box",borderTop:p.first?"none":"1px solid "+T.colorBorderLight}},
+h("div",{style:{flex:1,minWidth:0}},h("div",{style:{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",fontSize:14,lineHeight:"22px",color:"#2A2A2A"}},r.t,r.over?h(Badge,{h:22},"Overrides practice"):null),
+h("div",{style:{fontSize:13,lineHeight:"20px",color:"#9D9D9E"}},(p.practice?"Set by ":"Added by ")+r.by+" · "+r.d)),
+h(IconBtn,{title:"More"},h(Ic.kebab,null)));}
+function ContextPage(p){var _c=useState(CLIENT_CTX0);var items=_c[0],setItems=_c[1];var _a=useState(false);var adding=_a[0],setAdding=_a[1];var _v=useState("");var val=_v[0],setVal=_v[1];
+function save(){var t=val.trim();if(t)setItems(function(xs){return [{t:t,by:USER.name,d:TODAY}].concat(xs);});setVal("");setAdding(false);}
+var addBtn=h("button",Object.assign({type:"button",onClick:function(){setAdding(true);},style:{flexShrink:0,display:"inline-flex",alignItems:"center",gap:6,height:32,padding:"0 12px 0 10px",border:"none",borderRadius:8,background:"#F0F0F0",fontFamily:"inherit",fontSize:14,fontWeight:500,color:"#2A2A2A",cursor:"pointer"}},hover({background:"#F0F0F0"},{background:"#E8E8E8"})),h(Ic.plus,{s:18}),"Add context");
+var input=adding?h("div",{style:{display:"flex",alignItems:"center",gap:8,padding:"12px 12px 12px 16px",borderBottom:items.length?"1px solid "+T.colorBorderLight:"none"}},
+h("input",{autoFocus:true,value:val,placeholder:"For example: rent is billed a quarter in advance",onChange:function(e){setVal(e.target.value);},onKeyDown:function(e){if(e.key==="Enter")save();if(e.key==="Escape"){setVal("");setAdding(false);}},
+style:{flex:1,minWidth:0,height:36,border:"1px solid "+T.colorBorderMedium,borderRadius:8,padding:"0 12px",fontFamily:"inherit",fontSize:14,color:"#2A2A2A",outline:"none"}}),
+h(PrimaryBtn,{h:36,onClick:save},"Save"),h(SecondaryBtn,{h:36,onClick:function(){setVal("");setAdding(false);}},"Cancel")):null;
+return h(PageShell,{title:"Context",desc:"What Mimo knows about this client: your practice's policies, which hold for every client, and this client's own, which Mimo follows where the two disagree. Mimo reads it at the start of every chat and saves what you tell it here too."},
+h(CtxSection,{first:true,title:"From the practice",desc:"Set by your practice for all of its clients. To apply something else to this client, add it below."},
+PRACTICE_CTX.length?h(ListCard,null,PRACTICE_CTX.map(function(r,i){return h(CtxRow,{key:i,r:r,first:i===0,practice:true});})):h(CtxEmpty,null,"Your practice hasn't set any context.")),
+h(CtxSection,{title:"This client",desc:"True for this client only. Where one disagrees with a practice item, Mimo follows this one.",action:addBtn},
+items.length||adding?h(ListCard,null,input,items.map(function(r,i){return h(CtxRow,{key:r.t+i,r:r,first:i===0&&!adding});})):h(CtxEmpty,null,"Nothing for this client yet.")));}
 
 function PageView(p){var _t=useState(null);var toast=_t[0],setToast=_t[1];
 function onToast(t){setToast(t);setTimeout(function(){setToast(null);},2200);}
@@ -1623,7 +1647,7 @@ h(MenuRow,{label:"New chat",icon:h("span",{style:{width:20,height:20,borderRadiu
 MenuRule(),
 h(MenuHead,{label:"Associate",open:open.assoc,onToggle:function(){tog("assoc");}}),open.assoc?ASSOC.map(function(a){return h(MenuRow,{key:a.l,label:a.l,icon:NI(a.i),onClick:function(){if(p.onSkill)p.onSkill(a.sk);}});}):null,
 MenuRule(),
-h(MenuHead,{label:"Client resources",open:open.res,onToggle:function(){tog("res");}}),open.res?[{l:"Skills",i:"star03",k:"skills"},{l:"Artifacts",i:"file07",k:"artifacts"},{l:"Files",i:"folder",k:"files"},{l:"Client context",i:"data",k:"context"}].map(function(a){return h(MenuRow,{key:a.l,label:a.l,icon:NI(a.i),active:p.page===a.k,onClick:function(){p.onPage(a.k);}});}):null,
+h(MenuHead,{label:"Client resources",open:open.res,onToggle:function(){tog("res");}}),open.res?[{l:"Skills",i:"star03",k:"skills"},{l:"Artifacts",i:"file07",k:"artifacts"},{l:"Files",i:"folder",k:"files"},{l:"Context",i:"data",k:"context"}].map(function(a){return h(MenuRow,{key:a.l,label:a.l,icon:NI(a.i),active:p.page===a.k,onClick:function(){p.onPage(a.k);}});}):null,
 MenuRule(),
 h(MenuHead,{label:"Recents",open:open.recents,onToggle:function(){tog("recents");}}),open.recents?list(recents,"r","clock"):null,
 MenuRule(),
