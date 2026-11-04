@@ -1721,9 +1721,8 @@ var _ls=useState(function(){return Date.now()-14*60000;});var lastSync=_ls[0],se
 function doSync(){if(sync!=="idle")return;setSync("busy");setTimeout(function(){setSync("done");setLastSync(Date.now());setTimeout(function(){setSync("idle");},2200);},1600);}
 function syncAgo(){var m=Math.floor((Date.now()-lastSync)/60000);return m<1?"Last synced just now":"Last synced "+m+(m===1?" minute":" minutes")+" ago";}
 return h("div",{style:{height:48,flexShrink:0,display:"flex",alignItems:"center",gap:6,padding:"0 16px 0 12px",background:"#FFFFFF",borderBottom:"1px solid "+T.colorBorderDark}},
-h(IconBtn,{title:"Menu",onClick:p.onMenu,style:p.menuOpen?{background:"rgba(0,0,0,0.06)"}:{}},h(Ic.menu,null)),
-h(IconBtn,{title:"Notifications",onClick:p.onBell,style:Object.assign({position:"relative"},p.bellOpen?{background:"rgba(0,0,0,0.06)"}:{})},h(Ic.bell,null),h("span",{style:{position:"absolute",top:6,right:7,width:7,height:7,borderRadius:4,background:T.colorBrandPrimary,border:"1.5px solid #FFFFFF"}})),
-h("span",{style:{fontSize:14,lineHeight:"22px",fontWeight:500,color:"#2A2A2A",whiteSpace:"nowrap",marginLeft:2}},CLIENT),h("div",{style:{width:1,height:24,background:T.colorBorderHover,margin:"0 8px"}}),
+h("button",Object.assign({type:"button",onClick:p.onMenu,title:p.menuOpen?"Close menu":"Open menu","aria-expanded":!!p.menuOpen,style:{display:"inline-flex",alignItems:"center",gap:10,height:32,padding:"0 10px 0 6px",border:"none",borderRadius:8,background:p.menuOpen?"rgba(0,0,0,0.06)":"transparent",fontFamily:"inherit",cursor:"pointer",color:"#2A2A2A"}},p.menuOpen?{}:hover({background:"transparent"},{background:"rgba(0,0,0,0.04)"})),
+h(Ic.menu,null),h("span",{style:{fontSize:14,lineHeight:"22px",fontWeight:500,whiteSpace:"nowrap"}},CLIENT)),h("div",{style:{width:1,height:24,background:T.colorBorderHover,margin:"0 8px"}}),
 h("div",{style:{display:"flex",alignItems:"center",gap:8,minWidth:0,overflow:"hidden"}},p.tabs.map(function(t){return h(TabPill,{key:t.id,t:t,active:t.id===p.active,onSelect:function(){p.onSelect(t.id);},onClose:function(){p.onClose(t.id);}});})),
 h(IconBtn,{title:"New chat",onClick:p.onNew,style:{marginLeft:4}},h(Ic.plus,{s:20})),
 h("div",{style:{flex:1}}),
