@@ -486,10 +486,11 @@ function wfDescription(a){return "When you run it, this will check every transac
 function wfSteps(a){return WF.steps.filter(function(s){return !s.late||a.late;});}
 
 var EXPLAIN=[
-"I'll use your **VAT review** skill for this. **Nothing has been checked yet**, so here's what happens when you run it.",
-"I'll go through every transaction in the return and look for **miscodings and wrong VAT rates** before you file.",
-"## Checks I'll run\n- **Invoice scanning**: reads each bill and compares the VAT on the document with the VAT coded\n- **Historical patterns**: flags suppliers coded differently from how they're usually coded\n- **HMRC rules**: exempt, zero-rated and reduced rate supplies, reverse charge and valid VAT invoices\n- **Duplicates**: bills posted more than once",
-"Every finding comes with a suggested correction. Nothing changes in Xero until you approve it."];
+"I'll use your **VAT review** skill for this. **Nothing has been checked yet**, so here's what it does when you run it."];
+function wfMd(a){return [
+"Looks for **miscodings and wrong VAT rates** in the "+a.period+" return before you file, and suggests a correction for every finding.",
+"## What it checks\n- **Invoices**: the VAT on each bill against the VAT coded\n- **History**: suppliers coded differently from how they usually are\n- **HMRC rules**: exempt, zero-rated and reduced rates, reverse charge and valid VAT invoices\n- **Duplicates**: bills posted more than once",
+(a.late?"Late claims received since "+a.filed+" are included.":"Late claims are left out of this run.")+" Nothing changes in Xero until you approve it."];}
 
 /* Six findings carried over from the VAT review flow (dates moved into Jul–Sep 26),
    plus the late claim, which only exists when late claims are in scope. */
@@ -744,8 +745,8 @@ var head=h("div",null,h("div",{style:{fontSize:16,lineHeight:"26px",fontWeight:5
 h("div",{style:{fontSize:16,lineHeight:"26px",color:"#9D9D9E"}},W.sub));
 if(p.collapsed)return h("div",{style:cardStyle({boxShadow:"none",animation:"fadeIn .3s ease both"})},head);
 return h("div",{style:cardStyle({animation:"dockIn .35s cubic-bezier(.16,1,.3,1) both"})},head,
-h("div",{style:{fontSize:16,lineHeight:"26px",color:"#2A2A2A",margin:"20px 0 20px"}},p.desc||wfDescription(a)),
-h("div",null,steps.map(function(s,i){return h(Fragment,{key:i},
+W.verified&&!p.steps?h("div",{style:{margin:"20px 0 0"}},h(Paras,{paras:wfMd(a)})):h("div",{style:{fontSize:16,lineHeight:"26px",color:"#2A2A2A",margin:"20px 0 20px"}},p.desc||wfDescription(a)),
+W.verified&&!p.steps?null:h("div",null,steps.map(function(s,i){return h(Fragment,{key:i},
 h("div",{style:{display:"flex",alignItems:"flex-start",gap:12}},
 h("span",{style:{width:24,height:24,marginTop:1,borderRadius:"50%",background:"#ECECEC",color:"#545453",fontSize:13,fontWeight:500,display:"inline-flex",alignItems:"center",justifyContent:"center",flexShrink:0}},i+1),
 h("div",{style:{fontSize:16,lineHeight:"26px"}},h("span",{style:{fontWeight:500,color:"#2A2A2A"}},s.name),s.verified?h(VerifiedBadge,null):null,h("span",{style:{color:"#9D9D9E"}},"  "+s.desc))),
