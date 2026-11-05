@@ -447,9 +447,9 @@ return h("div",{style:{display:"flex",alignItems:"center"}},show.map(function(c,
 more>0?h("span",{style:{marginLeft:-8,height:28,minWidth:28,padding:"0 6px",boxSizing:"border-box",border:"2px solid #FFFFFF",borderRadius:14,background:T.colorInfoBg,color:T.colorInfo,fontSize:12,fontWeight:600,display:"inline-flex",alignItems:"center",justifyContent:"center"}},"+"+more):null);}
 function Shimmer(p){return h("span",{className:"shimmer"},p.children);}
 function Tooltip(p){var _s=useState(null);var pos=_s[0],setPos=_s[1];var ref=useRef(null);var tm=useRef(null);
-return h("span",{ref:ref,style:{display:"inline-flex"},onMouseEnter:function(){tm.current=setTimeout(function(){if(!ref.current)return;var r=ref.current.getBoundingClientRect();setPos({x:r.left+r.width/2,y:r.bottom});},350);},
+return h("span",{ref:ref,style:Object.assign({display:"inline-flex"},p.block?{display:"flex",width:"100%"}:{}),onMouseEnter:function(){tm.current=setTimeout(function(){if(!ref.current)return;var r=ref.current.getBoundingClientRect();setPos({x:r.left+r.width/2,y:r.bottom,t:r.top,l:p.alignLeft?r.left+(p.offsetX||0):null,above:!!p.above});},350);},
 onMouseLeave:function(){clearTimeout(tm.current);setPos(null);}},p.children,
-pos?ReactDOM.createPortal(h("div",{style:{position:"fixed",left:pos.x>window.innerWidth-180?"auto":pos.x,right:pos.x>window.innerWidth-180?8:"auto",top:pos.y+8,transform:pos.x>window.innerWidth-180?"none":"translateX(-50%)",background:"#2A2A2A",color:"#FFFFFF",fontSize:14,lineHeight:"20px",padding:"7px 10px",borderRadius:8,whiteSpace:"nowrap",zIndex:9999,pointerEvents:"none"}},p.text),document.body):null);}
+pos?ReactDOM.createPortal(h("div",{style:pos.l!=null?{position:"fixed",left:pos.l,top:pos.above?pos.t+10:pos.y+6,transform:pos.above?"translateY(-100%)":"none",fontWeight:pos.above?500:400,background:"#2A2A2A",color:"#FFFFFF",fontSize:14,lineHeight:"20px",padding:"7px 10px",borderRadius:8,whiteSpace:"nowrap",zIndex:9999,pointerEvents:"none"}:{position:"fixed",left:pos.x>window.innerWidth-180?"auto":pos.x,right:pos.x>window.innerWidth-180?8:"auto",top:pos.y+8,transform:pos.x>window.innerWidth-180?"none":"translateX(-50%)",background:"#2A2A2A",color:"#FFFFFF",fontSize:14,lineHeight:"20px",padding:"7px 10px",borderRadius:8,whiteSpace:"nowrap",zIndex:9999,pointerEvents:"none"}},p.text),document.body):null);}
 
 /* words appear one at a time; finished text is remembered so tab switches never replay it */
 var STREAMED={};
@@ -913,18 +913,19 @@ h(Table,{cols:[{label:"Box",k:"box",w:"64px"},{label:"Description",k:"label",w:"
 
 function txKey(d){var M={Jan:"01",Feb:"02",Mar:"03",Apr:"04",May:"05",Jun:"06",Jul:"07",Aug:"08",Sep:"09",Oct:"10",Nov:"11",Dec:"12"};var q=String(d||"").split(" ");return (q[2]||"")+(M[q[1]]||"00")+(q[0]||"");}
 function TxTable(p){var _s=useState(true);var asc=_s[0],setAsc=_s[1];var _x=useState({});var sel=_x[0],setSel=_x[1];var _o=useState(false);var openOnly=_o[0],setOpenOnly=_o[1];
-var stOf=function(f){return p.state[f.id]||"open";};
-var rows=p.findings.filter(function(f){return !openOnly||stOf(f)==="open";}).slice().sort(function(a,b){var x=txKey(a.date),y=txKey(b.date);return asc?(x<y?-1:x>y?1:0):(x<y?1:x>y?-1:0);});
+var stOf=function(f){return f.clean?"clean":(p.state[f.id]||"open");};
+var all=p.findings.concat(CLEAN_TX);
+var rows=all.filter(function(f){return !openOnly||stOf(f)==="open";}).slice().sort(function(a,b){var x=txKey(a.date),y=txKey(b.date);return asc?(x<y?-1:x>y?1:0):(x<y?1:x>y?-1:0);});
 var COLS="44px 112px 190px 130px 220px 124px 124px 190px 124px";var minW=1258;
 var B="1px solid "+T.colorBorderLight;
 var cellS=function(o){return Object.assign({padding:"9px 16px",fontSize:14,lineHeight:"22px",color:"#2A2A2A",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",borderLeft:B,minWidth:0},o||{});};
 var head=["","Date","Contact","Reference","Account","Net amount","VAT amount","VAT rate","Status"];
 var cb=function(on,fn){return h("span",{onClick:function(e){e.stopPropagation();fn();},style:{width:16,height:16,borderRadius:4,border:"1px solid "+(on?T.colorBrandPrimary:"#D4D4D4"),background:on?T.colorBrandPrimary:"#FFFFFF",display:"inline-flex",alignItems:"center",justifyContent:"center",cursor:"pointer",color:"#FFFFFF"}},on?h(Ic.check,{s:12}):null);};
-var status=function(f){var st=stOf(f);return st==="applied"?h(Badge,{v:"success",h:24},actionOf(f).done):st==="ignored"?h(Badge,{h:24},"Ignored"):st==="acknowledged"?h(Badge,{v:"success",h:24},"Resolved"):h(Badge,{v:"warning",h:24},"Open");};
+var status=function(f){var st=stOf(f);return st==="clean"?h(Badge,{v:"info",h:24},"Passed"):st==="applied"?h(Badge,{v:"success",h:24},actionOf(f).done):st==="ignored"?h(Badge,{h:24},"Ignored"):st==="acknowledged"?h(Badge,{v:"success",h:24},"Resolved"):h(Badge,{v:"warning",h:24},"Open");};
 var nOpen=p.findings.filter(function(f){return stOf(f)==="open";}).length;
 return h("div",{style:{border:"1px solid "+T.colorBorderDark,borderRadius:8,background:"#FFFFFF",display:"flex",flexDirection:"column",overflow:"hidden"}},
-h("div",{style:{display:"flex",alignItems:"center",gap:8,height:52,padding:"0 20px",borderBottom:B,flexShrink:0}},h("span",{style:{fontSize:14,fontWeight:500,color:"#2A2A2A"}},openOnly?"Open findings":"Transactions with findings"),
-h("span",{style:{flex:1}}),h("span",{style:{fontSize:13,color:"#7C7C7C"}},rows.length+" of "+p.findings.length+" transactions · "+nOpen+" open")),
+h("div",{style:{display:"flex",alignItems:"center",gap:8,height:52,padding:"0 20px",borderBottom:B,flexShrink:0}},h("span",{style:{fontSize:14,fontWeight:500,color:"#2A2A2A"}},openOnly?"Open findings":"Transactions in this return"),
+h("span",{style:{flex:1}}),h("span",{style:{fontSize:13,color:"#7C7C7C"}},rows.length+" of "+all.length+" transactions · "+p.findings.length+" with findings · "+nOpen+" open")),
 h("div",{style:{display:"flex",alignItems:"center",gap:8,padding:"8px 14px",borderBottom:B,flexWrap:"wrap",flexShrink:0}},
 h(LChip,{on:true,label:"Sort",value:"Date, "+(asc?"ascending":"descending"),onClick:function(){setAsc(!asc);}}),
 openOnly?h(LChip,{on:true,label:"Status",value:"Open",onClear:function(){setOpenOnly(false);}}):h(LChip,{value:"Status",onClick:function(){setOpenOnly(true);}}),
@@ -1008,6 +1009,55 @@ h("div",{style:{display:"flex",justifyContent:"flex-end",marginTop:16}},h("div",
 h("div",{style:{display:"flex",justifyContent:"space-between",fontSize:14,fontWeight:700,color:"#1B2A4A",borderTop:"1px solid "+T.colorBorderDark,paddingTop:8,marginTop:4}},h("span",null,"Total due"),h("span",null,v.total)))),
 v.terms?h("div",{style:{marginTop:"auto",paddingTop:20,borderTop:"1px solid "+T.colorBorderLight,fontSize:12,color:T.colorTextSecondary,lineHeight:"18px"}},h("span",{style:{fontWeight:600,color:"#2A2A2A"}},"Payment. "),v.terms):null);}
 
+
+/* ══════════════ VAT CHECKS + HMRC RULE (drawer card) ══════════════ */
+var VAT_CHECKS=[
+["attach","Attachment","Every transaction that claims VAT has a document attached."],
+["invoice","Valid VAT invoice","The attached document is a proper VAT invoice. A receipt is enough for £250 or less."],
+["foreign","Foreign VAT","Foreign suppliers only charge UK VAT if they have a UK VAT number."],
+["dup","Duplicate","The same supplier bill hasn't been entered twice."],
+["control","VAT control posting","Manual journals don't post straight to the VAT account, skipping the tax codes."],
+["taxcode","Tax code","Every line with VAT has a tax code that exists and is still active."],
+["reverse","Reverse charge","Overseas service purchases use the reverse charge where required."],
+["amount","VAT amount","The VAT in the books matches the VAT on the invoice."],
+["recover","Recoverable VAT","The VAT claimed back is right. Some costs allow only part of the VAT, or none."],
+["pattern","Pattern","The tax code matches the one this supplier and account usually use."]];
+var CHECK_FAILS={s10:["reverse","amount"],s15:["amount","pattern"],s5:["amount"],s1:["amount","pattern"],s23:["dup"],s20:["invoice"],s27:[]};
+var HMRC_RULE={
+s10:{h:"HMRC VAT Notice 741A - place of supply of services; reverse charge on services bought from overseas",t:"Advertising bought from an Irish supplier is a business-to-business service supplied where the customer belongs. Seabrook accounts for the VAT itself under the reverse charge, in box 1 and box 4, so the net effect is nil. The supplier correctly charged no UK VAT.",tr:"Reverse charge"},
+s15:{h:"HMRC VAT Notice 701/36 - insurance is exempt from VAT",t:"Insurance premiums are exempt. The premium carries Insurance Premium Tax, which is a separate tax and can't be reclaimed as input VAT.",tr:"Exempt"},
+s5:{h:"HMRC VAT Notice 701/19 - fuel and power; the reduced rate is for domestic and charity use only",t:"Electricity and gas for business premises is standard-rated unless usage falls under the de minimis limits. The Pitfield depot is commercial premises and well above them.",tr:"Standard rated"},
+s1:{h:"HMRC VAT Notice 701/10 - zero rating of books and printed matter",t:"Leaflets, brochures and similar printed matter are zero-rated. The invoice shows no VAT, so there's no input VAT to reclaim.",tr:"Zero rated"},
+s23:{h:"HMRC VAT Notice 700 - input tax can only be claimed once for each supply",t:"Two bills carry the same supplier invoice number and amount, so the same supply has been claimed twice. Only one can stay in the return.",tr:"Standard rated, one claim only"},
+s20:{h:"HMRC VAT Notice 700/21 - keeping records; a proforma isn't a valid VAT invoice",t:"Input VAT can only be reclaimed with a valid VAT invoice. A proforma is a request for payment, so the claim should wait for the final invoice.",tr:"Standard rated, claim on final invoice"},
+s27:{h:"HMRC VAT Notice 700/45 - correcting errors; late claims within four years",t:"A bill missed from an earlier return can be claimed in the current one, as long as it's within four years and the net value of errors is under the reporting threshold.",tr:"Standard rated"}};
+var CLEAN_TX=[
+{id:"c1",clean:true,contact:"Brakes Foodservice",date:"03 Aug 26",ref:"BRK-55120",lineLabel:"Chilled produce, weekly order",account:"5000 – Cost of sales",net:"£4,120.00",vatAmount:"£0.00",amount:"£4,120.00",vat:"0% (Zero rated)",na:["foreign","control","reverse"]},
+{id:"c2",clean:true,contact:"Adobe Systems Software Ireland",date:"15 Aug 26",ref:"ADB-90215",lineLabel:"Creative Cloud, monthly",account:"6400 – Software",net:"£54.99",vatAmount:"£11.00",amount:"£54.99",vat:"Reverse Charge (20%)",na:["control"]},
+{id:"c3",clean:true,contact:"Barclays Bank",date:"30 Sep 26",ref:"Bank charge",lineLabel:"Monthly account fee",account:"7900 – Bank charges",net:"£38.50",vatAmount:"£0.00",amount:"£38.50",vat:"Exempt Expenses",na:["attach","invoice","foreign","dup","control","reverse","recover"]}];
+var CHECK_INC={s20:["amount"],c2:["foreign"],s27:["pattern"]};
+function checksFor(f){var uk=!/ireland/i.test(f.contact||"");var na=f.clean?f.na:(uk?["foreign","reverse","control"]:["control"]);var fails=f.clean?[]:(CHECK_FAILS[f.id]||[]);var inc=CHECK_INC[f.id]||[];
+return VAT_CHECKS.map(function(c){var st=na.indexOf(c[0])>=0?"na":fails.indexOf(c[0])>=0?"fail":inc.indexOf(c[0])>=0?"inc":"pass";return{k:c[0],name:c[1],desc:c[2],st:st,fail:st==="fail"};});}
+function CkIco(p){var st=p.st||(p.fail?"fail":"pass");if(st==="fail")return NI("flag01",20);
+var d=st==="pass"?"m6.25 10 2.5 2.5 5-5":st==="inc"?"M7.6 7.5a2.5 2.5 0 1 1 3.3 2.9c-.55.2-.9.65-.9 1.2v.4M10 14.2h.01":"M6.67 10h6.66";
+return h("svg",{width:20,height:20,viewBox:"0 0 20 20",fill:"none",style:{display:"block",flexShrink:0}},h("circle",{cx:10,cy:10,r:8.33,stroke:"currentColor",strokeWidth:1.25}),h("path",{d:d,stroke:"currentColor",strokeWidth:1.25,strokeLinecap:"round",strokeLinejoin:"round"}));}
+var CK_LABEL={fail:"Flagged",inc:"Inconclusive",na:"Not applicable",pass:""};
+var CK_TIP={pass:"Passed: the check ran and found no problem",fail:"Flagged: the check ran and found a problem",inc:"Inconclusive: the check couldn't decide because some data is missing",na:"Not applicable: the check doesn't apply to this transaction, so it didn't run"};
+function ChecksBox(p){var list=checksFor(p.f);var cnt=function(st){return list.filter(function(c){return c.st===st;}).length;};var nf=cnt("fail"),ni=cnt("inc"),np=cnt("pass"),nn=cnt("na");var _o=useState(false);var open=_o[0],setOpen=_o[1];
+useEffect(function(){setOpen(false);},[p.f.id]);
+var tone=p.tone==="blue"?{bd:"#D2DEF6",fg:"#0E1E4F"}:{bd:"#D0EFC8",fg:"#2A2A2A"};
+var label=nf?nf+(nf===1?" VAT check flagged":" VAT checks flagged"):"No VAT checks flagged";
+var parts=[nf?nf+" flagged":null,ni?ni+" inconclusive":null,np?np+" passed":null,nn?nn+" not applicable":null].filter(Boolean).join(" · ");
+return h("div",{style:{border:"1px solid "+tone.bd,borderRadius:p.tone==="blue"?8:12,padding:"12px 16px",display:"flex",flexDirection:"column",gap:16}},
+h("div",{onClick:function(){setOpen(!open);},style:{display:"flex",alignItems:"center",gap:12,cursor:"pointer",userSelect:"none",minHeight:32}},
+h("span",{style:{flex:1,minWidth:0,display:"flex",alignItems:"baseline",gap:10,flexWrap:"wrap"}},h("span",{style:{fontSize:14,lineHeight:"22px",fontWeight:500,color:tone.fg}},label)),
+h("span",{style:{width:32,height:32,display:"inline-flex",alignItems:"center",justifyContent:"center",color:"#2A2A2A",transform:open?"rotate(180deg)":"none",transition:"transform .15s"}},svg(20,[P("m6 9 6 6 6-6",null,1.5)]))),
+open?list.map(function(c){var fl=c.st==="fail";var col="#2A2A2A";return h(Tooltip,{key:c.k,text:CK_TIP[c.st],block:true,alignLeft:true,above:true,offsetX:32},h("div",{style:{display:"flex",alignItems:"flex-start",gap:12,fontSize:14,lineHeight:"22px",color:tone.fg,cursor:"default",width:"100%"}},h("span",{style:{display:"inline-flex",marginTop:1,color:col}},h(CkIco,{st:c.st})),h("div",{style:{flex:1,minWidth:0}},h("div",{style:{fontWeight:500,color:"#2A2A2A"}},c.name),h("div",{style:{fontSize:14,lineHeight:"22px",color:"#7C7C7C"}},c.desc))));}):null);}
+function HmrcRule(p){var r=HMRC_RULE[p.f.id];if(!r)return null;return h(Fragment,null,h("div",{style:{height:1,background:"#ECECEC",margin:"24px 0"}}),
+h("div",{style:{fontSize:16,lineHeight:"26px",fontWeight:500,color:"#2A2A2A"}},r.h),
+h("div",{style:{fontSize:14,lineHeight:"22px",color:"#545453",marginTop:16}},r.t),
+h("div",{style:{fontSize:14,lineHeight:"22px",color:"#7C7C7C",marginTop:16}},"HMRC treatment: "+r.tr));}
+
 /* ══════════════ SUGGESTION DRAWER (step 11) ══════════════ */
 function Field(p){return h("div",{style:{flex:1,minWidth:0}},h("div",{style:{fontSize:14,color:"#2A2A2A",marginBottom:8}},p.label),
 h("div",{style:{display:"flex",alignItems:"center",gap:10,minHeight:44,padding:"0 14px",border:"1px solid "+T.colorBorderMedium,borderRadius:8,background:"#FFFFFF",fontSize:14,color:"#2A2A2A"}},
@@ -1019,16 +1069,22 @@ function newVat(f){if(f.newVat)return f.newVat;return f.vatAmount;}
 function TxDetails(p){var f=p.f;var kv=[["Date",f.date],["Reference",f.ref],["Contact",f.contact],["Description",f.lineLabel],["Account",f.account],["Net",f.net],["VAT",f.vatAmount],["Gross",f.amount],["VAT rate",f.vat]];
 return h("div",{style:{border:"1px solid "+T.colorBorderDark,borderRadius:8,overflow:"hidden",background:"#FFFFFF"}},kv.map(function(r,i){return h("div",{key:i,style:{display:"grid",gridTemplateColumns:"140px 1fr",borderBottom:i<kv.length-1?"1px solid "+T.colorBorderLight:"none"}},
 h("div",{style:{padding:"11px 14px",fontSize:14,color:T.colorTextSecondary,background:"#FFFFFF"}},r[0]),h("div",{style:{padding:"11px 14px",fontSize:14,color:"#2A2A2A",borderLeft:"1px solid "+T.colorBorderLight}},r[1]||""));}));}
-function Drawer(p){var f=p.f;var st=p.state||"open";var _t=useState("suggestion");var tab=_t[0],setTab=_t[1];var act=actionOf(f);var done=st!=="open";
+function Drawer(p){var f=p.f;var st=f.clean?"clean":(p.state||"open");var _t=useState("suggestion");var tab=_t[0],setTab=_t[1];var act=actionOf(f);var done=st!=="open";
 useEffect(function(){setTab("suggestion");},[f.id]);
 useEffect(function(){function k(e){var a=document.activeElement;if(a&&(a.tagName==="INPUT"||a.tagName==="TEXTAREA"))return;if(e.key==="ArrowUp"&&p.idx>0&&p.onPrev){e.preventDefault();p.onPrev();}if(e.key==="ArrowDown"&&p.idx<p.count-1&&p.onNext){e.preventDefault();p.onNext();}}document.addEventListener("keydown",k);return function(){document.removeEventListener("keydown",k);};},[f.id,p.idx,p.count]);
-var badge=st==="applied"?h(Badge,{v:"success"},actionOf(f).done):st==="ignored"?h(Badge,null,"Ignored"):st==="acknowledged"?h(Badge,{v:"success"},"Resolved"):h(Badge,{v:"warning"},"Unresolved");
+var badge=f.clean?h(Badge,{v:"success"},"Nothing flagged"):st==="applied"?h(Badge,{v:"success"},actionOf(f).done):st==="ignored"?h(Badge,null,"Ignored"):st==="acknowledged"?h(Badge,{v:"success"},"Resolved"):h(Badge,{v:"warning"},"Unresolved");
 var body;
-if(tab==="suggestion")body=h("div",null,
-h("div",{style:{background:"#F1F8F0",border:"1px solid "+T.colorSuccessBorder,borderRadius:12,padding:20}},
-h("div",{style:{fontSize:16,fontWeight:500,color:"#2A2A2A",marginBottom:10}},"Suggestion"),
-h("div",{style:{fontSize:14,lineHeight:"22px",color:"#2A2A2A"}},f.text),
-h("div",{style:{height:1,background:T.colorSuccessBorder,margin:"18px 0"}}),
+if(tab==="suggestion"&&f.clean)body=h("div",{style:{background:"#F0F5FC",borderRadius:12,padding:24,display:"flex",flexDirection:"column",gap:24}},
+h("div",{style:{fontSize:16,lineHeight:"26px",fontWeight:500,color:"#2A2A2A"}},"Passed"),
+h(ChecksBox,{f:f,tone:"blue"}),
+h("div",{style:{fontSize:14,lineHeight:"22px",color:"#2A2A2A"}},(function(){var ni=checksFor(f).filter(function(c){return c.st==="inc";}).length;return "Nothing was flagged in our VAT checks."+(ni?" "+(ni===1?"One check was":ni+" checks were")+" inconclusive because some data is missing.":"")+" You can still recode this transaction if needed.";})()),
+h("div",{style:{display:"flex",gap:12}},h(SecondaryBtn,{onClick:p.onChat,style:{padding:"0 16px 0 12px"}},h(Ic.msgPlus,null),"Recode in chat"),h(SecondaryBtn,null,"View in Xero",h(Ic.external,null))));
+else if(tab==="suggestion")body=h("div",null,
+h("div",{style:{background:"#F1F8F0",border:"1px solid "+T.colorSuccessBorder,borderRadius:12,padding:24}},
+h("div",{style:{fontSize:20,lineHeight:"28px",fontWeight:500,color:"#2A2A2A",marginBottom:24}},"Suggestion"),
+h(ChecksBox,{f:f}),
+h("div",{style:{fontSize:14,lineHeight:"22px",color:"#2A2A2A",marginTop:24}},f.text),
+h("div",{style:{height:1,background:"#ECECEC",margin:"24px 0"}}),
 h("div",{style:{fontSize:16,fontWeight:500,color:"#2A2A2A",marginBottom:14}},act.title),
 f.tag==="Recode VAT"?h("div",{style:{display:"flex",gap:16,marginBottom:16}},h(Field,{label:"VAT amount",from:f.vatAmount,to:newVat(f)}),h(Field,{label:"VAT rate name",from:f.vat,to:f.recodeVat})):
 f.tag==="Add to schedule"?h("div",{style:{display:"flex",gap:16,marginBottom:16}},h(Field,{label:"Account",from:f.account,to:f.acctName}),h(Field,{label:"Release",from:"Expensed in full",to:f.releaseLabel})):
@@ -1036,7 +1092,7 @@ f.tag==="Remove duplicate"?h("div",{style:{fontSize:14,lineHeight:"22px",color:"
 f.tag==="Request invoice"?h("div",{style:{fontSize:14,lineHeight:"22px",color:"#545453",marginBottom:16}},"Sends a request to "+f.contact+" for the final VAT invoice, and holds "+f.vatAmount+" of input VAT until it arrives."):
 h("div",{style:{fontSize:14,lineHeight:"22px",color:"#545453",marginBottom:16}},f.vatAmount+" of input VAT is in box 4 for this return."),
 h("div",{style:{display:"flex",gap:8}},done?h(Badge,{v:st==="ignored"?"neutral":"success",h:40},st==="ignored"?"Ignored":(st==="acknowledged"?"Resolved":act.done)):h(PrimaryBtn,{onClick:p.onApply},act.primary),
-h(SecondaryBtn,null,"View in Xero",h(Ic.external,null)))),
+h(SecondaryBtn,null,"View in Xero",h(Ic.external,null))),h(HmrcRule,{f:f})),
 (f.comments&&f.comments.length)?h("div",{style:{marginTop:28}},h("div",{style:{fontSize:16,fontWeight:500,marginBottom:12}},"Comments"),
 f.comments.map(function(c,i){return h("div",{key:i,style:{display:"flex",gap:12,padding:"10px 0"}},h(Avatar,{initials:c.initials,name:c.name,s:32}),
 h("div",null,h("div",{style:{fontSize:14}},h("span",{style:{fontWeight:600}},c.name),h("span",{style:{color:T.colorTextSecondary}},"  "+c.date)),h("div",{style:{fontSize:14,lineHeight:"22px",color:"#2A2A2A"}},c.text)));})):null,
@@ -1048,14 +1104,14 @@ else if(f.kind==="prepay")body=h(Table,{cols:[{label:"Month",k:"m",w:"1fr"},{lab
 else body=h(Table,{cols:[{label:"Date",k:"date",w:"92px"},{label:"Reference",k:"ref",w:"1fr"},{label:"Description",k:"desc",w:"1.6fr"},{label:"Net",k:"net",right:true,w:"96px"},{label:"VAT rate",k:"vat",w:"1.3fr"}],rows:f.history||[]});
 return h("div",{style:{flex:1,minWidth:0,minHeight:0,display:"flex",flexDirection:"column",background:"#FFFFFF",animation:"fadeIn .3s ease both"}},
 h("div",{style:{padding:"28px 32px 0",flexShrink:0}},
-h("div",{style:{display:"flex",alignItems:"center",gap:12}},h("span",{style:{fontSize:24,fontWeight:500,color:"#2A2A2A"}},f.contact),h(Tag,null,f.tag),h("div",{style:{flex:1}}),badge,
+h("div",{style:{display:"flex",alignItems:"center",gap:12}},h("span",{style:{fontSize:24,fontWeight:500,color:"#2A2A2A"}},f.contact),f.clean?null:h(Tag,null,f.tag),h("div",{style:{flex:1}}),badge,
 h("div",{style:{display:"flex",alignItems:"center",gap:0,marginLeft:8}},
 h(Tooltip,{text:"Previous suggestion"},h(IconBtn,{"aria-label":"Previous suggestion",disabled:!(p.idx>0),onClick:p.onPrev,style:{opacity:p.idx>0?1:0.35}},h(Ic.chev,{up:true}))),
 h(Tooltip,{text:"Next suggestion"},h(IconBtn,{"aria-label":"Next suggestion",disabled:!(p.idx<p.count-1),onClick:p.onNext,style:{opacity:p.idx<p.count-1?1:0.35}},h(Ic.chev,null))),
 h(IconBtn,{title:"Close",onClick:p.onClose,hoverBg:"#E2E2E2",style:{borderRadius:"50%",background:"#F0F0F0",marginLeft:4}},h(Ic.close,{s:16})))),
-h("div",{style:{marginTop:16}},h(Tabs,{tabs:[{v:"suggestion",label:"Suggestion"},{v:"tx",label:"Transaction details"},f.kind==="prepay"?{v:"hist",label:"Release profile"}:{v:"hist",label:"Historical transactions"}],value:tab,onChange:setTab}))),
+h("div",{style:{marginTop:16}},h(Tabs,{tabs:f.clean?[{v:"suggestion",label:"Checks"},{v:"tx",label:"Transaction details"}]:[{v:"suggestion",label:"Suggestion"},{v:"tx",label:"Transaction details"},f.kind==="prepay"?{v:"hist",label:"Release profile"}:{v:"hist",label:"Historical transactions"}],value:tab,onChange:setTab}))),
 h("div",{style:{flex:1,minHeight:0,overflowY:"auto",padding:"24px 32px 32px"}},body),
-h("div",{style:{flexShrink:0,display:"flex",gap:12,padding:"14px 24px",borderTop:"1px solid "+T.colorBorderDark,background:"#FFFFFF"}},
+f.clean?null:h("div",{style:{flexShrink:0,display:"flex",gap:12,padding:"14px 24px",borderTop:"1px solid "+T.colorBorderDark,background:"#FFFFFF"}},
 done?h(SecondaryBtn,{onClick:p.onReopen,style:{flex:1}},"Re-open suggestion"):h(Fragment,null,
 h("button",{type:"button",onClick:p.onIgnore,style:{height:40,padding:"0 16px",border:"none",borderRadius:8,background:T.colorErrorBg,color:T.colorError,fontSize:14,fontWeight:500,fontFamily:"inherit",cursor:"pointer"}},"Ignore suggestion"),
 h(PrimaryBtn,{onClick:p.onApply,style:{flex:1}},act.primary))));}
@@ -1374,7 +1430,7 @@ function TabHeader(p){return h("div",{style:{height:56,flexShrink:0,display:"fle
 h("span",{style:{fontSize:18,fontWeight:500,color:"#1F2024"}},p.title),p.period?h("span",{style:{fontSize:16,color:T.colorTextSecondary,animation:"fadeIn .3s ease both"}},p.period):null,
 h("div",{style:{flex:1}}),
 p.ready?h(Fragment,null,h("div",{style:{display:"flex",alignItems:"center",gap:8}},p.marked?h(Badge,{v:"success",h:36},h(Ic.check,{s:16}),"Marked as done"):p.allHandled?h(PrimaryBtn,{h:36,onClick:p.onMark,style:{animation:"fadeIn .3s ease both"}},"Mark as done"):h(SecondaryBtn,{h:36,onClick:p.onMark},"Mark as done"),
-h(Tooltip,{text:p.saved?"Saved to your library":"Add skill to library"},h(IconBtn,{size:36,onClick:p.onSave,color:p.saved?T.colorBrandPrimary:"#2A2A2A","aria-label":p.saved?"Remove from library":"Add to library"},p.saved?h(Ic.libAdded,null):h(Ic.libAdd,null))),
+
 h(IconBtn,{title:"More",size:36},h(Ic.kebab,null))),h("div",{style:{width:1,height:28,background:T.colorBorderDark,margin:"0 4px"}}),
 h(ViewSwitch,{view:p.view,setView:p.setView})):null);}
 
@@ -1584,7 +1640,7 @@ h(StartView,{draft:draft,setDraft:setDraft,chips:schips,onRemoveChip:function(){
 
 var resultsProps={scen:scen,answers:answers,findings:findings,state:fstate,late:!!answers.late,filed:answers.filed,period:answers.period,log:log,tab:rtab,setTab:setRtab,
 onOpen:openF,onApply:function(id){setConfirmId(id);},onAdd:function(f){addChip({key:f.id,fid:f.id,label:f.contact});}};
-var df=detail?findings.filter(function(f){return f.id===detail;})[0]:null;
+var df=detail?findings.concat(CLEAN_TX).filter(function(f){return f.id===detail;})[0]:null;var navL=df&&df.clean?CLEAN_TX:findings;
 /* Same as index_canvas.html: both panes stay mounted and the layout animates between the views.
    Finishing the run animates into split the same way switching views does. */
 var mode=df?"split":(ready?view:"chat");
@@ -1607,7 +1663,7 @@ markAsk?h(ConfirmDialog,{title:"Mark as done?",body:markAsk+(markAsk===1?" sugge
 confirmId?(function(){var cf=findings.filter(function(x){return x.id===confirmId;})[0];return cf?h(ConfirmModal,{f:cf,onCancel:function(){setConfirmId(null);},onConfirm:function(){applyF(cf.id);setConfirmId(null);showToast(doneToast(cf));}}):null;})():null,
 df?h("div",{key:"drawer",style:{position:"absolute",top:0,bottom:0,right:0,left:mode==="canvas"?"0px":"clamp(320px, 42%, "+SPLIT_W+"px)",zIndex:30,display:"flex",flexDirection:"column",minHeight:0,background:"#FFFFFF",
 boxShadow:"-8px 0 24px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.06)",borderLeft:"1px solid "+T.colorBorderDark,animation:"slideInRight .32s "+EASE+" both"}},
-h(Drawer,{f:df,state:fstate[df.id]||"open",onClose:function(){setDetail(null);},idx:findings.indexOf(df),count:findings.length,onPrev:function(){var i=findings.indexOf(df);if(i>0)openF(findings[i-1].id);},onNext:function(){var i=findings.indexOf(df);if(i<findings.length-1)openF(findings[i+1].id);},onApply:function(){setConfirmId(df.id);},onAcknowledge:function(){ackF(df.id);},onIgnore:function(){ignoreF(df.id);},onReopen:function(){reopenF(df.id);},onFullscreen:function(){openInvoiceTab(df);}})):null,
+h(Drawer,{f:df,state:fstate[df.id]||"open",onClose:function(){setDetail(null);},idx:navL.indexOf(df),count:navL.length,onPrev:function(){var i=navL.indexOf(df);if(i>0)openF(navL[i-1].id);},onNext:function(){var i=navL.indexOf(df);if(i<navL.length-1)openF(navL[i+1].id);},onChat:function(){addChip({key:df.id,label:df.contact});setDetail(null);},onApply:function(){setConfirmId(df.id);},onAcknowledge:function(){ackF(df.id);},onIgnore:function(){ignoreF(df.id);},onReopen:function(){reopenF(df.id);},onFullscreen:function(){openInvoiceTab(df);}})):null,
 toast?h("div",{style:{position:"fixed",left:"50%",top:120,transform:"translateX(-50%)",background:"#2A2A2A",color:"#FFF",fontSize:14,padding:"10px 16px",borderRadius:8,zIndex:80,animation:"fadeIn .2s ease both",display:"flex",alignItems:"center",gap:8}},h(Ic.check,{s:16,c:"#FFFFFF"}),toast):null,
 selBtn?h("div",{style:{position:"fixed",left:selBtn.x,top:selBtn.y-44,transform:"translateX(-50%)",zIndex:60}},
 h(SecondaryBtn,{h:34,px:10,onClick:function(){var t=selBtn.text;addChip({key:"q"+Date.now(),label:"“"+(t.length>36?t.slice(0,36)+"…":t)+"”"});setSelBtn(null);if(window.getSelection)window.getSelection().removeAllRanges();},style:{boxShadow:"0 6px 16px rgba(0,0,0,0.10)"}},h(Ic.msgPlus,null),"Chat")):null,
