@@ -1109,7 +1109,7 @@ return h(ListRow,{key:i,first:i===0,icon:recentIcon(it),label:it.label,meta:st+"
 function SkillsPage(p){return h(PageShell,{wide:false,title:"Skills",desc:"Skills saved for this client and Mimo's verified skills. Pick one to run it."},
 h(SkillsLibrary,{lib:p.lib,onApp:p.onApp,onToast:p.onToast}));}
 
-function ArtifactsPage(p){return h(PageShell,{title:"Artifacts",desc:"Canvases, schedules and reports Mimo has made for "+CLIENT+". Each one stays linked to the skill that made it.",left:"All artifacts ("+ARTIFACTS.length+")"},
+function ArtifactsPage(p){return h(PageShell,{title:"Canvases",desc:"Reviews, schedules and reports Mimo has made for "+CLIENT+". Each one stays linked to the skill that made it.",left:"All canvases ("+ARTIFACTS.length+")"},
 h(ListCard,null,ARTIFACTS.map(function(a,i){return h(ListRow,{key:i,first:i===0,icon:NI("file07"),label:a.n,sub:a.s,meta:a.d,onClick:function(){},actions:rowActions(true)});})));}
 
 function FilesPage(p){var _f=useState(null);var folder=_f[0],setFolder=_f[1];var _d=useState(FILES0);var data=_d[0],setData=_d[1];var ref=useRef(null);
@@ -1682,7 +1682,7 @@ h(MenuRow,{label:"New chat",icon:h("span",{style:{width:20,height:20,borderRadiu
 MenuRule(),
 h(MenuHead,{label:"Associate",open:open.assoc,onToggle:function(){tog("assoc");}}),open.assoc?ASSOC.map(function(a){return h(MenuRow,{key:a.l,label:a.l,icon:NI(a.i),onClick:function(){if(p.onSkill)p.onSkill(a.sk);}});}):null,
 MenuRule(),
-h(MenuHead,{label:"Client resources",open:open.res,onToggle:function(){tog("res");}}),open.res?[{l:"Skills",i:"star03",k:"skills"},{l:"Artifacts",i:"file07",k:"artifacts"},{l:"Files",i:"folder",k:"files"},{l:"Context",i:"data",k:"context"}].map(function(a){return h(MenuRow,{key:a.l,label:a.l,icon:NI(a.i),active:p.page===a.k,onClick:function(){p.onPage(a.k);}});}):null,
+h(MenuHead,{label:"Client resources",open:open.res,onToggle:function(){tog("res");}}),open.res?[{l:"Skills",i:"star03",k:"skills"},{l:"Canvases",i:"file07",k:"artifacts"},{l:"Files",i:"folder",k:"files"},{l:"Context",i:"data",k:"context"}].map(function(a){return h(MenuRow,{key:a.l,label:a.l,icon:NI(a.i),active:p.page===a.k,onClick:function(){p.onPage(a.k);}});}):null,
 MenuRule(),
 h(MenuHead,{label:"Recents",open:open.recents,onToggle:function(){tog("recents");}}),open.recents?list(recents,"r","clock"):null,
 MenuRule(),
