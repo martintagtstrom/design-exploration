@@ -1410,15 +1410,16 @@ return h("div",null,h("div",{style:{display:"flex",justifyContent:"center",margi
 libTab==="verified"?h("div",{key:"v",style:{display:"grid",gridTemplateColumns:"repeat(3, minmax(0,1fr))",gap:16,animation:"fadeIn .25s ease both"}},APPS.map(function(a){return h(WfCard,{key:a.t,a:a,onClick:function(){p.onApp(a);}});}))
 :(mine.length?h("div",{key:"y",style:{display:"grid",gridTemplateColumns:"repeat(3, minmax(0,1fr))",gap:16,animation:"fadeIn .25s ease both"}},mine.map(function(a){return h(WfCard,{key:a.t,a:a,onClick:function(){p.onApp(a);}});}))
 :h("div",{style:{textAlign:"center",fontSize:14,lineHeight:"22px",color:"#7C7C7C",padding:"24px 0"}},"Skills you save appear here. Browse the verified skills to get started.")));}
+var START_PROMPTS=[{l:"VAT review",sk:"VAT review"},{l:"Prepayments",sk:"Prepayments"},{l:"Accruals",sk:"Accruals"}];
 function StartView(p){var ph=useTypedPlaceholder(START_PH,!!p.draft||!!(p.chips&&p.chips.length));var _t=useState(null);var toast=_t[0],setToast=_t[1];
 return h("div",{style:{flex:1,overflowY:"auto",background:T.colorSurfaceSecondary}},
 h("div",{style:{maxWidth:CHAT_W,margin:"0 auto",padding:"112px 24px 64px"}},
 h("div",{style:{display:"flex",justifyContent:"center"}},h(MIMO_LOGO,{h:32})),
 h("div",{style:{textAlign:"center",fontSize:36,lineHeight:"44px",fontWeight:500,letterSpacing:0,color:"#1F2024",margin:"48px 0 40px"}},"What should we tackle today?"),
 h(Composer,{value:p.draft,onChange:p.setDraft,onSend:p.onSend,placeholder:p.chips&&p.chips.length?"Add details or just send to run the skill...":ph,autoFocus:true,focusKey:p.focusKey,chips:p.chips,sendChips:true,onRemoveChip:p.onRemoveChip}),
-(p.recents&&p.recents.length)?h(StartRecents,{items:p.recents,onPick:p.onPick,onMore:p.onMore}):null,
-h("div",{style:{height:1,background:T.colorBorderDark,margin:(p.recents&&p.recents.length?"32px":"48px")+" 0 56px"}}),
-h(SkillsLibrary,{lib:p.lib,onApp:p.onApp,onToast:function(t){setToast(t);setTimeout(function(){setToast(null);},2200);}})),
+h("div",{style:{textAlign:"center",fontSize:14,lineHeight:"22px",color:"#7C7C7C",marginTop:24}},"Start with a skill"),h("div",{style:{display:"flex",flexWrap:"wrap",justifyContent:"center",gap:8,marginTop:8}},START_PROMPTS.map(function(sp){return h("button",Object.assign({key:sp.l,type:"button",onClick:function(){p.onApp(APPS.filter(function(a){return a.t===sp.sk;})[0]);},style:{display:"inline-flex",alignItems:"center",gap:8,height:40,padding:"0 16px 0 12px",border:"1px solid "+T.colorBorderMedium,borderRadius:8,background:"#FFFFFF",color:"#2A2A2A",fontFamily:"inherit",fontSize:14,lineHeight:"22px",fontWeight:500,cursor:"pointer"}},hover({background:"#FFFFFF"},{background:"#FAFAFA"})),h("span",{style:{display:"inline-flex",color:"#545453"}},NI("star03",20)),sp.l);})),
+h("div",{style:{height:1,background:T.colorBorderDark,margin:"48px 0 0"}}),
+(p.recents&&p.recents.length)?h(StartRecents,{items:p.recents,onPick:p.onPick,onMore:p.onMore}):null),
 toast?h("div",{style:{position:"fixed",left:"50%",bottom:32,transform:"translateX(-50%)",background:"#2A2A2A",color:"#FFF",fontSize:14,padding:"10px 16px",borderRadius:8,zIndex:50,animation:"fadeIn .2s ease both"}},toast+" isn't part of this prototype yet. Try VAT review."):null);}
 
 function ViewSwitch(p){var items=[{v:"chat",I:Ic.chat,l:"Chat view"},{v:"split",I:Ic.split,l:"Split view"},{v:"canvas",I:Ic.canvas,l:"Canvas view"}];
@@ -1636,7 +1637,7 @@ h("div",{ref:contentRef,style:{maxWidth:CHAT_W,margin:"0 auto",padding:"24px 0 3
 dock!=="none"?h("div",{style:{flexShrink:0,padding:narrow?"0 16px 14px":"0 24px 14px",transition:"padding 0.44s "+EASE}},h("div",{style:{maxWidth:CHAT_W,margin:"0 auto"}},dockEl(),h(Disclaimer,{actions:actionsDisclaimer}))):null);}
 
 if(phase==="start")return h("div",{style:{flex:1,display:p.active?"flex":"none",flexDirection:"column",minHeight:0,position:"relative"}},
-h(StartView,{draft:draft,setDraft:setDraft,chips:schips,onRemoveChip:function(){setSchips([]);},onSend:function(){var t=draft.trim();var sk=schips[0];if(t||sk){setDraft("");setSchips([]);begin(t,sk);}},onApp:function(a){setSchips([skillChip(a)]);setFocusKey(function(n){return n+1;});},focusKey:focusKey,recents:buildRecents(p.tabs),onPick:p.onSelect,onMore:function(){p.onPage("history");},lib:p.lib}));
+h(StartView,{draft:draft,setDraft:setDraft,chips:schips,onRemoveChip:function(){setSchips([]);},onSend:function(){var t=draft.trim();var sk=schips[0];if(t||sk){setDraft("");setSchips([]);begin(t,sk);}},onApp:function(a){setSchips([skillChip(a)]);setFocusKey(function(n){return n+1;});},onPrompt:function(t){setDraft("");setSchips([]);begin(t);},focusKey:focusKey,recents:buildRecents(p.tabs),onPick:p.onSelect,onMore:function(){p.onPage("history");},lib:p.lib}));
 
 var resultsProps={scen:scen,answers:answers,findings:findings,state:fstate,late:!!answers.late,filed:answers.filed,period:answers.period,log:log,tab:rtab,setTab:setRtab,
 onOpen:openF,onApply:function(id){setConfirmId(id);},onAdd:function(f){addChip({key:f.id,fid:f.id,label:f.contact});}};
@@ -1738,7 +1739,7 @@ h(MenuRow,{label:"New chat",icon:h("span",{style:{width:20,height:20,borderRadiu
 MenuRule(),
 h(MenuHead,{label:"Associate",open:open.assoc,onToggle:function(){tog("assoc");}}),open.assoc?ASSOC.map(function(a){return h(MenuRow,{key:a.l,label:a.l,icon:NI(a.i),onClick:function(){if(p.onSkill)p.onSkill(a.sk);}});}):null,
 MenuRule(),
-h(MenuHead,{label:"Client resources",open:open.res,onToggle:function(){tog("res");}}),open.res?[{l:"Skills",i:"star03",k:"skills"},{l:"Canvases",i:"file07",k:"artifacts"},{l:"Files",i:"folder",k:"files"},{l:"Context",i:"data",k:"context"}].map(function(a){return h(MenuRow,{key:a.l,label:a.l,icon:NI(a.i),active:p.page===a.k,onClick:function(){p.onPage(a.k);}});}):null,
+h(MenuHead,{label:"Client resources",open:open.res,onToggle:function(){tog("res");}}),open.res?[{l:"Canvases",i:"file07",k:"artifacts"},{l:"Files",i:"folder",k:"files"},{l:"Context",i:"data",k:"context"}].map(function(a){return h(MenuRow,{key:a.l,label:a.l,icon:NI(a.i),active:p.page===a.k,onClick:function(){p.onPage(a.k);}});}):null,
 MenuRule(),
 h(MenuHead,{label:"Recents",open:open.recents,onToggle:function(){tog("recents");}}),open.recents?list(recents,"r","clock"):null,
 MenuRule(),
