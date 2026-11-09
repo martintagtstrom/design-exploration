@@ -645,7 +645,7 @@ l.done?h("span",{style:{color:"#9D9D9E"}},l.label):h(Shimmer,null,l.label));}));
 
 function UserBubble(p){return h("div",{style:{display:"flex",justifyContent:"flex-end",animation:"fadeIn .25s ease both"}},
 h("div",{style:{background:"#E9F3E5",borderRadius:8,padding:"8px 14px",fontSize:16,lineHeight:"26px",color:"#2A2A2A",maxWidth:"80%"}},
-p.skill?h("div",{style:{display:"inline-flex",alignItems:"center",gap:6,height:28,padding:"0 10px 0 8px",borderRadius:6,background:"#FFFFFF",border:"1px solid "+T.colorBorderDark,fontSize:14,fontWeight:500,color:"#2A2A2A",marginBottom:p.text?6:0,marginTop:p.text?0:0}},h("span",{style:{display:"inline-flex",color:"#545453"}},NI("star03",16)),p.skill):null,p.skill&&p.text?h("br",null):null,
+p.skill?h("div",{style:{display:"flex",flexWrap:"wrap",gap:6,marginBottom:p.text?6:0}},[].concat(p.skill).map(function(lb){return h("div",{key:lb,style:{display:"inline-flex",alignItems:"center",gap:6,height:28,padding:"0 10px 0 8px",borderRadius:6,background:"#FFFFFF",border:"1px solid "+T.colorBorderDark,fontSize:14,fontWeight:500,color:"#2A2A2A"}},h("span",{style:{display:"inline-flex",color:"#545453"}},NI("star03",16)),lb);})):null,
 p.quotes&&p.quotes.length?h("div",{style:{display:"flex",flexWrap:"wrap",gap:6,marginBottom:6}},p.quotes.map(function(q,i){return h("span",{key:i,style:{fontSize:13,lineHeight:"20px",color:"#545453",background:"rgba(255,255,255,.7)",borderRadius:6,padding:"1px 8px"}},q);})):null,p.text));}
 
 function cardStyle(x){return Object.assign({background:"#FFFFFF",border:"1px solid "+T.colorBorderDark,borderRadius:16,padding:24,boxShadow:"0 12px 24px rgba(0,0,0,0.04)",boxSizing:"border-box",width:"100%"},x||{});}
@@ -1398,13 +1398,13 @@ p.meta?h("span",{style:{fontSize:12,lineHeight:"17px",color:"#9D9D9E",whiteSpace
 h("span",{style:{display:"flex",flexDirection:"column",gap:8,alignSelf:"stretch"}},
 h("span",{style:{height:52,display:"flex",flexDirection:"column",justifyContent:"flex-end"}},h("span",{title:a.t,style:{fontSize:18,lineHeight:"26px",fontWeight:500,color:"#2A2A2A",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}},a.t)),
 h("span",{title:a.d,style:{height:44,fontSize:14,lineHeight:"22px",color:"#7C7C7C",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}},a.d)));}
-function StartRecents(p){var vis=p.items.slice(0,5);
+function StartRecents(p){var vis=p.items.slice(0,10);
 function row(key,icon,label,onClick){return h("div",Object.assign({key:key,onClick:onClick,title:label,style:{display:"flex",alignItems:"center",gap:12,height:31,padding:"0 8px",margin:"0 -8px",borderRadius:8,cursor:"pointer",fontSize:14,color:"#4F4F4F"}},hover({background:"transparent"},{background:"rgba(0,0,0,0.04)"})),
 h("span",{style:{color:"#545453",display:"inline-flex"}},icon),h("span",{style:{minWidth:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}},label));}
 return h("div",{style:{padding:"0 12px",marginTop:32,display:"flex",flexDirection:"column",gap:0,animation:"fadeIn .3s ease both"}},
 h("div",{style:{fontSize:14,lineHeight:"22px",fontWeight:600,color:"#2A2A2A",marginBottom:8}},"Recents"),
 vis.map(function(it,i){return row("r"+i,recentIcon(it),it.label,function(){if(it.id&&p.onPick)p.onPick(it.id);});}),
-p.items.length>5?row("more",NI("dots"),"View more",function(){if(p.onMore)p.onMore();}):null);}
+p.items.length>10?row("more",NI("dots"),"View more",function(){if(p.onMore)p.onMore();}):null);}
 function SkillsLibrary(p){var _lt=useState(p.initial||"yours");var libTab=_lt[0],setLibTab=_lt[1];var mine=(p.lib||[]).map(savedCard);
 return h("div",null,h("div",{style:{display:"flex",justifyContent:"center",marginBottom:32}},h(SegTabs,{value:libTab,onChange:setLibTab,items:[{v:"yours",l:"Your skills"},{v:"verified",l:"Verified skills"}]})),
 libTab==="verified"?h("div",{key:"v",style:{display:"grid",gridTemplateColumns:"repeat(3, minmax(0,1fr))",gap:16,animation:"fadeIn .25s ease both"}},APPS.map(function(a){return h(WfCard,{key:a.t,a:a,onClick:function(){p.onApp(a);}});}))
@@ -1416,7 +1416,7 @@ return h("div",{style:{flex:1,overflowY:"auto",background:T.colorSurfaceSecondar
 h("div",{style:{maxWidth:CHAT_W,margin:"0 auto",padding:"112px 24px 64px"}},
 h("div",{style:{display:"flex",justifyContent:"center"}},h(MIMO_LOGO,{h:32})),
 h("div",{style:{textAlign:"center",fontSize:36,lineHeight:"44px",fontWeight:500,letterSpacing:0,color:"#1F2024",margin:"48px 0 40px"}},"What should we tackle today?"),
-h(Composer,{value:p.draft,onChange:p.setDraft,onSend:p.onSend,placeholder:p.chips&&p.chips.length?"Add details or just send to run the skill...":ph,autoFocus:true,focusKey:p.focusKey,chips:p.chips,sendChips:true,onRemoveChip:p.onRemoveChip}),
+h(Composer,{value:p.draft,onChange:p.setDraft,onSend:p.onSend,placeholder:p.chips&&p.chips.length?(p.chips.length>1?"Add details or just send to run the skills...":"Add details or just send to run the skill..."):ph,autoFocus:true,focusKey:p.focusKey,chips:p.chips,sendChips:true,onRemoveChip:p.onRemoveChip}),
 h("div",{style:{textAlign:"center",fontSize:14,lineHeight:"22px",color:"#7C7C7C",marginTop:24}},"Start with a skill"),h("div",{style:{display:"flex",flexWrap:"wrap",justifyContent:"center",gap:8,marginTop:8}},START_PROMPTS.map(function(sp){return h("button",Object.assign({key:sp.l,type:"button",onClick:function(){p.onApp(APPS.filter(function(a){return a.t===sp.sk;})[0]);},style:{display:"inline-flex",alignItems:"center",gap:8,height:40,padding:"0 16px 0 12px",border:"1px solid "+T.colorBorderMedium,borderRadius:8,background:"#FFFFFF",color:"#2A2A2A",fontFamily:"inherit",fontSize:14,lineHeight:"22px",fontWeight:500,cursor:"pointer"}},hover({background:"#FFFFFF"},{background:"#FAFAFA"})),h("span",{style:{display:"inline-flex",color:"#545453"}},NI("star03",20)),sp.l);})),
 h("div",{style:{height:1,background:T.colorBorderDark,margin:"48px 0 0"}}),
 (p.recents&&p.recents.length)?h(StartRecents,{items:p.recents,onPick:p.onPick,onMore:p.onMore}):null),
@@ -1492,13 +1492,13 @@ ro.observe(el);return function(){ro.disconnect();};},[phase]);
 
 /* steps 1–2 → 3 */
 useEffect(function(){if(p.startPrompt)begin(p.startPrompt);},[]);
-useEffect(function(){if(p.chipReq){setSchips([skillChip(p.chipReq.a)]);setFocusKey(function(n){return n+1;});}},[p.chipReq&&p.chipReq.n]);
+useEffect(function(){if(p.chipReq){addChipTo(setSchips,p.chipReq.a);setFocusKey(function(n){return n+1;});}},[p.chipReq&&p.chipReq.n]);
 /* demo shortcut "1": run the VAT review with late claims straight through */
 useEffect(function(){if(!p.auto)return;FAST.on=true;begin("Run a VAT review");},[]);
 useEffect(function(){if(!p.auto||!FAST.on)return;if(dock==="q1")answerQ1(Q1.options[0]);else if(dock==="q2")answerQ2(Q2.options[0]);else if(dock==="free")answerQ3("7 Aug 26");else if(dock==="proposal")runWf();},[dock]);
 useEffect(function(){if(p.auto&&ready)setTimeout(function(){FAST.on=false;},50);},[ready]);
-function begin(text,sk){if(p.onBegin)p.onBegin();var sc=/schedule/i.test(sk?sk.prompt:text)?"schedule":"vat";SCN.current=sc;setScen(sc);if(sc==="schedule")setRtab("findings");setPhase("chat");meta({label:sc==="schedule"?S_WF.name:WF.name});addLog(sk?"Added "+sk.label+" to the chat":"Started a chat: “"+text+"”");
-setItems([{type:"user",text:text,skill:sk?sk.label:null,k:++seq.current}]);setDock("busy");
+function begin(text,sk){var sks=Array.isArray(sk)?sk:(sk?[sk]:[]);sk=sks[0];if(p.onBegin)p.onBegin();var sc=/schedule/i.test(sk?sk.prompt:text)?"schedule":"vat";SCN.current=sc;setScen(sc);if(sc==="schedule")setRtab("findings");setPhase("chat");meta({label:sc==="schedule"?S_WF.name:WF.name});addLog(sk?"Added "+sks.map(function(x){return x.label;}).join(", ")+" to the chat":"Started a chat: “"+text+"”");
+setItems([{type:"user",text:text,skill:sks.length?sks.map(function(x){return x.label;}):null,k:++seq.current}]);setDock("busy");
 tm.later(450,function(){setStatus([TH]);});tm.later(1400,function(){thenStatus(ASK);});tm.later(2200,function(){setDock("q1");});}
 /* 3 → 4 */
 function answerQ1(o){if(SCN.current==="schedule")setA({accts:o.accts||["1400","1410"],acctLabel:o.label});else setA({period:o.period,periodLabel:o.label});setDock("busy");setStatus([TH]);
@@ -1637,7 +1637,7 @@ h("div",{ref:contentRef,style:{maxWidth:CHAT_W,margin:"0 auto",padding:"24px 0 3
 dock!=="none"?h("div",{style:{flexShrink:0,padding:narrow?"0 16px 14px":"0 24px 14px",transition:"padding 0.44s "+EASE}},h("div",{style:{maxWidth:CHAT_W,margin:"0 auto"}},dockEl(),h(Disclaimer,{actions:actionsDisclaimer}))):null);}
 
 if(phase==="start")return h("div",{style:{flex:1,display:p.active?"flex":"none",flexDirection:"column",minHeight:0,position:"relative"}},
-h(StartView,{draft:draft,setDraft:setDraft,chips:schips,onRemoveChip:function(){setSchips([]);},onSend:function(){var t=draft.trim();var sk=schips[0];if(t||sk){setDraft("");setSchips([]);begin(t,sk);}},onApp:function(a){setSchips([skillChip(a)]);setFocusKey(function(n){return n+1;});},onPrompt:function(t){setDraft("");setSchips([]);begin(t);},focusKey:focusKey,recents:buildRecents(p.tabs),onPick:p.onSelect,onMore:function(){p.onPage("history");},lib:p.lib}));
+h(StartView,{draft:draft,setDraft:setDraft,chips:schips,onRemoveChip:function(k){setSchips(function(cs){return cs.filter(function(c){return c.key!==k;});});},onSend:function(){var t=draft.trim();var sk=schips.slice();if(t||sk.length){setDraft("");setSchips([]);begin(t,sk);}},onApp:function(a){addChipTo(setSchips,a);setFocusKey(function(n){return n+1;});},onPrompt:function(t){setDraft("");setSchips([]);begin(t);},focusKey:focusKey,recents:buildRecents(p.tabs),onPick:p.onSelect,onMore:function(){p.onPage("history");},lib:p.lib}));
 
 var resultsProps={scen:scen,answers:answers,findings:findings,state:fstate,late:!!answers.late,filed:answers.filed,period:answers.period,log:log,tab:rtab,setTab:setRtab,
 onOpen:openF,onApply:function(id){setConfirmId(id);},onAdd:function(f){addChip({key:f.id,fid:f.id,label:f.contact});}};
@@ -1703,7 +1703,7 @@ return v([h("path",Object.assign({key:1,d:NAVP[name]},sp))]);}
 var ASSOC=[{l:"Collect documents",i:"fileQuestion"},{l:"Inbox",i:"inbox"},{l:"Reconcile",i:"checkVerified"},{l:"VAT review",i:"flag"},{l:"Adjustments",i:"switchHorizontal"},{l:"Profit & Loss",i:"calculator"},{l:"Balance sheet",i:"rows"}];
 var PAST_RECENTS=[{label:"VAT review, Apr 26 – Jun 26",done:true},{label:"Bank reconciliation, HSBC Business",status:"input"},{label:"Prepayments, Sep 26",done:true},
 {label:"Payroll control, Sep 26"},{label:"Fixed asset register, FY 26"},{label:"Accruals sweep, Aug 26",done:true},{label:"Miscodings, Q2 26",status:"stopped"},
-{label:"P&L review, Sep 26",status:"running"},{label:"Deferred revenue, Aug 26",done:true},
+{label:"P&L review, Sep 26",done:true},{label:"Deferred revenue, Aug 26",done:true},
 {label:"Bank reconciliation, Barclays Credit Card",status:"stopped"},{label:"VAT review, Jan 26 – Mar 26",done:true}];
 /* status icon for a recent workflow: done tick, running spinner, stopped alert, otherwise history */
 function statusBadge(bg,fg,glyph){return h("span",{style:{width:20,height:20,borderRadius:5,background:bg,color:fg,display:"inline-flex",alignItems:"center",justifyContent:"center",flexShrink:0}},glyph);}
@@ -1788,7 +1788,8 @@ h("button",Object.assign({type:"button",onClick:p.onLedger,"aria-pressed":!!p.le
 
 /* ══════════════ APP ══════════════ */
 var TAB_N=1;
-function skillChip(a){return{key:"skill",skill:true,label:a.t,prompt:a.prompt||"Run a VAT review"};}
+function addChipTo(set,a){var c=skillChip(a);set(function(cs){return cs.some(function(x){return x.key===c.key;})?cs:cs.concat([c]);});}
+function skillChip(a){return{key:"skill-"+a.t,skill:true,label:a.t,prompt:a.prompt||"Run a VAT review"};}
 function newTab(){return{id:"t"+(TAB_N++),label:"New chat",status:"idle"};}
 function App(){var first=useMemo(newTab,[]);var _t=useState([first]);var tabs=_t[0],setTabs=_t[1];var _a=useState(first.id);var active=_a[0],setActive=_a[1];
 var _pg=useState(null);var page=_pg[0],setPageRaw=_pg[1];var _lg=useState(false);var ledger=_lg[0],setLedger=_lg[1];function setPage(v){setPageRaw(v);setLedger(false);}var _o=useState({});var overlay=_o[0],setOverlay=_o[1];var _nv=useState(null);var panel=_nv[0],setPanel=_nv[1];
